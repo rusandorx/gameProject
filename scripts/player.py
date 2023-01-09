@@ -1,12 +1,13 @@
 import pygame
 
-
 class Player(pygame.sprite.Sprite):
     def __init__(self, position, groups, obstacle_sprites):
         super().__init__(groups)
+        self.position = position
         self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=position)
         self.hitbox = self.rect.inflate(-10, -15)
+        self.i = 0
 
         self.direction = pygame.math.Vector2()
         self.velocity = 7
@@ -17,6 +18,11 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_UP]:
             self.direction.y = -1
+            self.i += 1
+            if self.i == 3:
+                self.i = 0
+            self.image = pygame.image.load(f'../graphics/player/up/up_{self.i}.png').convert_alpha()
+            self.rect = self.image.get_rect(topleft=self.position)
         elif keys[pygame.K_DOWN]:
             self.direction.y = 1
         else:
