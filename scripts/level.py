@@ -3,6 +3,7 @@ import pygame
 from obstacle import Obstacle
 from player import Player
 from settings import *
+import debug
 
 
 class Level:
