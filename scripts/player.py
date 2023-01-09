@@ -1,90 +1,85 @@
+from enum import Enum
+
 import pygame
+
+
+class AnimationState(Enum):
+    IDLE = 'idle'
+    MOVE_UP = 'up'
+    MOVE_DOWN = 'down'
+    MOVE_LEFT = 'left'
+    MOVE_RIGHT = 'right'
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, position, groups, obstacle_sprites):
-        super().__init__(groups)
-        self.position = position
-        self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft=position)
-        self.hitbox = self.rect.inflate(-10, -15)
-        self.sprites = {"up": [pygame.image.load(f'../graphics/player/up/up_{i}.png').convert_alpha()
-                               for i in range(4)],
-                        "down": [pygame.image.load(f'../graphics/player/down/down_{i}.png').convert_alpha()
-                               for i in range(4)],
-                        "left": [pygame.image.load(f'../graphics/player/left/left_{i}.png').convert_alpha()
-                               for i in range(4)],
-                        "right": [pygame.image.load(f'../graphics/player/right/right_{i}.png').convert_alpha()
-                               for i in range(4)]
-                        }
-        self.i = 0
+        super().__init__(*groups)
 
+        # Передвижение
         self.direction = pygame.math.Vector2()
         self.velocity = 7
+
+        # Спрайты
+        self.sprites = {AnimationState.MOVE_UP: [pygame.image.load(f'../graphics/player/up/up_{i}.png').convert_alpha()
+                                                 for i in range(4)],
+                        AnimationState.MOVE_DOWN: [
+                            pygame.image.load(f'../graphics/player/down/down_{i}.png').convert_alpha()
+                            for i in range(4)],
+                        AnimationState.MOVE_LEFT: [
+                            pygame.image.load(f'../graphics/player/left/left_{i}.png').convert_alpha()
+                            for i in range(4)],
+                        AnimationState.MOVE_RIGHT: [
+                            pygame.image.load(f'../graphics/player/right/right_{i}.png').convert_alpha()
+                            for i in range(4)],
+                        AnimationState.IDLE: [pygame.image.load('../graphics/test/player.png').convert_alpha()]
+                        }
+        self.animation_frame = 0
+        self.animation_speed = 0.1
+        self.sprite_state: AnimationState = AnimationState.IDLE
+        self.image = self.sprites[self.sprite_state][self.animation_frame]
+
+        # Хитбокс и позиция
+        self.position = position
         self.obstacle_sprites: pygame.sprite.Group = obstacle_sprites
-        self.y1 = 0
-        self.x1 = 0
-        self.check = ""
+        self.rect = self.image.get_rect(topleft=position)
+        self.hitbox = self.rect.inflate(-10, -15)
+
+    def update_state(self):
+        # Спрайты на движения
+        if self.direction.magnitude() == 0:
+            self.sprite_state = AnimationState.IDLE
+        elif self.direction.y > 0:
+            self.sprite_state = AnimationState.MOVE_DOWN
+        elif self.direction.y < 0:
+            self.sprite_state = AnimationState.MOVE_UP
+        elif self.direction.x > 0:
+            self.sprite_state = AnimationState.MOVE_RIGHT
+        elif self.direction.x < 0:
+            self.sprite_state = AnimationState.MOVE_LEFT
+
+    def animate(self):
+        sprites = self.sprites[self.sprite_state]
+
+        self.animation_frame += self.animation_speed
+        self.animation_frame = 0 if self.animation_frame >= len(sprites) else self.animation_frame
+
+        self.image = sprites[int(self.animation_frame)]
+        self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def key_input(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_UP]:
             self.direction.y = -1
-            self.y1 -= 1
-            if self.y1 <= -10 and self.check == "up":
-                self.y1 = 0
-                self.i += 1
-            elif self.y1 <= -10:
-                self.check = "up"
-                self.i = 0
-            if self.i == 4:
-                self.i = 0
-            self.image = self.sprites["up"][self.i]
-            self.rect = self.image.get_rect(topleft=self.position)
         elif keys[pygame.K_DOWN]:
             self.direction.y = 1
-            self.y1 += 1
-            if self.y1 >= 10 and self.check == "down":
-                self.y1 = 0
-                self.i += 1
-                self.check = "down"
-            elif self.y1 >= 10:
-                self.check = "down"
-                self.i = 0
-            if self.i == 4:
-                self.i = 0
-            self.image = self.sprites["down"][self.i]
-            self.rect = self.image.get_rect(topleft=self.position)
         else:
             self.direction.y = 0
 
         if keys[pygame.K_LEFT]:
             self.direction.x = -1
-            self.x1 -= 1
-            if self.x1 <= -10 and self.check == "left":
-                self.x1 = 0
-                self.i += 1
-            elif self.x1 <= -10:
-                self.check = "left"
-                self.i = 0
-            if self.i == 4:
-                self.i = 0
-            self.image = self.sprites["left"][self.i]
-            self.rect = self.image.get_rect(topleft=self.position)
         elif keys[pygame.K_RIGHT]:
             self.direction.x = 1
-            self.x1 += 1
-            if self.x1 >= 10 and self.check == "right":
-                self.x1 = 0
-                self.i += 1
-                self.check = "right"
-            elif self.x1 >= 10:
-                self.check = "right"
-                self.i = 0
-            if self.i == 4:
-                self.i = 0
-            self.image = self.sprites["right"][self.i]
-            self.rect = self.image.get_rect(topleft=self.position)
         else:
             self.direction.x = 0
 
@@ -117,4 +112,6 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         self.key_input()
+        self.update_state()
+        self.animate()
         self.move(self.velocity)
