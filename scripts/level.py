@@ -3,7 +3,6 @@ import pygame
 from obstacle import Obstacle
 from player import Player
 from settings import *
-import debug
 
 
 class Level:
@@ -20,9 +19,13 @@ class Level:
             for j, col in enumerate(row):
                 x, y = i * TILESIZE, j * TILESIZE
                 if col == 'x':
-                    Obstacle((x, y), [self.visible_sprites, self.obstacle_sprites])
+                    Obstacle((x, y),
+                             [self.visible_sprites, self.obstacle_sprites], '../graphics/test/rock.png')
                 if col == 'p':
                     self.player = Player((x, y), [self.visible_sprites], self.obstacle_sprites)
+                if col == 'g':
+                    Obstacle((x, y), [self.visible_sprites], '../graphics/grass/grass_2.png')
+
 
     def run(self):
         self.visible_sprites.custorm_draw(self.player)
@@ -44,3 +47,4 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_position = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_position)
+        self.display_surface.blit(player.image, [offset_position.x + 10, offset_position.y + 10])
