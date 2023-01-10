@@ -24,7 +24,7 @@ class Level:
                 if col == 'p':
                     self.player = Player((x, y), [self.visible_sprites], self.obstacle_sprites)
                 if col == 'g':
-                    Obstacle((x, y), [self.visible_sprites], '../graphics/grass/grass_2.png')
+                    Obstacle((x, y), [self.visible_sprites, self.obstacle_sprites], '../graphics/grass/grass_2.png')
 
     def run(self):
         self.visible_sprites.custorm_draw(self.player)
@@ -39,16 +39,17 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.half_height = self.display_surface.get_height() // 2
         self.offset = pygame.math.Vector2()
 
+        # background
+        self.background = pygame.image.load('../graphics/tilemap/map1.png').convert()
+        self.background_rect = self.background.get_rect(topleft=(0, 0))
+
     def custorm_draw(self, player: Player):
         self.offset.x = player.rect.centerx - self.half_width
         self.offset.y = player.rect.centery - self.half_height
 
+        background_offset = self.background_rect.topleft - self.offset
+        self.display_surface.blit(self.background, background_offset)
+
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_position = sprite.rect.topleft - self.offset
-            if len(sprite.groups()) == 1:
-                self.display_surface.blit(sprite.image, offset_position)
-        self.display_surface.blit(player.image, player.rect.topleft - self.offset)
-        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            offset_position = sprite.rect.topleft - self.offset
-            if len(sprite.groups()) == 2:
-                self.display_surface.blit(sprite.image, offset_position)
+            self.display_surface.blit(sprite.image, offset_position)
