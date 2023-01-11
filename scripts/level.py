@@ -1,34 +1,41 @@
 import pygame
+from pytmx.util_pygame import load_pygame
 
 from obstacle import Obstacle
 from player import Player
-from settings import *
 
 
 class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
 
-        self.visible_sprites = YSortCameraGroup()
+        # спрайты переднего фона сортируются по Y для придания эффекта глубины
+        self.foreground_sprites = YSortCameraGroup()
+        # задний план рендерится без сортировки
+        self.background_sprites = pygame.sprite.Group()
+        # со спрайтами препятствий происходят коллизии
         self.obstacle_sprites = pygame.sprite.Group()
 
         self.create_map()
 
     def create_map(self):
-        for i, row in enumerate(WORLD_MAP):
-            for j, col in enumerate(row):
-                x, y = i * TILESIZE, j * TILESIZE
-                if col == 'x':
-                    Obstacle((x, y),
-                             [self.visible_sprites, self.obstacle_sprites], '../graphics/test/rock.png')
-                if col == 'p':
-                    self.player = Player((x, y), [self.visible_sprites], self.obstacle_sprites)
-                if col == 'g':
-                    Obstacle((x, y), [self.visible_sprites, self.obstacle_sprites], '../graphics/grass/grass_2.png')
+        map_data = load_pygame('../map/game_map/map.tmx')
+
+        for x, y, image in map_data.get_layer_by_name('background'):
+            if image != 0:
+                Obstacle((x * 64, y * 64), [self.background_sprites], map_data.images[image])
+
+        for x, y, image in map_data.get_layer_by_name('content'):
+            if image != 0:
+                Obstacle((x * 64, y * 64), [self.foreground_sprites, self.obstacle_sprites], map_data.images[image])
+
+        map_player = map_data.get_object_by_name('player')
+        self.player = Player((map_player.x, map_player.y), [self.foreground_sprites], self.obstacle_sprites)
 
     def run(self):
-        self.visible_sprites.custorm_draw(self.player)
-        self.visible_sprites.update()
+        self.background_sprites.draw(self.display_surface)
+        self.foreground_sprites.custorm_draw(self.player)
+        self.foreground_sprites.update()
 
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -39,16 +46,9 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.half_height = self.display_surface.get_height() // 2
         self.offset = pygame.math.Vector2()
 
-        # background
-        self.background = pygame.image.load('../graphics/tilemap/map1.png').convert()
-        self.background_rect = self.background.get_rect(topleft=(0, 0))
-
     def custorm_draw(self, player: Player):
         self.offset.x = player.rect.centerx - self.half_width
         self.offset.y = player.rect.centery - self.half_height
-
-        background_offset = self.background_rect.topleft - self.offset
-        self.display_surface.blit(self.background, background_offset)
 
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_position = sprite.rect.topleft - self.offset

@@ -1,0 +1,40 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "C:/Users/PC/OneDrive/Документы/[64x64] Dungeon Bricks Plain.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/PC/OneDrive/Документы/empty.tsx": {
+            "scaleInDock": 1
+        },
+        "hero.tsx": {
+            "scaleInDock": 1
+        },
+        "map.json": {
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 1206,
+                "y": 1214
+            }
+        }
+    },
+    "last.imagePath": "E:/projects/gameProject/graphics/grass",
+    "map.lastUsedFormat": "json",
+    "openFiles": [
+    ],
+    "project": "map.tiled-project",
+    "recentFiles": [
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 64,
+        "width": 64
+    }
+}
