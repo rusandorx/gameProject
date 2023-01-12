@@ -1,6 +1,7 @@
 import pygame
 
 
+
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, position, groups, image):
         super().__init__(*groups)
