@@ -39,6 +39,9 @@ class Enemy(pygame.sprite.Sprite):
             self.sprite_state = "IDLE"
 
     def move_by_vector(self, vector: Vector2):
+        if vector.magnitude() == 0:
+            return
+
         vector = vector.normalize()
         self.hitbox.x += vector.x * self.velocity
         self.hitbox.y += vector.y * self.velocity
