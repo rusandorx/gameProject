@@ -9,6 +9,8 @@ from enemy import Enemy
 
 class Level:
     def __init__(self):
+        pygame.mixer.music.load('../audio/themes/Persona-3-OST-Mass-Destruction.mp3')
+
         self.display_surface = pygame.display.get_surface()
 
         # спрайты переднего фона сортируются по Y для придания эффекта глубины

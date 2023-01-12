@@ -31,7 +31,8 @@ class Player(pygame.sprite.Sprite):
                         AnimationState.MOVE_RIGHT: [
                             pygame.image.load(f'../graphics/player/right/right_{i}.png').convert_alpha()
                             for i in range(4)],
-                        AnimationState.IDLE: [pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()]
+                        AnimationState.IDLE: [
+                            pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()]
                         }
         self.animation_frame = 0
         self.animation_speed = 0.1
