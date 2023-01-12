@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
 
         # Передвижение
         self.direction = pygame.math.Vector2()
-        self.velocity = 7
+        self.velocity = 5
 
         # Спрайты
         self.sprites = {AnimationState.MOVE_UP: [pygame.image.load(f'../graphics/player/up/up_{i}.png').convert_alpha()
@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
                         AnimationState.MOVE_RIGHT: [
                             pygame.image.load(f'../graphics/player/right/right_{i}.png').convert_alpha()
                             for i in range(4)],
-                        AnimationState.IDLE: [pygame.image.load('../graphics/test/player.png').convert_alpha()]
+                        AnimationState.IDLE: [pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()]
                         }
         self.animation_frame = 0
         self.animation_speed = 0.1
@@ -42,7 +42,7 @@ class Player(pygame.sprite.Sprite):
         self.position = position
         self.obstacle_sprites: pygame.sprite.Group = obstacle_sprites
         self.rect = self.image.get_rect(topleft=position)
-        self.hitbox = self.rect.inflate(-10, -15)
+        self.hitbox = self.rect.inflate(-10, -10)
 
     def update_state(self):
         # Спрайты на движения
