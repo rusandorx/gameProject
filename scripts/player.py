@@ -42,7 +42,7 @@ class Player(pygame.sprite.Sprite):
         self.position = position
         self.obstacle_sprites: pygame.sprite.Group = obstacle_sprites
         self.rect = self.image.get_rect(topleft=position)
-        self.hitbox = self.rect.inflate(-10, -10)
+        self.hitbox = self.rect.inflate(0, -10)
 
     def update_state(self):
         # Спрайты на движения

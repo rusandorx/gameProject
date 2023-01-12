@@ -3,12 +3,52 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
+        "RPG Nature Tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "TX Plant.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Player.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Props.tsx": {
+            "scaleInDock": 5.5
+        },
+        "TX Shadow Plant.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Shadow.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Struct.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Tileset Grass.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Tileset Stone Ground.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Tileset Wall.tsx": {
+            "scaleInDock": 0.125
+        },
         "TilesetFloor.tsx": {
             "scaleInDock": 1.5
+        },
+        "map.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 967,
+                "y": 971.9999999999999
+            }
         }
     },
     "last.externalTilesetPath": "E:/projects/gameProject/map/game_map",
@@ -18,9 +58,12 @@
     "map.tileWidth": 64,
     "map.width": 64,
     "openFiles": [
+        "map.tmx"
     ],
     "project": "game_map_project.tiled-project",
     "recentFiles": [
+        "map.tmx",
+        "RPG Nature Tileset.tsx"
     ],
     "tileset.lastUsedFilter": "Файлы набора тайлов Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",

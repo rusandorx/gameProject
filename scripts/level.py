@@ -3,6 +3,7 @@ from pytmx.util_pygame import load_pygame
 
 from obstacle import Obstacle
 from player import Player
+from scripts.debug import debug
 from scripts.settings import TILESIZE
 
 
@@ -35,12 +36,16 @@ class Level:
             if image != 0:
                 Obstacle((x * TILESIZE, y * TILESIZE), [self.main_group, self.obstacle_sprites], map_data.images[image])
 
+        for entity in map_data.get_layer_by_name('entities'):
+            pass
+
         map_player = map_data.get_object_by_name('player')
         self.player = Player((map_player.x, map_player.y), [self.main_group], self.obstacle_sprites)
 
     def run(self):
         self.main_group.custorm_draw(self.player, [self.background_sprites, self.shadow_sprites])
         self.main_group.update()
+        debug(self.player.direction)
 
 
 class YSortCameraGroup(pygame.sprite.Group):
