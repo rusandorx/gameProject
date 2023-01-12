@@ -5,6 +5,7 @@ from obstacle import Obstacle
 from player import Player
 from scripts.debug import debug
 from scripts.settings import TILESIZE
+from enemy import Enemy
 
 
 class Level:
@@ -36,11 +37,12 @@ class Level:
             if image != 0:
                 Obstacle((x * TILESIZE, y * TILESIZE), [self.main_group, self.obstacle_sprites], map_data.images[image])
 
-        for entity in map_data.get_layer_by_name('entities'):
-            pass
-
         map_player = map_data.get_object_by_name('player')
         self.player = Player((map_player.x, map_player.y), [self.main_group], self.obstacle_sprites)
+
+        for entity in map_data.get_layer_by_name('entities'):
+            if entity.name != "player":
+                Enemy((entity.x, entity.y), [self.main_group], self.player)
 
     def run(self):
         self.main_group.custorm_draw(self.player, [self.background_sprites, self.shadow_sprites])
