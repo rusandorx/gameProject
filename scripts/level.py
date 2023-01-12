@@ -3,7 +3,6 @@ from pytmx.util_pygame import load_pygame
 
 from obstacle import Obstacle
 from player import Player
-from scripts.debug import debug
 from scripts.settings import TILESIZE
 from enemy import Enemy
 
@@ -47,7 +46,6 @@ class Level:
     def run(self):
         self.main_group.custorm_draw(self.player, [self.background_sprites, self.shadow_sprites])
         self.main_group.update()
-        debug(self.player.direction)
 
 
 class YSortCameraGroup(pygame.sprite.Group):
