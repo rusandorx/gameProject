@@ -1,3 +1,5 @@
+import math
+
 import pygame
 from debug import debug
 
@@ -9,7 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=position)
         self.hitbox = self.rect.inflate(0, -5)
         self.player = player
-        self.velocity = 2
+        self.velocity = 3
         self.sprites = {"MOVE": [
             pygame.transform.scale(pygame.image.load(f'../graphics/monsters/bamboo/move/{i}.png').convert_alpha(),
                                    (32, 32))
@@ -34,9 +36,9 @@ class Enemy(pygame.sprite.Sprite):
         elif vector.magnitude() <= 150:
             if vector.magnitude() != 0:
                 vector = vector.normalize()
-            debug(vector.x * self.velocity)
-            self.hitbox.x += vector.x * self.velocity
-            self.hitbox.y += vector.y * self.velocity
+            debug(vector.y * self.velocity)
+            self.hitbox.x += round(vector.x * self.velocity)
+            self.hitbox.y += round(vector.y * self.velocity)
             self.rect.center = self.hitbox.center
             self.sprite_state = "MOVE"
             self.animation()
