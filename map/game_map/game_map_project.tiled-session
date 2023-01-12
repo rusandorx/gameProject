@@ -5,7 +5,6 @@
     },
     "activeFile": "map.tmx",
     "expandedProjectPaths": [
-        "."
     ],
     "fileStates": {
         "RPG Nature Tileset.tsx": {
@@ -19,7 +18,7 @@
             "scaleInDock": 1
         },
         "TX Props.tsx": {
-            "scaleInDock": 5.5
+            "scaleInDock": 1
         },
         "TX Shadow Plant.tsx": {
             "scaleInDock": 1
@@ -43,11 +42,11 @@
             "scaleInDock": 1.5
         },
         "map.tmx": {
-            "scale": 1.5,
+            "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 967,
-                "y": 971.9999999999999
+                "x": 1050.5,
+                "y": 735
             }
         }
     },
