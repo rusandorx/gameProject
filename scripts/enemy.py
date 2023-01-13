@@ -9,6 +9,10 @@ class Enemy(pygame.sprite.Sprite):
                       "spirit": 32,
                       "squid": 32,
                       "raccoon": 128}
+        attack_sprites = {"bamboo": 1,
+                          "spirit": 1,
+                          "squid": 1,
+                          "raccoon": 4}
         self.size = size_enemy[name]
         self.image = pygame.transform.scale(pygame.image.load(f"../graphics/monsters/{name}/idle/0.png"),
                                             (self.size, self.size))
@@ -26,9 +30,10 @@ class Enemy(pygame.sprite.Sprite):
                     pygame.image.load(f"../graphics/monsters/{name}/idle/0.png").convert_alpha(),
                     (self.size, self.size))],
             "ATTACK": [
-                pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/attack/{0}.png').convert_alpha(),
-                                       (self.size, self.size))]
+                pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/attack/{i}.png').convert_alpha(),
+                                       (self.size, self.size)) for i in range(attack_sprites[name])]
         }
+        self.sprites["ATTACK"] += self.sprites["IDLE"]
         self.animation_frame = 0
         self.animation_speed = 0.1
         self.sprite_state = "IDLE"
