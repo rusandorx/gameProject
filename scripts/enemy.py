@@ -8,11 +8,19 @@ class Enemy(pygame.sprite.Sprite):
         size_enemy = {"bamboo": 32,
                       "spirit": 32,
                       "squid": 32,
-                      "raccoon": 128}
+                      "big_boss": 128,
+                      "raccoon": 64}
         attack_sprites = {"bamboo": 1,
                           "spirit": 1,
                           "squid": 1,
+                          "big_boss": 4,
                           "raccoon": 4}
+        range_attack = {"bamboo": 150,
+                          "spirit": 150,
+                          "squid": 150,
+                          "big_boss": 300,
+                          "raccoon": 150}
+        self.range_attack = range_attack[name]
         self.size = size_enemy[name]
         self.image = pygame.transform.scale(pygame.image.load(f"../graphics/monsters/{name}/idle/0.png"),
                                             (self.size, self.size))
@@ -43,9 +51,9 @@ class Enemy(pygame.sprite.Sprite):
         vector_enemy = Vector2(self.rect.center)
         cross_vector = vector_player - vector_enemy
 
-        if cross_vector.magnitude() <= 30:
+        if cross_vector.magnitude() <= self.range_attack // 5:
             self.sprite_state = "ATTACK"
-        elif cross_vector.magnitude() <= 150:
+        elif cross_vector.magnitude() <= self.range_attack:
             self.move_by_vector(cross_vector)
         elif (cross_vector := (self.init_position - vector_enemy)).magnitude() > 1:
             self.move_by_vector(cross_vector)
