@@ -3,11 +3,12 @@ from pytmx.util_pygame import load_pygame
 
 from obstacle import Obstacle
 from player import Player
+from scripts.menu import Menu
 from scripts.settings import TILESIZE
 from enemy import Enemy
 
 
-class Level:
+class Level(Menu):
     def __init__(self):
         pygame.mixer.music.load('../audio/themes/Persona-3-OST-Mass-Destruction.mp3')
 
@@ -41,6 +42,7 @@ class Level:
         map_player = map_data.get_object_by_name('player')
         self.player = Player((map_player.x, map_player.y), [self.main_group], self.obstacle_sprites)
 
+
         for entity in map_data.get_layer_by_name('entities'):
             if entity.name != "player":
                 Enemy((entity.x, entity.y), [self.main_group], self.player)
@@ -62,6 +64,8 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset.x = player.rect.centerx - self.half_width
         self.offset.y = player.rect.centery - self.half_height
 
+
+
         for group in additional_groups:
             for sprite in group.sprites():
                 self.display_surface.blit(sprite.image, sprite.rect.topleft - self.offset)
@@ -69,3 +73,4 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_position = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_position)
+

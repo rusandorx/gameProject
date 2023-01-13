@@ -1,16 +1,20 @@
-import pygame
 import sys
 
-from settings import *
+import pygame
+
 from level import Level
+from settings import *
 
 
 class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGTH))
+        self.display = pygame.Surface((WIDTH, HEIGTH))
         self.clock = pygame.time.Clock()
         self.level = Level()
+
+        self.key_state = {'up': False, 'down': False, 'left': False, 'right': False, 'space': False}
 
         pygame.display.set_caption('Noname')
 
