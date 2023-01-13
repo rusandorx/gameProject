@@ -10,8 +10,6 @@ from enemy import Enemy
 
 class Level(Menu):
     def __init__(self):
-        pygame.mixer.music.load('../audio/themes/Persona-3-OST-Mass-Destruction.mp3')
-
         self.display_surface = pygame.display.get_surface()
 
         # спрайты переднего фона сортируются по Y для придания эффекта глубины
@@ -45,7 +43,7 @@ class Level(Menu):
 
         for entity in map_data.get_layer_by_name('entities'):
             if entity.name != "player":
-                Enemy((entity.x, entity.y), [self.main_group], self.player)
+                Enemy((entity.x, entity.y), [self.main_group], self.player, entity.name)
 
     def run(self):
         self.main_group.custorm_draw(self.player, [self.background_sprites, self.shadow_sprites])

@@ -3,22 +3,31 @@ from pygame.math import Vector2
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, position, groups, player):
+    def __init__(self, position, groups, player, name):
         super().__init__(*groups)
-        self.image = pygame.transform.scale(pygame.image.load("../graphics/monsters/bamboo/idle/0.png"), (32, 32))
+        size_enemy = {"bamboo": 32,
+                      "spirit": 32,
+                      "squid": 32,
+                      "raccoon": 128}
+        self.size = size_enemy[name]
+        self.image = pygame.transform.scale(pygame.image.load(f"../graphics/monsters/{name}/idle/0.png"),
+                                            (self.size, self.size))
         self.init_position = Vector2(position)
         self.rect = self.image.get_rect(topleft=position)
         self.hitbox = self.rect.inflate(0, -5)
         self.player = player
         self.velocity = 2
         self.sprites = {"MOVE": [
-            pygame.transform.scale(pygame.image.load(f'../graphics/monsters/bamboo/move/{i}.png').convert_alpha(),
-                                   (32, 32))
+            pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/move/{i}.png').convert_alpha(),
+                                   (self.size, self.size))
             for i in range(4)],
             "IDLE": [
                 pygame.transform.scale(
-                    pygame.image.load(f"../graphics/monsters/bamboo/idle/0.png").convert_alpha(),
-                    (32, 32))]
+                    pygame.image.load(f"../graphics/monsters/{name}/idle/0.png").convert_alpha(),
+                    (self.size, self.size))],
+            "ATTACK": [
+                pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/attack/{0}.png').convert_alpha(),
+                                       (self.size, self.size))]
         }
         self.animation_frame = 0
         self.animation_speed = 0.1
@@ -30,7 +39,7 @@ class Enemy(pygame.sprite.Sprite):
         cross_vector = vector_player - vector_enemy
 
         if cross_vector.magnitude() <= 30:
-            self.sprite_state = "IDLE"
+            self.sprite_state = "ATTACK"
         elif cross_vector.magnitude() <= 150:
             self.move_by_vector(cross_vector)
         elif (cross_vector := (self.init_position - vector_enemy)).magnitude() > 1:
