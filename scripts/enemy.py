@@ -3,8 +3,9 @@ from pygame.math import Vector2
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, position, groups, player, name):
+    def __init__(self, position, groups, player, name, attack_callback):
         super().__init__(*groups)
+        self.on_attack = attack_callback
         size_enemy = {"bamboo": 32,
                       "spirit": 32,
                       "squid": 32,
@@ -53,6 +54,7 @@ class Enemy(pygame.sprite.Sprite):
 
         if cross_vector.magnitude() <= self.range_attack // 5:
             self.sprite_state = "ATTACK"
+            self.on_attack(self)
         elif cross_vector.magnitude() <= self.range_attack:
             self.move_by_vector(cross_vector)
         elif (cross_vector := (self.init_position - vector_enemy)).magnitude() > 1:

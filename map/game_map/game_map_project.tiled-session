@@ -43,10 +43,10 @@
         },
         "map.tmx": {
             "scale": 1,
-            "selectedLayer": 2,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 1050.5,
-                "y": 735
+                "x": 905.5,
+                "y": 935
             }
         }
     },

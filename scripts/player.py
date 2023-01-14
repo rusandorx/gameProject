@@ -67,19 +67,19 @@ class Player(pygame.sprite.Sprite):
         self.image = sprites[int(self.animation_frame)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
-    def key_input(self):
-        keys = pygame.key.get_pressed()
+    def key_input(self, key_state):
+        keys = key_state
 
-        if keys[pygame.K_UP]:
+        if keys['up']:
             self.direction.y = -1
-        elif keys[pygame.K_DOWN]:
+        elif keys['down']:
             self.direction.y = 1
         else:
             self.direction.y = 0
 
-        if keys[pygame.K_LEFT]:
+        if keys['left']:
             self.direction.x = -1
-        elif keys[pygame.K_RIGHT]:
+        elif keys['right']:
             self.direction.x = 1
         else:
             self.direction.x = 0
@@ -111,8 +111,10 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.hitbox.top = sprite.rect.bottom
 
-    def update(self):
-        self.key_input()
+    def update(self, key_state=None):
+        if key_state is None:
+            return
+        self.key_input(key_state)
         self.update_state()
         self.animate()
         self.move(self.velocity)
