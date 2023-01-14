@@ -1,4 +1,5 @@
 from enum import Enum
+from sounds import Sound
 
 import pygame
 
@@ -96,6 +97,7 @@ class Player(pygame.sprite.Sprite):
 
     def move(self, velocity):
         if self.direction.magnitude() != 0:
+            Sound("../sounds/step.mp3", 1000)
             self.direction = self.direction.normalize()
 
         self.hitbox.x += self.direction.x * velocity
