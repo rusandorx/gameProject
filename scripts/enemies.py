@@ -139,5 +139,15 @@ enemies = {
             'attack': .7,
             'magic': .3
         },
+    }, position),
+    'green_boss': lambda position: SkeletonEnemy('green_boss', randint(20, 30), 100, {
+        'attack': 20,
+        'endurance': 100,
+        'weaknesses': [],
+        'type': ['god'],
+        'actions': {
+            'attack': .95,
+            'magic': .05
+        },
     }, position)
 }
