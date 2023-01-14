@@ -5,4 +5,8 @@ class Player:
         self.items = {}
         self.magic = {}
         self.exp = 0
-        
+        self.stats = {
+            'attack': 10,
+            'endurance': 5,
+        }
+        self.lvl = 1

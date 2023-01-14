@@ -1,7 +1,10 @@
-from abc import ABC, abstractmethod, ABCMeta
+import os
+from abc import abstractmethod, ABCMeta
 from random import choices, randint
 
 import pygame
+
+from spritesheet import SpriteSheet
 
 
 class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
@@ -34,12 +37,13 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
             'magic': self.magic
         }
         self.actions = self.stats['actions']
-        self.animation_state = 'idle'
+        self.sprite_state = 'idle'
         self.animation_frame = 0
         self.animation_speed = .1
         self.return_to_idle = False
         self.stop_at_last_frame = False
         self.active = True
+        self.load_assets()
 
     def animate_once(self, animation_state):
         self.animation_state = animation_state
@@ -77,8 +81,10 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.attack()
 
     def take_damage(self, damage, damage_type):
-        self.hp -= (damage * (1 - self.stats['endurance'] * 0.01)) \
-                   * (1.5 if any(stat == damage_type for stat in self.stats['type']) else 1)
+        if damage_type == 'physical':
+            self.hp -= damage * (1 - self.stats['endurance'] * 0.01)
+        else:
+            self.hp -= damage * (1.5 if any(stat == damage_type for stat in self.stats['type']) else 1)
         if self.hp <= 0:
             return self.die()
 
@@ -95,8 +101,32 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
 
 class SkeletonEnemy(CombatEnemy):
-    def __init__(self, name, lvl, hp, stats, position):
-        super().__init__(name, lvl, hp, stats, position)
+    def __init__(self, name, lvl, hp, stats, position, *groups):
+        super().__init__(name, lvl, hp, stats, position, *groups)
+
+    def load_assets(self):
+        graphics_path = '../graphics/ui/combat/sprites/skeleton/'
+        self.sprites = {
+            'idle': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Idle.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 7, (0, 0, 0)))),
+            'attack': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Attack_1.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 7, (0, 0, 0)))),
+            'hurt': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Hurt.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 7, (0, 0, 0)))),
+            'die': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Dead.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 7, (0, 0, 0))))
+        }
+        self.image = self.sprites[self.sprite_state][self.animation_frame]
+        self.rect = self.image.get_rect()
+        self.rect.center = self.position
 
 
 enemies = {

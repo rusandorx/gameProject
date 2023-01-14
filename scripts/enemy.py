@@ -7,17 +7,20 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, position, groups, player, name, attack_callback):
         super().__init__(*groups)
         self.on_attack = attack_callback
-        size_enemy = {"bamboo": 32,
+        size_enemy = {"skeleton": 32,
+                      "bamboo": 32,
                       "spirit": 32,
                       "squid": 32,
                       "big_boss": 128,
                       "raccoon": 64}
-        attack_sprites = {"bamboo": 1,
+        attack_sprites = {"skeleton": 1,
+                          "bamboo": 1,
                           "spirit": 1,
                           "squid": 1,
                           "big_boss": 4,
                           "raccoon": 4}
-        range_attack = {"bamboo": 150,
+        range_attack = {"skeleton": 150,
+                        "bamboo": 150,
                           "spirit": 150,
                           "squid": 150,
                           "big_boss": 300,

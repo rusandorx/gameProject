@@ -6,10 +6,11 @@ from spritesheet import SpriteSheet
 
 
 class CombatPlayer(pygame.sprite.Sprite):
-    def __init__(self, position, *groups):
+    def __init__(self, position, player, *groups):
         super().__init__(*groups)
         self.position = position
         self.load_sprites()
+        self.player = player
 
     def load_sprites(self):
         graphics_path = '../graphics/ui/combat/sprites/player/'
@@ -32,6 +33,7 @@ class CombatPlayer(pygame.sprite.Sprite):
 
     def attack(self):
         self.set_sprite_state_once('attack')
+        return self.player.stats['attack'] * (self.player.lvl / 10), 'physical'
 
     def set_sprite_state_once(self, sprite_state):
         self.sprite_state = sprite_state
