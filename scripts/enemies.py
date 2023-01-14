@@ -95,12 +95,12 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABC):
 
 
 class SkeletonEnemy(CombatEnemy):
-    def __init__(self, name, lvl, hp, stats):
-        super().__init__(name, lvl, hp, stats)
+    def __init__(self, name, lvl, hp, stats, position):
+        super().__init__(name, lvl, hp, stats, position)
 
 
 enemies = {
-    'skeleton': lambda x: SkeletonEnemy('skeleton', randint(1, 5), 30, {
+    'skeleton': lambda position: SkeletonEnemy('skeleton', randint(1, 5), 30, {
         'attack': 5,
         'endurance': 3,
         'weaknesses': ['light'],
@@ -109,5 +109,5 @@ enemies = {
             'attack': .7,
             'magic': .3
         },
-    })
+    }, position)
 }
