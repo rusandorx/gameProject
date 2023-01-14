@@ -42,4 +42,5 @@ class PauseMenu(State):
 
         # TODO: Implement all options.
         if option == 'Exit':
-            pass
+            while len(self.game.state_stack) > 1:
+                self.game.state_stack.pop()

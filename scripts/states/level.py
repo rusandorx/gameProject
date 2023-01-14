@@ -5,6 +5,7 @@ from enemy import Enemy
 from obstacle import Obstacle
 from player import Player
 from scripts.settings import TILESIZE
+from states.combat import Combat
 from states.pause_menu import PauseMenu
 from states.state import State
 
@@ -44,7 +45,11 @@ class Level(State):
 
         for entity in map_data.get_layer_by_name('entities'):
             if entity.name != "player":
-                Enemy((entity.x, entity.y), [self.main_group], self.player, entity.name)
+                Enemy((entity.x, entity.y), [self.main_group], self.player, entity.name, self.attack_callback)
+
+    def attack_callback(self, enemy):
+        combat = Combat(self.game)
+        combat.enter_state()
 
     def update(self, key_state):
         if key_state['start']:
