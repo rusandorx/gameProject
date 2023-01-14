@@ -5,6 +5,7 @@ import pygame
 from player.combat_player import CombatPlayer
 from states.state import State
 from math import pi
+from sounds import Sound
 
 
 class CombatEnemy():
@@ -14,6 +15,8 @@ class CombatEnemy():
 class Combat(State):
     def __init__(self, game):
         super().__init__(game)
+        Sound.stop_all()
+
         self.main_group = pygame.sprite.Group()
         self.background = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
         self.background_rect = self.background.get_rect()
