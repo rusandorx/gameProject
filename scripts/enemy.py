@@ -56,6 +56,8 @@ class Enemy(pygame.sprite.Sprite):
             self.sprite_state = "ATTACK"
             if int(self.animation_frame) == len(self.sprites[self.sprite_state]) - 1:
                 self.on_attack(self)
+                pygame.mixer.music.load("../sounds/fighting.mp3")
+                pygame.mixer.music.play()
         elif cross_vector.magnitude() <= self.range_attack:
             self.move_by_vector(cross_vector)
         elif (cross_vector := (self.init_position - vector_enemy)).magnitude() > 1:
