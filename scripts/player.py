@@ -20,20 +20,30 @@ class Player(pygame.sprite.Sprite):
         self.velocity = 5
 
         # Спрайты
-        self.sprites = {AnimationState.MOVE_UP: [pygame.image.load(f'../graphics/player/up/up_{i}.png').convert_alpha()
-                                                 for i in range(4)],
-                        AnimationState.MOVE_DOWN: [
-                            pygame.image.load(f'../graphics/player/down/down_{i}.png').convert_alpha()
-                            for i in range(4)],
-                        AnimationState.MOVE_LEFT: [
-                            pygame.image.load(f'../graphics/player/left/left_{i}.png').convert_alpha()
-                            for i in range(4)],
-                        AnimationState.MOVE_RIGHT: [
-                            pygame.image.load(f'../graphics/player/right/right_{i}.png').convert_alpha()
-                            for i in range(4)],
-                        AnimationState.IDLE: [
-                            pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()]
-                        }
+        self.sprites = {AnimationState.MOVE_UP: [pygame.transform.scale(
+            pygame.image.load(f'../graphics/player/up/up_{i}.png').convert_alpha(),
+            (32, 32))
+            for i in range(4)],
+            AnimationState.MOVE_DOWN: [
+                pygame.transform.scale(
+                    pygame.image.load(f'../graphics/player/down/down_{i}.png').convert_alpha(),
+                    (32, 32))
+                for i in range(4)],
+            AnimationState.MOVE_LEFT: [
+                pygame.transform.scale(
+                    pygame.image.load(f'../graphics/player/left/left_{i}.png').convert_alpha(),
+                    (32, 32))
+                for i in range(4)],
+            AnimationState.MOVE_RIGHT: [
+                pygame.transform.scale(
+                    pygame.image.load(f'../graphics/player/right/right_{i}.png').convert_alpha(),
+                    (32, 32))
+                for i in range(4)],
+            AnimationState.IDLE: [
+                pygame.transform.scale(
+                    pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha(),
+                    (32, 32))]
+        }
         self.animation_frame = 0
         self.animation_speed = 0.1
         self.sprite_state: AnimationState = AnimationState.IDLE
