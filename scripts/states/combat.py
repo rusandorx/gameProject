@@ -34,7 +34,6 @@ class Combat(State):
 
     def render(self, surface):
         surface.blit(self.background, self.background_rect)
-        self.game.player.hp = 30
         pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
                                   int(255 * self.game.player.hp / self.game.player.max_hp), 0),
                         (self.player_sprite.rect.centerx - 160, self.player_sprite.rect.centery + 200, 225, 100),
