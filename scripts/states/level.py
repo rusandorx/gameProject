@@ -47,8 +47,8 @@ class Level(State):
             if entity.name != "player":
                 Enemy((entity.x, entity.y), [self.main_group], self.player, entity.name, self.attack_callback)
 
-    def attack_callback(self, enemy):
-        combat = Combat(self.game)
+    def attack_callback(self, enemy_name):
+        combat = Combat(self.game, enemy_name)
         combat.enter_state()
 
     def update(self, key_state):
