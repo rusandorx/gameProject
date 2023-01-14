@@ -1,0 +1,6 @@
+enemies = {
+    'skeleton': {
+
+    }
+}
+

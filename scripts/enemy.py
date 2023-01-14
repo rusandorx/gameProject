@@ -47,6 +47,7 @@ class Enemy(pygame.sprite.Sprite):
         self.animation_frame = 0
         self.animation_speed = 0.1
         self.sprite_state = "IDLE"
+        self.name = name
 
     def check_hitbox(self):
         vector_player = Vector2(self.player.rect.x, self.player.rect.y)
@@ -56,7 +57,7 @@ class Enemy(pygame.sprite.Sprite):
         if cross_vector.magnitude() <= self.range_attack // 5:
             self.sprite_state = "ATTACK"
             if int(self.animation_frame) == len(self.sprites[self.sprite_state]) - 1:
-                self.on_attack(self)
+                self.on_attack(self.name)
                 Sound("../sounds/fighting.mp3", 10000)
         elif cross_vector.magnitude() <= self.range_attack:
             self.move_by_vector(cross_vector)

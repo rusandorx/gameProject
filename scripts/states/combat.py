@@ -1,7 +1,13 @@
+from random import randint
+
 import pygame
 
 from player.combat_player import CombatPlayer
 from states.state import State
+
+
+class CombatEnemy():
+    pass
 
 
 class Combat(State):
@@ -10,8 +16,11 @@ class Combat(State):
         self.main_group = pygame.sprite.Group()
         self.background = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
         self.background_rect = self.background.get_rect()
-        self.player_sprite = CombatPlayer((180, 400))
+        self.player_sprite = CombatPlayer((200, 400))
         self.main_group.add(self.player_sprite)
+
+        self.enemies_count = randint(1, 3)
+        self.enemies = [CombatEnemy()]
 
         self.menu_image = pygame.transform.scale(pygame.image.load('../graphics/ui/combat/combat_menu.png'), (256, 256))
 
@@ -23,6 +32,8 @@ class Combat(State):
 
     def render(self, surface):
         surface.blit(self.background, self.background_rect)
+        pygame.draw.ellipse(surface, (180, 50, 0),
+                            (self.player_sprite.rect.centerx - 160, self.player_sprite.rect.centery + 200, 225, 100), 10)
         self.main_group.draw(surface)
 
     def player_attack(self):
