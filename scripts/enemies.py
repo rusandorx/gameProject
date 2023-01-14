@@ -1,10 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, ABCMeta
 from random import choices, randint
 
 import pygame
 
 
-class CombatEnemy(pygame.sprite.Sprite, metaclass=ABC):
+class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
     '''
     stats: {
         "strength": int,
