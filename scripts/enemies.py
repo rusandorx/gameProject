@@ -61,7 +61,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
     def animate(self):
         sprites = self.sprites[self.sprite_state]
 
-        self.animation_frame += self.animation_speed
+        self.animation_frame += self.animation_speed * 0.5
         if self.animation_frame >= len(sprites):
             self.animation_frame = 0
             if self.return_to_idle:
@@ -118,7 +118,7 @@ class SkeletonEnemy(CombatEnemy):
             'hurt': list(
                 map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
                     SpriteSheet(os.path.join(graphics_path, 'Hurt.png')).load_strip(
-                        pygame.Rect(0, 0, 128, 128), 7, (0, 0, 0)))),
+                        pygame.Rect(0, 0, 128, 128), 2, (0, 0, 0)))),
             'die': list(
                 map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
                     SpriteSheet(os.path.join(graphics_path, 'Dead.png')).load_strip(
