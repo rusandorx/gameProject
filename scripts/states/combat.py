@@ -22,7 +22,7 @@ class Combat(State):
         self.main_group.add(self.player_sprite)
 
         self.enemies_count = randint(1, 3)
-        self.enemies = []
+        self.enemies = [enemies[enemy_name] for _ in range(self.enemies_count)]
 
         self.menu_image = pygame.transform.scale(pygame.image.load('../graphics/ui/combat/combat_menu.png'), (256, 256))
 

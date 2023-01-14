@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
 from random import choices, randint
 
+import pygame
 
-class CombatEnemy(ABC):
+
+class CombatEnemy(pygame.sprite.Sprite, metaclass=ABC):
     '''
     stats: {
         "strength": int,
@@ -17,12 +19,14 @@ class CombatEnemy(ABC):
     }
     '''
 
-    def __init__(self, name, lvl, hp, stats):
+    def __init__(self, name, lvl, hp, stats, position, *groups):
+        super().__init__(*groups)
         self.name = name
         self.max_hp = hp * (lvl * .05)
         self.hp = self.max_hp
         self.lvl = lvl
         self.stats = stats
+        self.position = position
 
         self.sprites = []
         self.actions_to_methods = {
