@@ -1,5 +1,6 @@
 from enum import Enum
 from player.player import Player
+from sounds import Sound
 
 import pygame
 
