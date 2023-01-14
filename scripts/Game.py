@@ -1,5 +1,6 @@
 import pygame
 
+from player.player import Player
 from scripts.settings import WIDTH, HEIGTH, FPS
 from states.title import Title
 
@@ -16,6 +17,7 @@ class Game:
         self.key_state = {'up': False, 'down': False, 'left': False, 'right': False, 'confirm': False, 'cancel': False,
                           'l': False, 'k': False, 'start': False}
         self.state_stack = []
+        self.player = Player()
         self.load_assets()
         self.load_states()
         pygame.display.set_caption('Noname')

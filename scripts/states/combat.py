@@ -4,6 +4,7 @@ import pygame
 
 from player.combat_player import CombatPlayer
 from states.state import State
+from math import pi
 
 
 class CombatEnemy():
@@ -32,8 +33,12 @@ class Combat(State):
 
     def render(self, surface):
         surface.blit(self.background, self.background_rect)
-        pygame.draw.ellipse(surface, (180, 50, 0),
-                            (self.player_sprite.rect.centerx - 160, self.player_sprite.rect.centery + 200, 225, 100), 10)
+        self.game.player.hp = 30
+        pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
+                                  int(255 * self.game.player.hp / self.game.player.max_hp), 0),
+                        (self.player_sprite.rect.centerx - 160, self.player_sprite.rect.centery + 200, 225, 100),
+                        pi,
+                        (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
         self.main_group.draw(surface)
 
     def player_attack(self):
