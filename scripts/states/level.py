@@ -3,7 +3,7 @@ from pytmx.util_pygame import load_pygame
 
 from enemy import Enemy
 from obstacle import Obstacle
-from player import Player
+from player.level_player import Player, LevelPlayer
 from scripts.settings import TILESIZE
 from states.combat import Combat
 from states.pause_menu import PauseMenu
@@ -41,7 +41,7 @@ class Level(State):
                 Obstacle((x * TILESIZE, y * TILESIZE), [self.main_group, self.obstacle_sprites], map_data.images[image])
 
         map_player = map_data.get_object_by_name('player')
-        self.player = Player((map_player.x, map_player.y), [self.main_group], self.obstacle_sprites)
+        self.player = LevelPlayer((map_player.x, map_player.y), [self.main_group], self.obstacle_sprites)
 
         for entity in map_data.get_layer_by_name('entities'):
             if entity.name != "player":
