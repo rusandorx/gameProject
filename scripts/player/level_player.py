@@ -1,5 +1,5 @@
 from enum import Enum
-from sounds import Sound
+from player.player import Player
 
 import pygame
 
@@ -12,7 +12,7 @@ class AnimationState(Enum):
     MOVE_RIGHT = 'right'
 
 
-class Player(pygame.sprite.Sprite):
+class LevelPlayer(pygame.sprite.Sprite):
     def __init__(self, position, groups, obstacle_sprites):
         super().__init__(*groups)
 
@@ -97,7 +97,6 @@ class Player(pygame.sprite.Sprite):
 
     def move(self, velocity):
         if self.direction.magnitude() != 0:
-            Sound("../sounds/step.mp3", 1000)
             self.direction = self.direction.normalize()
 
         self.hitbox.x += self.direction.x * velocity
