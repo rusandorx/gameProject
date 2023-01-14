@@ -48,7 +48,7 @@ class Game:
                 if event.key == pygame.K_p:
                     self.key_state['confirm'] = True
                 if event.key == pygame.K_o:
-                    self.key_state['cancel'] = False
+                    self.key_state['cancel'] = True
                 if event.key == pygame.K_RETURN:
                     self.key_state['start'] = True
 

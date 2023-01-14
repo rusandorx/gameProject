@@ -1,11 +1,12 @@
 import pygame
 from pytmx.util_pygame import load_pygame
 
+from enemy import Enemy
 from obstacle import Obstacle
 from player import Player
 from scripts.settings import TILESIZE
+from states.pause_menu import PauseMenu
 from states.state import State
-from enemy import Enemy
 
 
 class Level(State):
@@ -41,13 +42,16 @@ class Level(State):
         map_player = map_data.get_object_by_name('player')
         self.player = Player((map_player.x, map_player.y), [self.main_group], self.obstacle_sprites)
 
-
         for entity in map_data.get_layer_by_name('entities'):
             if entity.name != "player":
                 Enemy((entity.x, entity.y), [self.main_group], self.player, entity.name)
 
     def update(self, key_state):
+        if key_state['start']:
+            pause_menu = PauseMenu(self.game)
+            pause_menu.enter_state()
         self.main_group.update()
+        self.player.update(key_state)
 
     def render(self, display):
         self.main_group.custom_draw(display, self.player, [self.background_sprites, self.shadow_sprites])
@@ -71,5 +75,3 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_position = sprite.rect.topleft - offset
             display.blit(sprite.image, offset_position)
-
-
