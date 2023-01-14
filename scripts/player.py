@@ -55,6 +55,8 @@ class Player(pygame.sprite.Sprite):
         self.obstacle_sprites: pygame.sprite.Group = obstacle_sprites
         self.rect = self.image.get_rect(topleft=position)
         self.hitbox = self.rect.inflate(0, -10)
+        self.steps = Sound("../sounds/step.mp3", -1)
+        self.step_bool = 0
 
     def update_state(self):
         # Спрайты на движения
@@ -97,8 +99,13 @@ class Player(pygame.sprite.Sprite):
 
     def move(self, velocity):
         if self.direction.magnitude() != 0:
-            Sound("../sounds/step.mp3", 1000)
             self.direction = self.direction.normalize()
+            if self.step_bool == 0:
+                self.step_bool = 1
+                self.steps.play()
+        else:
+            self.steps.stop()
+            self.step_bool = 0
 
         self.hitbox.x += self.direction.x * velocity
         self.collision('horizontal')
