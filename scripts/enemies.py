@@ -45,12 +45,12 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.active = True
         self.load_assets()
 
-    def animate_once(self, animation_state):
-        self.animation_state = animation_state
+    def animate_once(self, sprite_state):
+        self.sprite_state = sprite_state
         self.return_to_idle = True
 
     def animate_to_last_frame(self, animate_state):
-        self.animation_state = animate_state
+        self.sprite_state = animate_state
         self.return_to_idle = False
         self.stop_at_last_frame = True
 
