@@ -59,7 +59,22 @@ class Level(State):
         self.player.update(key_state)
 
     def render(self, display):
+        half_width = display.get_width() // 2
+        half_height = display.get_height() // 2
+        offset = pygame.math.Vector2()
+        offset.x = self.player.rect.centerx - half_width
+        offset.y = self.player.rect.centery - half_height
+        offset_position = self.player.rect.topleft - offset
         self.main_group.custom_draw(display, self.player, [self.background_sprites, self.shadow_sprites])
+        pygame.draw.rect(display, "gray",
+                         (offset_position.x, offset_position.y,
+                          32,
+                          5))
+        pygame.draw.rect(display, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
+                                   int(255 * self.game.player.hp / self.game.player.max_hp), 0),
+                         (offset_position.x, offset_position.y,
+                          (self.game.player.hp / self.game.player.max_hp) * 32,
+                          5))
 
 
 class YSortCameraGroup(pygame.sprite.Group):

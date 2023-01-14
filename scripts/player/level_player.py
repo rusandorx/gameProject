@@ -108,6 +108,7 @@ class LevelPlayer(pygame.sprite.Sprite):
             self.steps.stop()
             self.step_bool = 0
 
+
         self.hitbox.x += self.direction.x * velocity
         self.collision('horizontal')
         self.hitbox.y += self.direction.y * velocity
