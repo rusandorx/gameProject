@@ -4,6 +4,8 @@ import pygame
 
 from player.combat_player import CombatPlayer
 from states.state import State
+from math import pi
+from sounds import Sound
 
 from enemies import enemies
 
@@ -11,6 +13,8 @@ from enemies import enemies
 class Combat(State):
     def __init__(self, game, enemy_name):
         super().__init__(game)
+        Sound.stop_all()
+
         self.main_group = pygame.sprite.Group()
         self.background = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
         self.background_rect = self.background.get_rect()
@@ -30,9 +34,12 @@ class Combat(State):
 
     def render(self, surface):
         surface.blit(self.background, self.background_rect)
-        pygame.draw.ellipse(surface, (180, 50, 0),
-                            (self.player_sprite.rect.centerx - 160, self.player_sprite.rect.centery + 200, 225, 100),
-                            10)
+        self.game.player.hp = 30
+        pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
+                                  int(255 * self.game.player.hp / self.game.player.max_hp), 0),
+                        (self.player_sprite.rect.centerx - 160, self.player_sprite.rect.centery + 200, 225, 100),
+                        pi,
+                        (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
         self.main_group.draw(surface)
 
     def player_attack(self):
