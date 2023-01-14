@@ -54,7 +54,8 @@ class Enemy(pygame.sprite.Sprite):
 
         if cross_vector.magnitude() <= self.range_attack // 5:
             self.sprite_state = "ATTACK"
-            self.on_attack(self)
+            if int(self.animation_frame) == len(self.sprites[self.sprite_state]) - 1:
+                self.on_attack(self)
         elif cross_vector.magnitude() <= self.range_attack:
             self.move_by_vector(cross_vector)
         elif (cross_vector := (self.init_position - vector_enemy)).magnitude() > 1:

@@ -14,7 +14,7 @@ class Game:
         self.running, self.playing = True, True
 
         self.key_state = {'up': False, 'down': False, 'left': False, 'right': False, 'confirm': False, 'cancel': False,
-                          'start': False}
+                          'l': False, 'k': False, 'start': False}
         self.state_stack = []
         self.load_assets()
         self.load_states()

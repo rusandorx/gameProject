@@ -8,7 +8,9 @@ class Combat(State):
         super().__init__(game)
 
     def update(self, key_state):
-        pass
+        if key_state['confirm']:
+            pass
+        self.game.reset_keys()
 
     def render(self, surface):
         bg = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
