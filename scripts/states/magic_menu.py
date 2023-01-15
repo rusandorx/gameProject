@@ -19,10 +19,24 @@ class MagicMenu(State):
     def get_magic_images(self, magics):
         result = []
         for magic in magics:
+            padding_x = 10
+            padding_y = 10
+
             new_rect = pygame.Surface((self.game.width, self.game.height / 10))
             new_rect.set_alpha(128)
             new_rect.fill((0, 0, 0))
-            new_rect.blit(magic.icon, (0, 0))
+            new_rect.blit(magic.icon, (padding_x, padding_y))
+
+            text_surface = self.game.font.render(f'{magic.name}', True, (255, 255, 255))
+            text_rect = text_surface.get_rect()
+            text_rect.topleft = (64 + padding_x + 10, padding_y)
+            new_rect.blit(text_surface, text_rect)
+
+            text_surface = self.game.font.render(f'{magic.description}', True, (255, 255, 255))
+            text_rect = text_surface.get_rect()
+            text_rect.topleft = (64 + padding_x + 10, 24 + padding_y)
+            new_rect.blit(text_surface, text_rect)
+
             result.append(new_rect)
         return result
 
@@ -33,6 +47,10 @@ class MagicMenu(State):
     def render(self, display):
         self.prev_state.render(display)
         for i, image in enumerate(self.option_images):
+            if i == self.index:
+                image.set_alpha(255)
+            else:
+                image.set_alpha(128)
             display.blit(image, (0, i * self.OPTION_SIZE[1]))
         display.blit(self.rectangle, (0, 0))
 
@@ -44,3 +62,8 @@ class MagicMenu(State):
         elif key_state['confirm']:
             self.cb(self.index)
             self.exit_state()
+        elif key_state['cancel']:
+            self.cb(-1)
+            self.exit_state()
+        self.game.reset_keys()
+
