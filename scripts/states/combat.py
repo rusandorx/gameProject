@@ -114,7 +114,6 @@ class Combat(State):
                 self.actions[self.action]()
                 self.state = 'idle'
                 self.outline = False
-                self.player_attack()
                 return
             self.outline = get_outline(self.enemies[self.enemy_index].image, (255, 255, 255))
 

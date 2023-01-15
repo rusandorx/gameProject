@@ -1,4 +1,5 @@
 import os
+import random
 from abc import abstractmethod, ABCMeta
 from random import choices, randint
 
@@ -96,7 +97,15 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def take_damage(self, damage, damage_type):
         if damage_type == 'physical':
-            self.hp -= damage * 0.95 ** self.stats['endurance']
+            take_damage = damage * 0.95 ** self.stats['endurance']
+            crete = {
+                'crete': 1,
+                'no': 0
+            }
+            s = crete[choices(["crete", "no"], weights=[0.2, 0.8])[0]]
+            take_damage *= max(
+                4.5 * s, 1)
+            self.hp -= take_damage
         else:
             self.hp -= damage * (1.5 if any(stat == damage_type for stat in self.stats['type']) else 1)
         if self.hp <= 0:
@@ -112,7 +121,8 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.animate()
 
     def random_action(self):
-        self.actions_to_methods[choices([*self.actions.keys()], weights=[action for action in self.actions.values()])[0]]()
+        self.actions_to_methods[
+            choices([*self.actions.keys()], weights=[action for action in self.actions.values()])[0]]()
 
     def animate_ended(self):
         for cb in self.on_animate_end:
