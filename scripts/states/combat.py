@@ -14,7 +14,7 @@ from utils import get_outline
 
 
 class Combat(State):
-    def __init__(self, game, enemy_name, level_name):
+    def __init__(self, game, enemy_name, level_name, count_enemy):
         super().__init__(game)
         Sound.stop_all()
 
@@ -26,7 +26,7 @@ class Combat(State):
         self.main_group.add(self.combat_player)
         self.combat_menu = CombatMenu((0, 0))
 
-        self.enemies_count = randint(1, 3)
+        self.enemies_count = randint(*count_enemy)
         self.enemies: [CombatEnemy] = [
             enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)), self.combat_player)
             for _ in
