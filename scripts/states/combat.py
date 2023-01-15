@@ -166,7 +166,7 @@ class CombatMenu(pygame.sprite.Sprite):
         if CombatMenu.sprites is None:
             path = '../graphics/ui/combat/combat_menu-Sheet.png'
             sheet = SpriteSheet(path)
-            CombatMenu.sprites = [pygame.transform.scale(img, (380, 335)).convert() for img in
+            CombatMenu.sprites = [pygame.transform.scale(img, (380, 335)) for img in
                                   sheet.load_strip((0, 0, 420, 380), 4, (0, 0, 0))]
         self.sprites = CombatMenu.sprites
         self.animation_frame = 0
