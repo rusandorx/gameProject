@@ -112,7 +112,7 @@ class Combat(State):
                 self.enemy_index = (self.enemy_index - 1) if self.enemy_index > 0 else self.enemies_count - 1
             if key_state['confirm']:
                 self.actions[self.action]()
-                self.state = 'idle'
+                self.state = 'player_animation'
                 self.outline = False
                 return
             self.outline = get_outline(self.enemies[self.enemy_index].image, (255, 255, 255))
