@@ -61,10 +61,11 @@ class Combat(State):
     def update_enemies(self):
         rest_enemies = list(filter(lambda x: x.active, self.enemies))
         rest_enemies_count = len(rest_enemies)
+        print(self.state)
         if rest_enemies_count == 0:
-            self.exit_state()
-            self.level_name.die()
-            Sound.stop_all()
+            if self.state != 'enemies dead':
+                self.enemies[0].on_animate_end.append(self.on_all_enemies_dead)
+                self.state = 'enemies dead'
         elif rest_enemies_count != self.enemies_count:
             self.enemies = rest_enemies
             self.enemies_count = rest_enemies_count
@@ -135,4 +136,10 @@ class Combat(State):
 
     def player_animation_ended(self):
         self.enemies_turn = 0
-        self.state = 'enemies'
+        if self.state != 'enemies dead':
+            self.state = 'enemies'
+
+    def on_all_enemies_dead(self):
+        self.exit_state()
+        self.level_name.die()
+        Sound.stop_all()
