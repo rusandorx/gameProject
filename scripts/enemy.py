@@ -56,7 +56,6 @@ class Enemy(pygame.sprite.Sprite):
 
     def die(self):
         self.alive = False
-        print(self.alive)
 
     def check_hitbox(self):
         if self.alive:
@@ -75,6 +74,14 @@ class Enemy(pygame.sprite.Sprite):
                 self.move_by_vector(cross_vector)
             else:
                 self.sprite_state = "IDLE"
+        else:
+            vector_player = Vector2(self.player.rect.x, self.player.rect.y)
+            vector_enemy = Vector2(self.rect.center)
+            cross_vector = vector_player - vector_enemy
+
+            if cross_vector.magnitude() >= 500:
+                self.move_by_vector(cross_vector)
+                self.alive = True
 
     def move_by_vector(self, vector: Vector2):
         if vector.magnitude() == 0:
