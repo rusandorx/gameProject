@@ -32,7 +32,6 @@ class Combat(State):
             for _ in
             range(self.enemies_count)]
         self.enemy_size = self.enemies[0].image.get_rect()[2:]
-        print(self.enemy_size)
         self.main_group.add(self.enemies)
 
         self.enemy_index = self.enemies_count - 1
@@ -57,7 +56,7 @@ class Combat(State):
                     self.enemies[self.enemies_turn].on_animate_end.append(self.enemy_animation_ended)
                     self.state = CombateState.ENEMY_ANIMATION
         else:
-            if self.state != CombateState.PLAYER_ANIMATION and self.action != 'magic':
+            if self.state != CombateState.PLAYER_ANIMATION and self.state != CombateState.CHOOSE_MAGIC:
                 self.handle_keys(key_state)
         self.game.reset_keys()
         self.main_group.update()
@@ -69,8 +68,8 @@ class Combat(State):
             self.action = CombateState.IDLE
             return
         self.state = CombateState.CHOOSE_ENEMY
+        self.action = 'magic'
         self.magic = self.game.player.magic[index]
-
 
     def update_enemies(self):
         rest_enemies = list(filter(lambda x: x.active, self.enemies))
@@ -123,22 +122,18 @@ class Combat(State):
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
             if key_state['confirm']:
-                if self.enemies_count == 1:
-                    self.player_attack()
-                else:
-                    self.action = 'attack'
-                    self.state = CombateState.CHOOSE_ENEMY
+                self.action = 'attack'
+                self.state = CombateState.CHOOSE_ENEMY
             elif key_state['l']:
                 self.action = 'magic'
+                self.state = CombateState.CHOOSE_MAGIC
                 magicMenu = MagicMenu(self.game, self.get_magic_index)
                 magicMenu.enter_state()
 
 
         elif self.state == CombateState.CHOOSE_ENEMY:
-            print(self.enemies_count)
             if self.enemies_count == 1:
                 self.actions[self.action]()
-                self.state = CombateState.PLAYER_ANIMATION
                 self.outline = False
             elif key_state['left']:
                 self.enemy_index = (self.enemy_index + 1) % self.enemies_count
@@ -148,7 +143,6 @@ class Combat(State):
                 self.state = CombateState.IDLE
             elif key_state['confirm']:
                 self.actions[self.action]()
-                self.state = CombateState.PLAYER_ANIMATION
                 self.outline = False
                 return
             self.outline = get_outline(self.enemies[self.enemy_index].image, (255, 255, 255))
@@ -159,7 +153,9 @@ class Combat(State):
         self.combat_player.on_animation_ended.append(self.player_animation_ended)
 
     def player_magic(self):
-        print('magic')
+        self.combat_player.do_magic(self.magic, self.enemies[self.enemy_index])
+        self.state = CombateState.PLAYER_ANIMATION
+        self.combat_player.on_animation_ended.append(self.player_animation_ended)
 
     def enemy_animation_ended(self):
         self.enemies_turn += 1
@@ -203,6 +199,7 @@ class CombatMenu(pygame.sprite.Sprite):
 
 
 class CombateState(Enum):
+    CHOOSE_MAGIC = 'choose_magic'
     IDLE = 'idle'
     CHOOSE_ENEMY = 'choose_enemy'
     ENEMIES = 'enemies'

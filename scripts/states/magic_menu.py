@@ -65,3 +65,5 @@ class MagicMenu(State):
         elif key_state['cancel']:
             self.cb(-1)
             self.exit_state()
+        self.game.reset_keys()
+

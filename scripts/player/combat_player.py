@@ -2,6 +2,7 @@ import os
 
 import pygame.sprite
 
+from enemies import CombatEnemy
 from spritesheet import SpriteSheet
 
 
@@ -24,6 +25,9 @@ class CombatPlayer(pygame.sprite.Sprite):
                                    pygame.Rect(0, 0, 128, 128), 4, (0, 0, 0)))),
             'hurt': list(map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
                              SpriteSheet(os.path.join(graphics_path, 'Hurt.png')).load_strip(
+                                 pygame.Rect(0, 0, 128, 128), 3, (0, 0, 0)))),
+            'magic': list(map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
+                             SpriteSheet(os.path.join(graphics_path, 'Flame_jet.png')).load_strip(
                                  pygame.Rect(0, 0, 128, 128), 3, (0, 0, 0)))),
         }
         self.sprite_state = 'idle'
@@ -70,3 +74,9 @@ class CombatPlayer(pygame.sprite.Sprite):
         for cb in self.on_animation_ended:
             cb()
         self.on_animation_ended.clear()
+
+    def do_magic(self, magic, target: CombatEnemy):
+        self.set_sprite_state_once('magic')
+        target.take_damage(self.player.stats['attack'] * (self.player.lvl / 10), magic.damage_type)
+        self.player.mp -= magic.cost
+        
