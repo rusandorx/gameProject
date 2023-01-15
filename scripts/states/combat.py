@@ -7,6 +7,7 @@ import pygame
 from enemies import enemies, CombatEnemy
 from player.combat_player import CombatPlayer
 from sounds import Sound
+from spritesheet import SpriteSheet
 from states.state import State
 from utils import get_outline
 
@@ -22,6 +23,7 @@ class Combat(State):
         self.background_rect = self.background.get_rect()
         self.combat_player = CombatPlayer((200, 400), self.game.player)
         self.main_group.add(self.combat_player)
+        self.combat_menu = CombatMenu((0, 0))
 
         self.enemies_count = randint(1, 3)
         self.enemies: [CombatEnemy] = [
@@ -30,7 +32,6 @@ class Combat(State):
             range(self.enemies_count)]
         self.main_group.add(self.enemies)
 
-        self.menu_image = pygame.transform.scale(pygame.image.load('../graphics/ui/combat/combat_menu.png'), (380, 335))
         self.enemy_index = self.enemies_count - 1
         self.enemies_turn = 0
 
@@ -57,6 +58,7 @@ class Combat(State):
                 self.handle_keys(key_state)
         self.game.reset_keys()
         self.main_group.update()
+        self.combat_menu.update()
 
     def update_enemies(self):
         rest_enemies = list(filter(lambda x: x.active, self.enemies))
@@ -96,7 +98,7 @@ class Combat(State):
                         pi,
                         (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
         if self.state == CombatState.IDLE:
-            surface.blit(self.menu_image, (self.combat_player.position[0], self.combat_player.position[1] - 50))
+            surface.blit(self.combat_menu.image, (self.combat_player.position[0], self.combat_player.position[1] - 50))
         self.main_group.draw(surface)
         if self.outline and self.state == CombatState.CHOOSE_ENEMY:
             surface.blit(self.outline, (self.enemies[self.enemy_index].position[0] - 256,
@@ -149,6 +151,28 @@ class Combat(State):
         self.exit_state()
         self.level_name.die()
         Sound.stop_all()
+
+
+class CombatMenu(pygame.sprite.Sprite):
+    sprites = None
+
+    def __init__(self, position, *groups):
+        super().__init__(*groups)
+        self.position = position
+        if CombatMenu.sprites is None:
+            path = '../graphics/ui/combat/combat_menu-Sheet.png'
+            sheet = SpriteSheet(path)
+            CombatMenu.sprites = [pygame.transform.scale(img, (380, 335)).convert() for img in sheet.load_strip((0, 0, 420, 380), 4, (0, 0, 0))]
+        self.sprites = CombatMenu.sprites
+        self.animation_frame = 0
+        self.animation_speed = .1
+        self.image = self.sprites[0]
+
+    def update(self):
+        self.animation_frame += self.animation_speed
+        if self.animation_frame >= len(self.sprites):
+            self.animation_frame = 0
+        self.image = self.sprites[int(self.animation_frame)]
 
 
 class CombatState(Enum):
