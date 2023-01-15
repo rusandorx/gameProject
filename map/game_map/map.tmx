@@ -219,19 +219,19 @@
   <object id="6" name="player" x="972" y="653.333">
    <point/>
   </object>
-  <object id="7" name="skeleton" x="1081" y="814.667">
+  <object id="7" name="skeleton" x="1279" y="713.667">
    <point/>
   </object>
-  <object id="8" name="bamboo" x="990" y="1030">
+  <object id="8" name="bamboo" x="1107" y="1280">
    <point/>
   </object>
   <object id="9" name="raccoon" x="639" y="798">
    <point/>
   </object>
-  <object id="12" name="spirit" x="787" y="1017">
+  <object id="12" name="spirit" x="570" y="1148">
    <point/>
   </object>
-  <object id="13" name="big_boss" x="1206" y="1064">
+  <object id="13" name="necromancer" x="1279" y="1086">
    <point/>
   </object>
  </objectgroup>
