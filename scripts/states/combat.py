@@ -1,4 +1,3 @@
-import math
 from math import pi
 from random import randint
 
@@ -19,13 +18,14 @@ class Combat(State):
         self.main_group = pygame.sprite.Group()
         self.background = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
         self.background_rect = self.background.get_rect()
-        self.player_sprite = CombatPlayer((200, 400), self.game.player)
-        self.main_group.add(self.player_sprite)
+        self.combat_player = CombatPlayer((200, 400), self.game.player)
+        self.main_group.add(self.combat_player)
 
         self.enemies_count = randint(1, 3)
-        self.enemies: [CombatEnemy] = [enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)))
-                                       for _ in
-                                       range(self.enemies_count)]
+        self.enemies: [CombatEnemy] = [
+            enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)), self.combat_player)
+            for _ in
+            range(self.enemies_count)]
         self.main_group.add(self.enemies)
 
         self.menu_image = pygame.transform.scale(pygame.image.load('../graphics/ui/combat/combat_menu.png'), (256, 256))
@@ -54,12 +54,11 @@ class Combat(State):
             self.enemies_count = rest_enemies_count
             self.enemy_index = self.enemies_count - 1
 
-
     def render(self, surface):
         surface.blit(self.background, self.background_rect)
         pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
                                   int(255 * self.game.player.hp / self.game.player.max_hp), 0),
-                        (self.player_sprite.rect.centerx - 160, self.player_sprite.rect.centery + 200, 225, 100),
+                        (self.combat_player.rect.centerx - 160, self.combat_player.rect.centery + 200, 225, 100),
                         pi,
                         (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
         self.main_group.draw(surface)
@@ -89,7 +88,7 @@ class Combat(State):
             self.outline = get_outline(self.enemies[self.enemy_index].image, (255, 255, 255))
 
     def player_attack(self):
-        self.enemies[self.enemy_index].take_damage(*self.player_sprite.attack())
+        self.combat_player.attack(self.enemies[self.enemy_index])
 
     def player_magic(self):
         pass
