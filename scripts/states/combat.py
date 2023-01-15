@@ -74,6 +74,10 @@ class Combat(State):
         surface.blit(self.background, self.background_rect)
         for i in self.enemies:
             if i.active:
+                self.game.draw_text(surface, f"{i.name} LVL {i.lvl}",
+                                    (min(int(255 * (i.lvl / 2 / self.game.player.lvl)), 255),
+                                     max(int(255 * (1 - (i.lvl / 2 / self.game.player.lvl))), 0), 0),
+                                    i.position[0] + 30, i.position[1] - 70)
                 self.game.draw_text(surface, f"{round(i.hp, 1)} / {round(i.max_hp, 1)}", (255,
                                                                                           255, 255),
                                     i.position[0] + 30, i.position[1] - 40)
