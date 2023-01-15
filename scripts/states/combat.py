@@ -48,6 +48,8 @@ class Combat(State):
 
     def update(self, key_state):
         self.update_enemies()
+        if self.combat_player.player.hp <= 0:
+            self.combat_player.on_animation_ended.append(self.game.load_states())
         if self.state == CombatState.ENEMIES:
             if self.enemies_turn >= self.enemies_count:
                 self.state = CombatState.IDLE
@@ -85,7 +87,7 @@ class Combat(State):
                 self.game.draw_text(surface, f"{i.name} LVL {i.lvl}",
                                     ((min((max(1, i.lvl - self.game.player.lvl) * 64), 255)),
                                      (min((max(1, self.game.player.lvl - i.lvl) * 64), 255)),
-                                    0),
+                                     0),
                                     i.position[0] + 30, i.position[1] - 70)
                 self.game.draw_text(surface,
                                     f"{round(i.hp, 1) if round(i.hp, 1) != 0.0 else '0.1'} / {round(i.max_hp, 1)}",
@@ -102,11 +104,12 @@ class Combat(State):
                                  (i.position[0] - 20, i.position[1] - 20,
                                   (i.hp / i.max_hp) * 128,
                                   10))
-        pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
-                                  int(255 * self.game.player.hp / self.game.player.max_hp), 0),
-                        (self.combat_player.rect.centerx - 160, self.combat_player.rect.centery + 200, 225, 100),
-                        pi,
-                        (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
+        if self.game.player.hp > 0:
+            pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
+                                      int(255 * self.game.player.hp / self.game.player.max_hp), 0),
+                            (self.combat_player.rect.centerx - 160, self.combat_player.rect.centery + 200, 225, 100),
+                            pi,
+                            (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
         if self.state == CombatState.IDLE:
             surface.blit(self.combat_menu.image, (self.combat_player.position[0], self.combat_player.position[1] - 50))
         self.main_group.draw(surface)
