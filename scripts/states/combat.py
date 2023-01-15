@@ -1,4 +1,4 @@
-import math
+from enum import Enum
 from math import pi
 from random import randint
 
@@ -6,9 +6,9 @@ import pygame
 
 from enemies import enemies, CombatEnemy
 from player.combat_player import CombatPlayer
+from sounds import Sound
 from states.state import State
 from utils import get_outline
-from sounds import Sound
 
 
 class Combat(State):
@@ -30,12 +30,12 @@ class Combat(State):
             range(self.enemies_count)]
         self.main_group.add(self.enemies)
 
-        self.menu_image = pygame.transform.scale(pygame.image.load('../graphics/ui/combat/combat_menu.png'), (256, 256))
+        self.menu_image = pygame.transform.scale(pygame.image.load('../graphics/ui/combat/combat_menu.png'), (380, 335))
         self.enemy_index = self.enemies_count - 1
         self.enemies_turn = 0
 
-        self.state = 'idle'
-        self.action = 'idle'
+        self.state = CombatState.IDLE
+        self.action = CombatState.IDLE
         self.actions = {
             'attack': self.player_attack,
             'magic': self.player_magic,
@@ -44,16 +44,16 @@ class Combat(State):
 
     def update(self, key_state):
         self.update_enemies()
-        if self.state == 'enemies':
+        if self.state == CombatState.ENEMIES:
             if self.enemies_turn >= self.enemies_count:
-                self.state = 'idle'
+                self.state = CombatState.IDLE
             else:
-                if self.state != 'enemy action':
+                if self.state != CombatState.ENEMY_ANIMATION:
                     self.enemies[self.enemies_turn].random_action()
                     self.enemies[self.enemies_turn].on_animate_end.append(self.enemy_animation_ended)
-                    self.state = 'enemy action'
+                    self.state = CombatState.ENEMY_ANIMATION
         else:
-            if self.state != 'player animation':
+            if self.state != CombatState.PLAYER_ANIMATION:
                 self.handle_keys(key_state)
         self.game.reset_keys()
         self.main_group.update()
@@ -62,9 +62,9 @@ class Combat(State):
         rest_enemies = list(filter(lambda x: x.active, self.enemies))
         rest_enemies_count = len(rest_enemies)
         if rest_enemies_count == 0:
-            if self.state != 'enemies dead':
+            if self.state != CombatState.ENEMIES_DEAD:
                 self.enemies[0].on_animate_end.append(self.on_all_enemies_dead)
-                self.state = 'enemies dead'
+                self.state = CombatState.ENEMIES_DEAD
         elif rest_enemies_count != self.enemies_count:
             self.enemies = rest_enemies
             self.enemies_count = rest_enemies_count
@@ -95,35 +95,39 @@ class Combat(State):
                         (self.combat_player.rect.centerx - 160, self.combat_player.rect.centery + 200, 225, 100),
                         pi,
                         (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
+        if self.state == CombatState.IDLE:
+            surface.blit(self.menu_image, (self.combat_player.position[0], self.combat_player.position[1] - 50))
         self.main_group.draw(surface)
-        if self.outline:
+        if self.outline and self.state == CombatState.CHOOSE_ENEMY:
             surface.blit(self.outline, (self.enemies[self.enemy_index].position[0] - 256,
                                         self.enemies[self.enemy_index].position[1] - 256))
 
     def handle_keys(self, key_state):
-        if self.state == 'idle':
+        if self.state == CombatState.IDLE:
             if key_state['confirm']:
                 if self.enemies_count == 1:
                     self.player_attack()
                 else:
                     self.action = 'attack'
-                    self.state = 'choose_enemy'
+                    self.state = CombatState.CHOOSE_ENEMY
 
-        elif self.state == 'choose_enemy':
+        elif self.state == CombatState.CHOOSE_ENEMY:
             if key_state['left']:
                 self.enemy_index = (self.enemy_index + 1) % self.enemies_count
-            if key_state['right']:
+            elif key_state['right']:
                 self.enemy_index = (self.enemy_index - 1) if self.enemy_index > 0 else self.enemies_count - 1
-            if key_state['confirm']:
+            elif key_state['cancel']:
+                self.state = CombatState.IDLE
+            elif key_state['confirm']:
                 self.actions[self.action]()
-                self.state = 'player_animation'
+                self.state = CombatState.PLAYER_ANIMATION
                 self.outline = False
                 return
             self.outline = get_outline(self.enemies[self.enemy_index].image, (255, 255, 255))
 
     def player_attack(self):
         self.combat_player.attack(self.enemies[self.enemy_index])
-        self.state = 'player_animation'
+        self.state = CombatState.PLAYER_ANIMATION
         self.combat_player.on_animation_ended.append(self.player_animation_ended)
 
     def player_magic(self):
@@ -132,16 +136,25 @@ class Combat(State):
     def enemy_animation_ended(self):
         self.enemies_turn += 1
         if self.enemies_turn > self.enemies_count:
-            self.state = 'idle'
+            self.state = CombatState.IDLE
         else:
-            self.state = 'enemies'
+            self.state = CombatState.ENEMIES
 
     def player_animation_ended(self):
         self.enemies_turn = 0
-        if self.state != 'enemies dead':
-            self.state = 'enemies'
+        if self.state != CombatState.ENEMIES_DEAD:
+            self.state = CombatState.ENEMIES
 
     def on_all_enemies_dead(self):
         self.exit_state()
         self.level_name.die()
         Sound.stop_all()
+
+
+class CombatState(Enum):
+    IDLE = 'idle'
+    CHOOSE_ENEMY = 'choose_enemy'
+    ENEMIES = 'enemies'
+    ENEMIES_DEAD = 'enemies_dead'
+    ENEMY_ANIMATION = 'enemy_animation'
+    PLAYER_ANIMATION = 'player_animation'
