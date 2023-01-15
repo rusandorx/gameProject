@@ -151,7 +151,7 @@ class SkeletonEnemy(CombatEnemy):
 
 enemies = {
     'skeleton': lambda position, player: SkeletonEnemy('skeleton', randint(1, 5), 30, {
-        'attack': 5,
+        'attack': 8,
         'endurance': 10,
         'weaknesses': ['light'],
         'type': ['dark'],
