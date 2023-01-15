@@ -8,6 +8,7 @@ from enemies import enemies, CombatEnemy
 from player.combat_player import CombatPlayer
 from sounds import Sound
 from spritesheet import SpriteSheet
+from states.magic_menu import MagicMenu
 from states.state import State
 from utils import get_outline
 
@@ -116,6 +117,10 @@ class Combat(State):
                 else:
                     self.action = 'attack'
                     self.state = CombatState.CHOOSE_ENEMY
+            elif key_state['l']:
+                self.action = 'magic'
+                magicMenu = MagicMenu(self.game)
+
 
         elif self.state == CombatState.CHOOSE_ENEMY:
             if key_state['left']:

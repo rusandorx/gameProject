@@ -53,6 +53,8 @@ class Game:
                     self.key_state['cancel'] = True
                 if event.key == pygame.K_RETURN:
                     self.key_state['start'] = True
+                if event.key == pygame.K_l:
+                    self.key_state['l'] = True
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
@@ -69,6 +71,8 @@ class Game:
                     self.key_state['cancel'] = False
                 if event.key == pygame.K_RETURN:
                     self.key_state['start'] = False
+                if event.key == pygame.K_l:
+                    self.key_state['l'] = False
 
     def update(self):
         self.state_stack[-1].update(self.key_state)
