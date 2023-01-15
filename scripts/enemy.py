@@ -25,6 +25,8 @@ class Enemy(pygame.sprite.Sprite):
                           "squid": 150,
                           "big_boss": 300,
                           "raccoon": 150}
+        self.alive = True
+        self.died_sprite = pygame.image.load("../graphics/bones/bones.png")
         self.range_attack = range_attack[name]
         self.size = size_enemy[name]
         self.image = pygame.transform.scale(pygame.image.load(f"../graphics/monsters/{name}/idle/0.png"),
@@ -52,22 +54,27 @@ class Enemy(pygame.sprite.Sprite):
         self.sprite_state = "IDLE"
         self.name = name
 
-    def check_hitbox(self):
-        vector_player = Vector2(self.player.rect.x, self.player.rect.y)
-        vector_enemy = Vector2(self.rect.center)
-        cross_vector = vector_player - vector_enemy
+    def die(self):
+        self.alive = False
+        print(self.alive)
 
-        if cross_vector.magnitude() <= self.range_attack // 5:
-            self.sprite_state = "ATTACK"
-            if int(self.animation_frame) == len(self.sprites[self.sprite_state]) - 1:
-                self.on_attack(self.name)
-                Sound("../sounds/fighting.mp3", 10000)
-        elif cross_vector.magnitude() <= self.range_attack:
-            self.move_by_vector(cross_vector)
-        elif (cross_vector := (self.init_position - vector_enemy)).magnitude() > 1:
-            self.move_by_vector(cross_vector)
-        else:
-            self.sprite_state = "IDLE"
+    def check_hitbox(self):
+        if self.alive:
+            vector_player = Vector2(self.player.rect.x, self.player.rect.y)
+            vector_enemy = Vector2(self.rect.center)
+            cross_vector = vector_player - vector_enemy
+
+            if cross_vector.magnitude() <= self.range_attack // 5:
+                self.sprite_state = "ATTACK"
+                if int(self.animation_frame) == len(self.sprites[self.sprite_state]) - 1:
+                    self.on_attack(self.name, self)
+                    Sound("../sounds/fighting.mp3", 10000)
+            elif cross_vector.magnitude() <= self.range_attack:
+                self.move_by_vector(cross_vector)
+            elif (cross_vector := (self.init_position - vector_enemy)).magnitude() > 1:
+                self.move_by_vector(cross_vector)
+            else:
+                self.sprite_state = "IDLE"
 
     def move_by_vector(self, vector: Vector2):
         if vector.magnitude() == 0:
@@ -80,17 +87,20 @@ class Enemy(pygame.sprite.Sprite):
         self.sprite_state = "MOVE"
 
     def animation(self):
-        if len(self.sprites[self.sprite_state]) <= 1:
-            self.image = self.sprites[self.sprite_state][0]
-            return
+        if self.alive:
+            if len(self.sprites[self.sprite_state]) <= 1:
+                self.image = self.sprites[self.sprite_state][0]
+                return
 
-        sprites = self.sprites[self.sprite_state]
+            sprites = self.sprites[self.sprite_state]
 
-        self.animation_frame += self.animation_speed
-        self.animation_frame = 0 if self.animation_frame >= len(sprites) else self.animation_frame
+            self.animation_frame += self.animation_speed
+            self.animation_frame = 0 if self.animation_frame >= len(sprites) else self.animation_frame
 
-        self.image = sprites[int(self.animation_frame)]
-        self.rect = self.image.get_rect(center=self.hitbox.center)
+            self.image = sprites[int(self.animation_frame)]
+            self.rect = self.image.get_rect(center=self.hitbox.center)
+        else:
+            self.image = self.died_sprite
 
     def update(self):
         self.check_hitbox()
