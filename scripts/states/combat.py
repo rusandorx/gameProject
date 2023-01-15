@@ -30,6 +30,8 @@ class Combat(State):
 
         self.menu_image = pygame.transform.scale(pygame.image.load('../graphics/ui/combat/combat_menu.png'), (256, 256))
         self.enemy_index = self.enemies_count - 1
+        self.enemies_turn = 0
+
         self.state = 'idle'
         self.action = 'idle'
         self.actions = {
@@ -40,7 +42,16 @@ class Combat(State):
 
     def update(self, key_state):
         self.update_enemies()
-        self.handle_keys(key_state)
+        if self.state == 'enemies':
+            if self.enemies_turn >= self.enemies_count:
+                self.state = 'idle'
+            else:
+                if self.state != 'enemy action':
+                    self.enemies[self.enemies_turn].random_action()
+                    self.enemies[self.enemies_turn].on_animate_end.append(self.enemy_animation_ended)
+                    self.state = 'enemy action'
+        else:
+            self.handle_keys(key_state)
         self.game.reset_keys()
         self.main_group.update()
 
@@ -84,11 +95,24 @@ class Combat(State):
                 self.actions[self.action]()
                 self.state = 'idle'
                 self.outline = False
+                self.player_attack()
                 return
             self.outline = get_outline(self.enemies[self.enemy_index].image, (255, 255, 255))
 
     def player_attack(self):
         self.combat_player.attack(self.enemies[self.enemy_index])
+        self.combat_player.on_animation_ended.append(self.player_animation_ended)
 
     def player_magic(self):
         pass
+
+    def enemy_animation_ended(self):
+        self.enemies_turn += 1
+        if self.enemies_turn > self.enemies_count:
+            self.state = 'idle'
+        else:
+            self.state = 'enemies'
+
+    def player_animation_ended(self):
+        self.enemies_turn = 0
+        self.state = 'enemies'

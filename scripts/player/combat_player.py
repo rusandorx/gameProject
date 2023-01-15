@@ -11,6 +11,7 @@ class CombatPlayer(pygame.sprite.Sprite):
         self.position = position
         self.load_sprites()
         self.player = player
+        self.on_animation_ended = []
 
     def load_sprites(self):
         graphics_path = '../graphics/ui/combat/sprites/player/'
@@ -23,7 +24,7 @@ class CombatPlayer(pygame.sprite.Sprite):
                                    pygame.Rect(0, 0, 128, 128), 4, (0, 0, 0)))),
             'hurt': list(map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
                              SpriteSheet(os.path.join(graphics_path, 'Hurt.png')).load_strip(
-                                 pygame.Rect(0, 0, 128, 128), 4, (0, 0, 0)))),
+                                 pygame.Rect(0, 0, 128, 128), 3, (0, 0, 0)))),
         }
         self.sprite_state = 'idle'
         self.return_to_idle = False
@@ -50,6 +51,7 @@ class CombatPlayer(pygame.sprite.Sprite):
         if self.animation_frame >= len(sprites):
             self.animation_frame = 0
             if self.return_to_idle:
+                self.animation_ended()
                 self.return_to_idle = False
                 self.sprite_state = 'idle'
                 return
@@ -63,3 +65,8 @@ class CombatPlayer(pygame.sprite.Sprite):
     def take_damage(self, damage, damage_type):
         self.player.hp -= damage
         self.set_sprite_state_once('hurt')
+
+    def animation_ended(self):
+        for cb in self.on_animation_ended:
+            cb()
+        self.on_animation_ended.clear()
