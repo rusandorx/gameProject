@@ -162,7 +162,7 @@ class SkeletonEnemy(CombatEnemy):
 class NecromancerEnemy(CombatEnemy):
     def __init__(self, name, lvl, hp, stats, position, player, *groups):
         super().__init__(name, lvl, hp, stats, position, player, *groups)
-        self.animation_speed = 0.2
+        self.animation_speed = 0.3
 
     def load_assets(self):
         graphics_path = '../graphics/ui/combat/sprites/necromancer/'
