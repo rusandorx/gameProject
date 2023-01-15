@@ -22,6 +22,8 @@ class Level(State):
         self.shadow_sprites = pygame.sprite.Group()
         # со спрайтами препятствий происходят коллизии
         self.obstacle_sprites = pygame.sprite.Group()
+        self.count_enemy = {"skeleton": [1, 3],
+                            "necromancer": [1, 1]}
 
         self.create_map()
 
@@ -48,7 +50,7 @@ class Level(State):
                 Enemy((entity.x, entity.y), [self.main_group], self.player, entity.name, self.attack_callback)
 
     def attack_callback(self, enemy_name, class_enemy):
-        combat = Combat(self.game, enemy_name, class_enemy)
+        combat = Combat(self.game, enemy_name, class_enemy, self.count_enemy[enemy_name])
         combat.enter_state()
 
     def update(self, key_state):

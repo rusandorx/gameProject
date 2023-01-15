@@ -159,6 +159,40 @@ class SkeletonEnemy(CombatEnemy):
         self.rect.center = self.position
 
 
+class NecromancerEnemy(CombatEnemy):
+    def __init__(self, name, lvl, hp, stats, position, player, *groups):
+        super().__init__(name, lvl, hp, stats, position, player, *groups)
+        self.animation_speed = 0.2
+
+    def load_assets(self):
+        graphics_path = '../graphics/ui/combat/sprites/necromancer/'
+        self.sprites = {
+            'idle': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (640, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Necromancer_creativekind_Idle.png')).load_strip(
+                        pygame.Rect(0, 0, 160, 128), 7, (0, 0, 0)) +
+                    SpriteSheet(os.path.join(graphics_path, 'Necromancer_creativekind-Taunt.png')).load_strip(
+                        pygame.Rect(0, 0, 160, 128), 17, (0, 0, 0)) +
+                    SpriteSheet(os.path.join(graphics_path, 'Necromancer_creativekind-Idle1.png')).load_strip(
+                        pygame.Rect(0, 0, 160, 128), 7, (0, 0, 0)))),
+            'attack': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (640, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Necromancer_creativekind-Attack.png')).load_strip(
+                        pygame.Rect(0, 0, 160, 128), 13, (0, 0, 0)))),
+            'hurt': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (640, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Necromancer_creativekind-Hurt.png')).load_strip(
+                        pygame.Rect(0, 0, 160, 128), 5, (0, 0, 0)))),
+            'die': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (640, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Necromancer_creativekind-Dead.png')).load_strip(
+                        pygame.Rect(0, 0, 160, 128), 9, (0, 0, 0))))
+        }
+        self.image = self.sprites[self.sprite_state][self.animation_frame]
+        self.rect = self.image.get_rect()
+        self.rect.center = self.position
+
+
 enemies = {
     'skeleton': lambda position, player: SkeletonEnemy('skeleton', randint(1, 1), 30, {
         'attack': 8,
@@ -170,7 +204,7 @@ enemies = {
             'magic': .3
         },
     }, position, player),
-    'green_boss': lambda position, player: SkeletonEnemy('green_boss', randint(20, 30), 100, {
+    'necromancer': lambda position, player: NecromancerEnemy('necromancer', randint(20, 30), 100, {
         'attack': 20,
         'endurance': 50,
         'weaknesses': [],
