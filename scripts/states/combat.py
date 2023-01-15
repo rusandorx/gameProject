@@ -6,10 +6,9 @@ import pygame
 
 from enemies import enemies, CombatEnemy
 from player.combat_player import CombatPlayer
-from sounds import Sound
 from states.state import State
 from utils import get_outline
-from  sounds import Sound
+from sounds import Sound
 
 
 class Combat(State):
@@ -54,7 +53,8 @@ class Combat(State):
                     self.enemies[self.enemies_turn].on_animate_end.append(self.enemy_animation_ended)
                     self.state = 'enemy action'
         else:
-            self.handle_keys(key_state)
+            if self.state != 'player animation':
+                self.handle_keys(key_state)
         self.game.reset_keys()
         self.main_group.update()
 
@@ -120,6 +120,7 @@ class Combat(State):
 
     def player_attack(self):
         self.combat_player.attack(self.enemies[self.enemy_index])
+        self.state = 'player_animation'
         self.combat_player.on_animation_ended.append(self.player_animation_ended)
 
     def player_magic(self):
