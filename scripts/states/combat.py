@@ -23,7 +23,7 @@ class Combat(State):
         self.main_group.add(self.player_sprite)
 
         self.enemies_count = randint(1, 3)
-        self.enemies: [CombatEnemy] = [enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 15 * math.cos(_)))
+        self.enemies: [CombatEnemy] = [enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)))
                                        for _ in
                                        range(self.enemies_count)]
         self.main_group.add(self.enemies)
@@ -39,9 +39,21 @@ class Combat(State):
         self.outline = False
 
     def update(self, key_state):
+        self.update_enemies()
         self.handle_keys(key_state)
         self.game.reset_keys()
         self.main_group.update()
+
+    def update_enemies(self):
+        rest_enemies = list(filter(lambda x: x.active, self.enemies))
+        rest_enemies_count = len(rest_enemies)
+        if rest_enemies_count == 0:
+            self.exit_state()
+        elif rest_enemies_count != self.enemies_count:
+            self.enemies = rest_enemies
+            self.enemies_count = rest_enemies_count
+            self.enemy_index = self.enemies_count - 1
+
 
     def render(self, surface):
         surface.blit(self.background, self.background_rect)
