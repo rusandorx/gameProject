@@ -25,6 +25,7 @@ class Combat(State):
         self.combat_player = CombatPlayer((200, 400), self.game.player)
         self.main_group.add(self.combat_player)
         self.combat_menu = CombatMenu((0, 0))
+        self.magic = None
 
         self.enemies_count = randint(*count_enemy)
         self.enemies: [CombatEnemy] = [
@@ -46,6 +47,8 @@ class Combat(State):
         self.outline = False
 
     def update(self, key_state):
+        if self.magic and self.magic.animating:
+            self.magic.update()
         self.update_enemies()
         if self.state == CombateState.ENEMIES:
             if self.enemies_turn >= self.enemies_count:
@@ -118,6 +121,8 @@ class Combat(State):
         if self.outline and self.state == CombateState.CHOOSE_ENEMY:
             surface.blit(self.outline, (self.enemies[self.enemy_index].position[0] - self.enemy_size[0] * .5,
                                         self.enemies[self.enemy_index].position[1] - self.enemy_size[1] * .5))
+        if self.magic and self.magic.animating:
+            surface.blit(self.magic.image, self.magic.pos)
 
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
@@ -156,6 +161,8 @@ class Combat(State):
         self.combat_player.do_magic(self.magic, self.enemies[self.enemy_index])
         self.state = CombateState.PLAYER_ANIMATION
         self.combat_player.on_animation_ended.append(self.player_animation_ended)
+        self.magic.start_animating((self.enemies[self.enemy_index].position[0] - self.enemy_size[0] / 4,
+                                   self.enemies[self.enemy_index].position[1]))
 
     def enemy_animation_ended(self):
         self.enemies_turn += 1

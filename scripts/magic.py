@@ -5,8 +5,9 @@ import pygame
 from spritesheet import SpriteSheet
 
 
-class Magic:
-    def __init__(self, name, description, damage, damage_type, cost, sprites_count):
+class Magic(pygame.sprite.Sprite):
+    def __init__(self, name, description, damage, damage_type, cost, sprites_count, *groups):
+        super().__init__(*groups)
         self.name = name
         self.description = description
         self.damage = damage
@@ -14,14 +15,40 @@ class Magic:
         self.cost = cost
         self.sprites_count = sprites_count
         self.load_assets()
+        self.animating = False
+        self.animation_speed = .2
+        self.animation_frame = 0
+        self.pos = (0, 0)
 
     def load_assets(self):
         path = f'../graphics/ui/combat/magic/{self.name}/'
         self.icon = pygame.transform.scale(pygame.image.load(os.path.join(path, 'Icon.png')), (64, 64))
         self.sprites = list(
-            map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (128, 128)), True, False),
+            map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (256, 256)), True, False),
                 SpriteSheet(os.path.join(path, f'sprites.png')).load_strip(
-                    pygame.Rect(0, 0, 128, 128), self.sprites_count, (0, 0, 0))))
+                    pygame.Rect(0, 0, 256, 256), self.sprites_count, (0, 0, 0))))
+        self.image = self.sprites[0]
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        if self.animating:
+            self.animate()
+
+    def animate(self):
+        sprites = self.sprites
+
+        self.animation_frame += self.animation_speed
+        if self.animation_frame >= len(sprites):
+            self.animation_frame = 0
+            self.animating = False
+            return
+
+        self.image = sprites[int(self.animation_frame)]
+        self.rect = self.image.get_rect(center=self.rect.center)
+
+    def start_animating(self, pos):
+        self.pos = pos
+        self.animating = True
 
 
 magic = {
