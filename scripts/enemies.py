@@ -89,7 +89,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def take_damage(self, damage, damage_type):
         if damage_type == 'physical':
-            self.hp -= damage * (1 - self.stats['endurance'] * 0.01)
+            self.hp -= damage * 0.95 ** self.stats['endurance']
         else:
             self.hp -= damage * (1.5 if any(stat == damage_type for stat in self.stats['type']) else 1)
         if self.hp <= 0:
@@ -140,7 +140,7 @@ class SkeletonEnemy(CombatEnemy):
 enemies = {
     'skeleton': lambda position: SkeletonEnemy('skeleton', randint(1, 5), 30, {
         'attack': 5,
-        'endurance': 3,
+        'endurance': 10,
         'weaknesses': ['light'],
         'type': ['dark'],
         'actions': {

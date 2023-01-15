@@ -23,9 +23,10 @@ class Combat(State):
         self.main_group.add(self.player_sprite)
 
         self.enemies_count = randint(1, 3)
-        self.enemies: [CombatEnemy] = [enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)))
-                                       for _ in
-                                       range(self.enemies_count)]
+        self.enemies: [CombatEnemy] = [
+            enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)))
+            for _ in
+            range(self.enemies_count)]
         self.main_group.add(self.enemies)
 
         self.menu_image = pygame.transform.scale(pygame.image.load('../graphics/ui/combat/combat_menu.png'), (256, 256))
@@ -54,9 +55,22 @@ class Combat(State):
             self.enemies_count = rest_enemies_count
             self.enemy_index = self.enemies_count - 1
 
-
     def render(self, surface):
         surface.blit(self.background, self.background_rect)
+        for i in self.enemies:
+            if i.active:
+                self.game.draw_text(surface, f"{round(i.hp, 1)} / {round(i.max_hp, 1)}", (255,
+                                                                      255, 255),
+                                    i.position[0] + 30, i.position[1] - 40)
+                pygame.draw.rect(surface, "gray",
+                                 (i.position[0] - 20, i.position[0] - 20,
+                                  128,
+                                  10))
+                pygame.draw.rect(surface, (int(255 * (1 - i.hp / i.max_hp)),
+                                           int(255 * (i.hp / i.max_hp)), 0),
+                                 (i.position[0] - 20, i.position[1] - 20,
+                                  (i.hp / i.max_hp) * 128,
+                                  10))
         pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
                                   int(255 * self.game.player.hp / self.game.player.max_hp), 0),
                         (self.player_sprite.rect.centerx - 160, self.player_sprite.rect.centery + 200, 225, 100),
