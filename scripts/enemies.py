@@ -23,8 +23,9 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
     }
     '''
 
-    def __init__(self, name, lvl, hp, stats, position, *groups):
+    def __init__(self, name, lvl, hp, stats, position, player, *groups):
         super().__init__(*groups)
+        self.player = player
         self.name = name
         self.max_hp = hp * (lvl * .05)
         self.hp = self.max_hp
@@ -81,7 +82,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def attack(self):
         self.animate_once('attack')
-        return (self.stats['attack'] * (self.lvl / 10), self.stats['type'], 'attack')
+        self.player.take_damage(self.stats['attack'] * (self.lvl / 10), self.stats['type'], 'physical')
 
     def magic(self):
         # TODO: Magic
@@ -109,8 +110,8 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
 
 class SkeletonEnemy(CombatEnemy):
-    def __init__(self, name, lvl, hp, stats, position, *groups):
-        super().__init__(name, lvl, hp, stats, position, *groups)
+    def __init__(self, name, lvl, hp, stats, position, player, *groups):
+        super().__init__(name, lvl, hp, stats, position, player, *groups)
 
     def load_assets(self):
         graphics_path = '../graphics/ui/combat/sprites/skeleton/'
@@ -138,7 +139,7 @@ class SkeletonEnemy(CombatEnemy):
 
 
 enemies = {
-    'skeleton': lambda position: SkeletonEnemy('skeleton', randint(1, 5), 30, {
+    'skeleton': lambda position, player: SkeletonEnemy('skeleton', randint(1, 5), 30, {
         'attack': 5,
         'endurance': 10,
         'weaknesses': ['light'],
@@ -147,8 +148,8 @@ enemies = {
             'attack': .7,
             'magic': .3
         },
-    }, position),
-    'green_boss': lambda position: SkeletonEnemy('green_boss', randint(20, 30), 100, {
+    }, position, player),
+    'green_boss': lambda position, player: SkeletonEnemy('green_boss', randint(20, 30), 100, {
         'attack': 20,
         'endurance': 50,
         'weaknesses': [],
@@ -157,5 +158,5 @@ enemies = {
             'attack': .95,
             'magic': .05
         },
-    }, position)
+    }, position, player)
 }
