@@ -61,7 +61,6 @@ class Combat(State):
     def update_enemies(self):
         rest_enemies = list(filter(lambda x: x.active, self.enemies))
         rest_enemies_count = len(rest_enemies)
-        print(self.state)
         if rest_enemies_count == 0:
             if self.state != 'enemies dead':
                 self.enemies[0].on_animate_end.append(self.on_all_enemies_dead)
@@ -115,7 +114,6 @@ class Combat(State):
                 self.actions[self.action]()
                 self.state = 'idle'
                 self.outline = False
-                self.player_attack()
                 return
             self.outline = get_outline(self.enemies[self.enemy_index].image, (255, 255, 255))
 
