@@ -5,6 +5,7 @@ from random import choices, randint
 import pygame
 
 from spritesheet import SpriteSheet
+from utils import get_outline
 
 
 class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
@@ -43,14 +44,17 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.return_to_idle = False
         self.stop_at_last_frame = False
         self.active = True
+        self.outstroked = False
         self.load_assets()
 
     def animate_once(self, sprite_state):
         self.sprite_state = sprite_state
+        self.animation_frame = 0
         self.return_to_idle = True
 
     def animate_to_last_frame(self, animate_state):
         self.sprite_state = animate_state
+        self.animation_frame = 0
         self.return_to_idle = False
         self.stop_at_last_frame = True
 
@@ -60,6 +64,9 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def animate(self):
         sprites = self.sprites[self.sprite_state]
+
+        if self.stop_at_last_frame and int(self.animation_frame) >= len(sprites) - 1:
+            return
 
         self.animation_frame += self.animation_speed * 0.5
         if self.animation_frame >= len(sprites):
@@ -74,7 +81,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def attack(self):
         self.animate_once('attack')
-        return self.stats['attack'] * (self.lvl / 10), self.stats['type']
+        return (self.stats['attack'] * (self.lvl / 10), self.stats['type'], 'attack')
 
     def magic(self):
         # TODO: Magic
@@ -91,6 +98,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.animate_once('hurt')
 
     def die(self):
+        self.animate_to_last_frame('die')
         self.active = False
 
     def update(self):
@@ -114,7 +122,7 @@ class SkeletonEnemy(CombatEnemy):
             'attack': list(
                 map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
                     SpriteSheet(os.path.join(graphics_path, 'Attack_1.png')).load_strip(
-                        pygame.Rect(0, 0, 128, 128), 7, (0, 0, 0)))),
+                        pygame.Rect(0, 0, 128, 128), 5, (0, 0, 0)))),
             'hurt': list(
                 map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
                     SpriteSheet(os.path.join(graphics_path, 'Hurt.png')).load_strip(
@@ -122,7 +130,7 @@ class SkeletonEnemy(CombatEnemy):
             'die': list(
                 map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
                     SpriteSheet(os.path.join(graphics_path, 'Dead.png')).load_strip(
-                        pygame.Rect(0, 0, 128, 128), 7, (0, 0, 0))))
+                        pygame.Rect(0, 0, 128, 128), 5, (0, 0, 0))))
         }
         self.image = self.sprites[self.sprite_state][self.animation_frame]
         self.rect = self.image.get_rect()
@@ -142,7 +150,7 @@ enemies = {
     }, position),
     'green_boss': lambda position: SkeletonEnemy('green_boss', randint(20, 30), 100, {
         'attack': 20,
-        'endurance': 100,
+        'endurance': 50,
         'weaknesses': [],
         'type': ['god'],
         'actions': {

@@ -36,6 +36,7 @@ class CombatPlayer(pygame.sprite.Sprite):
         return self.player.stats['attack'] * (self.player.lvl / 10), 'physical'
 
     def set_sprite_state_once(self, sprite_state):
+        self.animation_frame = 0
         self.sprite_state = sprite_state
         self.return_to_idle = True
 
