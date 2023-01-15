@@ -31,6 +31,8 @@ class Combat(State):
             enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)), self.combat_player)
             for _ in
             range(self.enemies_count)]
+        self.enemy_size = self.enemies[0].image.get_rect()[2:]
+        print(self.enemy_size)
         self.main_group.add(self.enemies)
 
         self.enemy_index = self.enemies_count - 1
@@ -55,11 +57,14 @@ class Combat(State):
                     self.enemies[self.enemies_turn].on_animate_end.append(self.enemy_animation_ended)
                     self.state = CombatState.ENEMY_ANIMATION
         else:
-            if self.state != CombatState.PLAYER_ANIMATION:
+            if self.state != CombatState.PLAYER_ANIMATION and self.action != 'magic':
                 self.handle_keys(key_state)
         self.game.reset_keys()
         self.main_group.update()
         self.combat_menu.update()
+
+    def get_magic_index(self, index):
+        pass
 
     def update_enemies(self):
         rest_enemies = list(filter(lambda x: x.active, self.enemies))
@@ -106,8 +111,8 @@ class Combat(State):
             surface.blit(self.combat_menu.image, (self.combat_player.position[0], self.combat_player.position[1] - 50))
         self.main_group.draw(surface)
         if self.outline and self.state == CombatState.CHOOSE_ENEMY:
-            surface.blit(self.outline, (self.enemies[self.enemy_index].position[0] - 256,
-                                        self.enemies[self.enemy_index].position[1] - 256))
+            surface.blit(self.outline, (self.enemies[self.enemy_index].position[0] - self.enemy_size[0] * .5,
+                                        self.enemies[self.enemy_index].position[1] - self.enemy_size[1] * .5))
 
     def handle_keys(self, key_state):
         if self.state == CombatState.IDLE:
@@ -119,7 +124,8 @@ class Combat(State):
                     self.state = CombatState.CHOOSE_ENEMY
             elif key_state['l']:
                 self.action = 'magic'
-                magicMenu = MagicMenu(self.game)
+                magicMenu = MagicMenu(self.game, self.get_magic_index)
+                magicMenu.enter_state()
 
 
         elif self.state == CombatState.CHOOSE_ENEMY:
