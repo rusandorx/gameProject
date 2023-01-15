@@ -80,7 +80,6 @@ class Game:
 
     def draw_text(self, surface, text, color, x, y):
         text_surface = self.font.render(text, True, color)
-        # text_surface.set_colorkey((0,0,0))
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         surface.blit(text_surface, text_rect)

@@ -77,11 +77,15 @@ class Combat(State):
         for i in self.enemies:
             if i.active:
                 self.game.draw_text(surface, f"{i.name} LVL {i.lvl}",
-                                    (min(int(255 * (i.lvl / 2 / self.game.player.lvl)), 255),
-                                     max(int(255 * (1 - (i.lvl / 2 / self.game.player.lvl))), 0), 0),
+                                    ((min((max(1, i.lvl - self.game.player.lvl) * 64), 255)),
+                                     (min((max(1, self.game.player.lvl - i.lvl) * 64), 255)),
+                                    0),
                                     i.position[0] + 30, i.position[1] - 70)
-                self.game.draw_text(surface, f"{round(i.hp, 1)} / {round(i.max_hp, 1)}", (255,
-                                                                                          255, 255),
+                self.game.draw_text(surface,
+                                    f"{round(i.hp, 1) if round(i.hp, 1) != 0.0 else '0.1'} / {round(i.max_hp, 1)}",
+                                    (255,
+                                     255,
+                                     255),
                                     i.position[0] + 30, i.position[1] - 40)
                 pygame.draw.rect(surface, "gray",
                                  (i.position[0] - 20, i.position[1] - 20,
@@ -162,7 +166,8 @@ class CombatMenu(pygame.sprite.Sprite):
         if CombatMenu.sprites is None:
             path = '../graphics/ui/combat/combat_menu-Sheet.png'
             sheet = SpriteSheet(path)
-            CombatMenu.sprites = [pygame.transform.scale(img, (380, 335)).convert() for img in sheet.load_strip((0, 0, 420, 380), 4, (0, 0, 0))]
+            CombatMenu.sprites = [pygame.transform.scale(img, (380, 335)).convert() for img in
+                                  sheet.load_strip((0, 0, 420, 380), 4, (0, 0, 0))]
         self.sprites = CombatMenu.sprites
         self.animation_frame = 0
         self.animation_speed = .1
