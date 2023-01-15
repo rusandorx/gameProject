@@ -78,7 +78,7 @@ class Combat(State):
                                                                                           255, 255),
                                     i.position[0] + 30, i.position[1] - 40)
                 pygame.draw.rect(surface, "gray",
-                                 (i.position[0] - 20, i.position[0] - 20,
+                                 (i.position[0] - 20, i.position[1] - 20,
                                   128,
                                   10))
                 pygame.draw.rect(surface, (int(255 * (1 - i.hp / i.max_hp)),
