@@ -67,5 +67,6 @@ class Magic(pygame.sprite.Sprite):
 
 magic = {
     'agi': lambda: Magic('agi', 'Маленький огненный урон', 20, 'fire', 5, 6),
-    'explosion': lambda: Magic('explosion', 'Взрыв', 50, 'fire', 20, 14, 64)
+    'explosion': lambda: Magic('explosion', 'Взрыв', 50, 'fire', 20, 14, 64),
+
 }

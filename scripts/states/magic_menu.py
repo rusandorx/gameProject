@@ -67,11 +67,20 @@ class MagicMenu(State):
             display.blit(self.prev_state.confirm_buttons, (
             self.game.width - self.prev_state.confirm_buttons_rect[2], self.game.height - self.prev_state.confirm_buttons_rect[3]))
 
+        text_surface = self.game.font.render(f'{self.game.player.mp}\\{self.game.player.max_mp}', True, (32, 128, 255))
+        text_rect = text_surface.get_rect()
+        text_rect.topright = (self.OPTION_SIZE[0], 0)
+        display.blit(text_surface, text_rect)
+
     def handle_keys(self, key_state):
         if key_state['down']:
             self.index = (self.index + 1) % len(self.options)
+            while self.options[self.index].cost > self.game.player.mp:
+                self.index = (self.index + 1) % len(self.options)
         elif key_state['up']:
             self.index = (self.index - 1) % len(self.options)
+            while self.options[self.index].cost > self.game.player.mp:
+                self.index = (self.index - 1) % len(self.options)
         elif key_state['confirm']:
             self.cb(self.index)
             self.exit_state()
@@ -79,3 +88,4 @@ class MagicMenu(State):
             self.cb(-1)
             self.exit_state()
         self.game.reset_keys()
+
