@@ -80,8 +80,3 @@ class CombatPlayer(pygame.sprite.Sprite):
             cb()
         self.on_animation_ended.clear()
 
-    def do_magic(self, magic, target: CombatEnemy):
-        self.set_sprite_state_once('magic')
-        target.take_damage(self.player.stats['attack'] * (self.player.lvl / 10), magic.damage_type)
-        self.player.mp -= magic.cost
-

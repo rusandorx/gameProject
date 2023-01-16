@@ -11,7 +11,7 @@ class MagicMenu(State):
         self.rectangle.set_alpha(128)
         self.rectangle.fill((0, 0, 0))
         self.options = self.game.player.magic
-        self.OPTION_SIZE = (self.game.width, self.game.height / 10)
+        self.OPTION_SIZE = (self.game.width, self.game.height / 8)
         self.option_images = self.get_magic_images(self.options)
         self.index = 0
         self.magic_index = 0
@@ -22,20 +22,26 @@ class MagicMenu(State):
             padding_x = 10
             padding_y = 10
 
-            new_rect = pygame.Surface((self.game.width, self.game.height / 10))
+            new_rect = pygame.Surface(self.OPTION_SIZE)
             new_rect.set_alpha(128)
             new_rect.fill((0, 0, 0))
             new_rect.blit(magic.icon, (padding_x, padding_y))
 
             text_surface = self.game.font.render(f'{magic.name}', True, (255, 255, 255))
+            name_text_rect = text_surface.get_rect()
+            name_text_rect.topleft = (64 + padding_x + 10, padding_y)
+            new_rect.blit(text_surface, name_text_rect)
+
+            text_surface = self.game.font.render(f'{str(magic.cost)}', True, (32, 128, 255))
             text_rect = text_surface.get_rect()
-            text_rect.topleft = (64 + padding_x + 10, padding_y)
+            text_rect.topleft = (name_text_rect.topright[0] + 10, name_text_rect.topright[1])
             new_rect.blit(text_surface, text_rect)
 
             text_surface = self.game.font.render(f'{magic.description}', True, (255, 255, 255))
             text_rect = text_surface.get_rect()
             text_rect.topleft = (64 + padding_x + 10, 24 + padding_y)
             new_rect.blit(text_surface, text_rect)
+
 
             result.append(new_rect)
         return result
