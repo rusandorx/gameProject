@@ -9,6 +9,7 @@ from player.combat_player import CombatPlayer
 from sounds import Sound
 from spritesheet import SpriteSheet
 from states.magic_menu import MagicMenu
+from states.result_screen import ResultScreen
 from states.state import State
 from utils import get_outline
 
@@ -213,11 +214,8 @@ class Combat(State):
             self.player_magic()
 
     def on_all_enemies_dead(self):
-        self.exit_state()
-        self.level_name.die()
-        Sound.stop_all()
-        while self.game.player.lvl_point >= self.game.player.lvl_point_up:
-            self.game.player.level_up()
+        results_screen = ResultScreen(self.game)
+        results_screen.enter_state()
 
 
 class CombateMenu(pygame.sprite.Sprite):
