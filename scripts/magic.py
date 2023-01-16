@@ -8,7 +8,7 @@ from spritesheet import SpriteSheet
 
 
 class Magic(pygame.sprite.Sprite):
-    def __init__(self, name, description, damage, damage_type, cost, sprites_count, sprite_size=256, need_target=True,
+    def __init__(self, name, description, damage, damage_type, cost, sprites_count, sprite_size=(256, 256), need_target=True,
                  *groups):
         super().__init__(*groups)
         self.name = name
@@ -32,7 +32,7 @@ class Magic(pygame.sprite.Sprite):
         self.sprites = list(
             map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (256, 256)), True, False),
                 SpriteSheet(os.path.join(path, f'sprites.png')).load_strip(
-                    pygame.Rect(0, 0, self.sprites_size, self.sprites_size), self.sprites_count, (0, 0, 0))))
+                    pygame.Rect(0, 0, *self.sprites_size), self.sprites_count, (0, 0, 0))))
         self.image = self.sprites[0]
         self.rect = self.image.get_rect()
 
@@ -59,14 +59,15 @@ class Magic(pygame.sprite.Sprite):
         self.animating = True
 
     def use(self, player: CombatPlayer, target: CombatEnemy):
-        player.set_sprite_state_once('magic')
+        player.set_sprite_state_once(f'{self.damage_type}-magic')
         target.take_damage((player.player.lvl * .05) * self.damage, self.damage_type, False)
         self.on_animation_end.append(lambda: target.set_animation('idle'))
         player.player.mp -= self.cost
 
 
 magic = {
-    'agi': lambda: Magic('agi', 'Маленький огненный урон', 20, 'fire', 5, 6),
-    'explosion': lambda: Magic('explosion', 'Средний урон огнём', 50, 'fire', 20, 14, 64),
-    'dark-bolt': lambda: Magic('dark-bolt', 'Темная молния', 30, 'dark', 10, 10, 64)
+    'agi': lambda: Magic('agi', 'Маленький огненный урон', 20, 'fire', 5, 6, (128, 128)),
+    'explosion': lambda: Magic('explosion', 'Средний урон огнём', 50, 'fire', 20, 14, (64, 64)),
+    'dark-bolt': lambda: Magic('dark-bolt', 'Темная молния', 30, 'dark', 10, 10, (77, 88)),
+    'lightning': lambda: Magic('lightning', 'Священная молния', 25, 'light', 50, 11, (64, 128))
 }

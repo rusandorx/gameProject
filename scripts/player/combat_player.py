@@ -10,9 +10,9 @@ class CombatPlayer(pygame.sprite.Sprite):
     def __init__(self, position, player, *groups):
         super().__init__(*groups)
         self.position = position
-        self.load_sprites()
         self.player = player
         self.on_animation_end = []
+        self.load_sprites()
 
     def load_sprites(self):
         graphics_path = '../graphics/ui/combat/sprites/player/'
@@ -26,13 +26,18 @@ class CombatPlayer(pygame.sprite.Sprite):
             'hurt': list(map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
                              SpriteSheet(os.path.join(graphics_path, 'Hurt.png')).load_strip(
                                  pygame.Rect(0, 0, 128, 128), 3, (0, 0, 0)))),
-            'magic': list(map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
-                             SpriteSheet(os.path.join(graphics_path, 'Flame_jet.png')).load_strip(
-                                 pygame.Rect(0, 0, 128, 128), 3, (0, 0, 0)))),
             'die': list(map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
-                             SpriteSheet(os.path.join(graphics_path, 'Dead.png')).load_strip(
-                                 pygame.Rect(0, 0, 128, 128), 6, (0, 0, 0))))
+                            SpriteSheet(os.path.join(graphics_path, 'Dead.png')).load_strip(
+                                pygame.Rect(0, 0, 128, 128), 6, (0, 0, 0))))
         }
+        for magic in self.player.magic:
+            if magic.damage_type == 'physical':
+                self.sprites[f'{magic.damage_type}-magic'] = self.sprites['attack']
+                continue
+            self.sprites[f'{magic.damage_type}-magic'] = list(
+                map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
+                    SpriteSheet(os.path.join(graphics_path, f'{magic.damage_type}-magic.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 15, (0, 0, 0))))
         self.sprite_state = 'idle'
         self.return_to_idle = False
         self.animation_frame = 0
@@ -62,7 +67,6 @@ class CombatPlayer(pygame.sprite.Sprite):
                 self.return_to_idle = False
                 self.sprite_state = 'idle'
                 return
-
         self.image = sprites[int(self.animation_frame)]
         self.rect = self.image.get_rect(center=self.rect.center)
 
@@ -79,4 +83,3 @@ class CombatPlayer(pygame.sprite.Sprite):
         for cb in self.on_animation_end:
             cb()
         self.on_animation_end.clear()
-

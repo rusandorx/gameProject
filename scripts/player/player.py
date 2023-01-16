@@ -7,7 +7,7 @@ class Player:
         self.max_mp, self.mp = 50, 50
         self.lvl_point_up, self.lvl_point = 10, 0
         self.items = {}
-        self.magic = list(map(lambda x: magic[x](), ['agi', 'explosion', 'dark-bolt']))
+        self.magic = list(map(lambda x: magic[x](), ['agi', 'explosion', 'dark-bolt', 'lightning']))
         self.exp = 0
         self.stats = {
             'attack': 2,
