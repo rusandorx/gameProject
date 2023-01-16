@@ -9,22 +9,22 @@ class Enemy(pygame.sprite.Sprite):
         self.on_attack = attack_callback
         size_enemy = {"skeleton": 32,
                       "bamboo": 32,
-                      "spirit": 32,
+                      "knight": 32,
                       "squid": 32,
                       "necromancer": 128,
                       "raccoon": 64}
         attack_sprites = {"skeleton": 1,
                           "bamboo": 1,
-                          "spirit": 1,
+                          "knight": 1,
                           "squid": 1,
                           "necromancer": 4,
                           "raccoon": 4}
         range_attack = {"skeleton": 150,
                         "bamboo": 150,
-                          "spirit": 150,
-                          "squid": 150,
-                          "necromancer": 300,
-                          "raccoon": 150}
+                        "knight": 150,
+                        "squid": 150,
+                        "necromancer": 300,
+                        "raccoon": 150}
         self.alive = True
         self.died_sprite = pygame.image.load("../graphics/bones/bones.png")
         self.range_attack = range_attack[name]

@@ -23,7 +23,8 @@ class Level(State):
         # со спрайтами препятствий происходят коллизии
         self.obstacle_sprites = pygame.sprite.Group()
         self.count_enemy = {"skeleton": [1, 3],
-                            "necromancer": [1, 1]}
+                            "necromancer": [1, 1],
+                            "knight": [3, 4]}
 
         self.create_map()
 
