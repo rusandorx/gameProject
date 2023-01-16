@@ -42,6 +42,10 @@ class MagicMenu(State):
             text_rect.topleft = (64 + padding_x + 10, 24 + padding_y)
             new_rect.blit(text_surface, text_rect)
 
+            text_surface = self.game.font.render(f'{magic.damage_type}', True, (255, 128, 64))
+            text_rect = text_surface.get_rect()
+            text_rect.topleft = (64 + padding_x + 10, 48 + padding_y)
+            new_rect.blit(text_surface, text_rect)
 
             result.append(new_rect)
         return result
@@ -59,6 +63,9 @@ class MagicMenu(State):
                 image.set_alpha(128)
             display.blit(image, (0, i * self.OPTION_SIZE[1]))
         display.blit(self.rectangle, (0, 0))
+        if len(self.game.state_stack) == 4:
+            display.blit(self.prev_state.confirm_buttons, (
+            self.game.width - self.prev_state.confirm_buttons_rect[2], self.game.height - self.prev_state.confirm_buttons_rect[3]))
 
     def handle_keys(self, key_state):
         if key_state['down']:
@@ -72,4 +79,3 @@ class MagicMenu(State):
             self.cb(-1)
             self.exit_state()
         self.game.reset_keys()
-

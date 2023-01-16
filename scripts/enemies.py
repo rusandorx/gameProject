@@ -73,7 +73,6 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def animate(self):
         sprites = self.sprites[self.sprite_state]
-        print(len(sprites))
 
         if self.stop_at_last_frame and int(self.animation_frame) >= len(sprites) - 1:
             self.animate_ended()

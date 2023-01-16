@@ -22,9 +22,12 @@ class Combat(State):
         self.main_group = pygame.sprite.Group()
         self.background = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
         self.background_rect = self.background.get_rect()
+        self.combat_menu = CombateMenu((0, 0))
+        self.confirm_buttons = pygame.image.load('../graphics/ui/combat/confirm_button.png')
+        self.confirm_buttons_rect = self.confirm_buttons.get_rect()
+
         self.combat_player = CombatPlayer((200, 400), self.game.player)
         self.main_group.add(self.combat_player)
-        self.combat_menu = CombateMenu((0, 0))
         self.magic = None
         self.current_animation = None
 
@@ -35,7 +38,6 @@ class Combat(State):
             range(self.enemies_count)]
         self.enemy_size = self.enemies[0].image.get_rect()[2:]
         self.main_group.add(self.enemies)
-
         self.enemy_index = self.enemies_count - 1
         self.enemies_turn = 0
 
@@ -44,6 +46,7 @@ class Combat(State):
         self.actions = {
             'attack': self.player_attack,
             'magic': self.player_magic,
+            'item': self.player_item
         }
         self.outline = False
 
@@ -117,14 +120,22 @@ class Combat(State):
                             (self.combat_player.rect.centerx - 160, self.combat_player.rect.centery + 200, 225, 100),
                             pi,
                             (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
-        if self.state == CombateState.IDLE:
-            surface.blit(self.combat_menu.image, (self.combat_player.position[0], self.combat_player.position[1] - 50))
         self.main_group.draw(surface)
+
+        if self.magic and self.magic.animating:
+            surface.blit(self.magic.image, self.magic.pos)
+
+        if self.state == CombateState.IDLE:
+            surface.blit(self.combat_menu.image,
+                         (self.combat_player.position[0], self.combat_player.position[1] - 50))
+
         if self.outline and self.state == CombateState.CHOOSE_ENEMY:
             surface.blit(self.outline, (self.enemies[self.enemy_index].position[0] - self.enemy_size[0] * .5,
                                         self.enemies[self.enemy_index].position[1] - self.enemy_size[1] * .5))
-        if self.magic and self.magic.animating:
-            surface.blit(self.magic.image, self.magic.pos)
+
+        if self.state == CombateState.CHOOSE_ENEMY and self.enemies_count > 1:
+            surface.blit(self.confirm_buttons, (
+            self.game.width - self.confirm_buttons_rect[2], self.game.height - self.confirm_buttons_rect[3]))
 
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
@@ -163,16 +174,19 @@ class Combat(State):
         self.magic.start_animating((self.enemies[self.enemy_index].position[0] - self.enemy_size[0] / 4,
                                     self.enemies[self.enemy_index].position[1]))
 
+    def player_item(self):
+        pass
+
+    def player_animation_ended(self):
+        self.enemies_turn = 0
+        if self.state != CombateState.ENEMIES_DEAD:
+            self.state = CombateState.ENEMIES
+
     def enemy_animation_ended(self):
         self.enemies_turn += 1
         if self.enemies_turn > self.enemies_count:
             self.state = CombateState.IDLE
         else:
-            self.state = CombateState.ENEMIES
-
-    def player_animation_ended(self):
-        self.enemies_turn = 0
-        if self.state != CombateState.ENEMIES_DEAD:
             self.state = CombateState.ENEMIES
 
     def magic_animation_ended(self):
