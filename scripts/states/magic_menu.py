@@ -32,7 +32,10 @@ class MagicMenu(State):
             name_text_rect.topleft = (64 + padding_x + 10, padding_y)
             new_rect.blit(text_surface, name_text_rect)
 
-            text_surface = self.game.font.render(f'{str(magic.cost)}', True, (32, 128, 255))
+            if magic.cost > self.game.player.mp:
+                text_surface = self.game.font.render(f'{str(magic.cost)}', True, (255, 0, 0))
+            else:
+                text_surface = self.game.font.render(f'{str(magic.cost)}', True, (32, 128, 255))
             text_rect = text_surface.get_rect()
             text_rect.topleft = (name_text_rect.topright[0] + 10, name_text_rect.topright[1])
             new_rect.blit(text_surface, text_rect)
@@ -65,7 +68,8 @@ class MagicMenu(State):
         display.blit(self.rectangle, (0, 0))
         if len(self.game.state_stack) == 4:
             display.blit(self.prev_state.confirm_buttons, (
-            self.game.width - self.prev_state.confirm_buttons_rect[2], self.game.height - self.prev_state.confirm_buttons_rect[3]))
+                self.game.width - self.prev_state.confirm_buttons_rect[2],
+                self.game.height - self.prev_state.confirm_buttons_rect[3]))
 
         text_surface = self.game.font.render(f'{self.game.player.mp}\\{self.game.player.max_mp}', True, (32, 128, 255))
         text_rect = text_surface.get_rect()
