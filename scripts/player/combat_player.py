@@ -34,6 +34,12 @@ class CombatPlayer(pygame.sprite.Sprite):
             if magic.damage_type == 'physical':
                 self.sprites[f'{magic.damage_type}-magic'] = self.sprites['attack']
                 continue
+            if magic.damage_type == 'buff':
+                self.sprites[f'{magic.damage_type}-magic'] = list(
+                    map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
+                        SpriteSheet(os.path.join(graphics_path, f'{magic.damage_type}-magic.png')).load_strip(
+                            pygame.Rect(0, 0, 128, 128), 8, (0, 0, 0))))
+                continue
             self.sprites[f'{magic.damage_type}-magic'] = list(
                 map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
                     SpriteSheet(os.path.join(graphics_path, f'{magic.damage_type}-magic.png')).load_strip(
