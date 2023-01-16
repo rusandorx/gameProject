@@ -130,7 +130,7 @@ class Combat(State):
             surface.blit(self.combat_menu.image,
                          (self.combat_player.position[0], self.combat_player.position[1] - 50))
 
-        if self.outline and self.state == CombateState.CHOOSE_ENEMY:
+        if self.outline and self.state == CombateState.CHOOSE_ENEMY and len(self.enemies) > 1:
             surface.blit(self.outline, (self.enemies[self.enemy_index].position[0] - self.enemy_size[0] * .5,
                                         self.enemies[self.enemy_index].position[1] - self.enemy_size[1] * .5))
 
