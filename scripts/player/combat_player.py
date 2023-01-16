@@ -44,7 +44,7 @@ class CombatPlayer(pygame.sprite.Sprite):
 
     def attack(self, target):
         self.set_sprite_state_once('attack')
-        target.take_damage(self.player.stats['attack'] * (self.player.lvl / 10), 'physical')
+        target.take_damage(self.player.stats['attack'], 'physical')
 
     def set_sprite_state_once(self, sprite_state):
         self.animation_frame = 0

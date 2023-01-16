@@ -77,6 +77,7 @@ class Combat(State):
             if not enemy.active:
                 continue
             if enemy.dead and enemy.sprite_state != 'die':
+                self.game.player.lvl_point += 5
                 enemy.die()
                 self.set_current_animation(enemy, [])
                 continue
@@ -214,6 +215,8 @@ class Combat(State):
         self.exit_state()
         self.level_name.die()
         Sound.stop_all()
+        while self.game.player.lvl_point >= self.game.player.lvl_point_up:
+            self.game.player.level_up()
 
 
 class CombateMenu(pygame.sprite.Sprite):
