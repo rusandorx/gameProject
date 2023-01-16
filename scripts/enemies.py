@@ -179,6 +179,7 @@ class SkeletonEnemy(CombatEnemy):
 
     def level_up(self):
         self.stats["endurance"] *= 1.05
+        self.stats["xp"] *= 1.05
 
 
 class NecromancerEnemy(CombatEnemy):
@@ -221,6 +222,7 @@ class NecromancerEnemy(CombatEnemy):
 
     def level_up(self):
         self.stats["endurance"] *= 1.05
+        self.stats["xp"] *= 1.05
 
 enemies = {
     'skeleton': lambda position, player: SkeletonEnemy('skeleton', randint(1, 5), 30, {
@@ -228,9 +230,10 @@ enemies = {
         'endurance': 10,
         'weaknesses': ['light'],
         'type': ['dark'],
+        'xp': 5,
         'actions': {
             'attack': .7,
-            'magic': .3
+            'magic': .3,
         },
     }, position, player),
     'necromancer': lambda position, player: NecromancerEnemy('necromancer', randint(20, 30), 100, {
@@ -238,9 +241,10 @@ enemies = {
         'endurance': 50,
         'weaknesses': [],
         'type': ['god'],
+        'xp': 50,
         'actions': {
             'attack': .95,
-            'magic': .05
+            'magic': .05,
         },
     }, position, player)
 }

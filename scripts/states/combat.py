@@ -77,7 +77,7 @@ class Combat(State):
             if not enemy.active:
                 continue
             if enemy.dead and enemy.sprite_state != 'die':
-                self.game.player.lvl_point += 5
+                self.game.player.lvl_point += enemy.stats["xp"]
                 enemy.die()
                 self.set_current_animation(enemy, [])
                 continue
