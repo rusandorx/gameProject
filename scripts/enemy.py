@@ -21,10 +21,10 @@ class Enemy(pygame.sprite.Sprite):
                           "raccoon": 4}
         range_attack = {"skeleton": 150,
                         "bamboo": 150,
-                          "knight": 150,
-                          "squid": 150,
-                          "necromancer": 300,
-                          "raccoon": 150}
+                        "knight": 150,
+                        "squid": 150,
+                        "necromancer": 300,
+                        "raccoon": 150}
         self.alive = True
         self.died_sprite = pygame.image.load("../graphics/bones/bones.png")
         self.range_attack = range_attack[name]

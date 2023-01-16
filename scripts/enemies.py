@@ -87,7 +87,6 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
                 self.animate_ended()
                 return
 
-
         self.image = sprites[int(self.animation_frame)]
         self.rect = self.image.get_rect(center=self.rect.center)
 
@@ -179,6 +178,7 @@ class SkeletonEnemy(CombatEnemy):
 
     def level_up(self):
         self.stats["endurance"] *= 1.05
+        self.stats["xp"] *= 1.05
 
 
 class NecromancerEnemy(CombatEnemy):
@@ -188,8 +188,6 @@ class NecromancerEnemy(CombatEnemy):
         self.stats["attack"] *= lvl
         for i in range(lvl - 1):
             self.level_up()
-
-
 
     def load_assets(self):
         graphics_path = '../graphics/ui/combat/sprites/necromancer/'
@@ -221,6 +219,44 @@ class NecromancerEnemy(CombatEnemy):
 
     def level_up(self):
         self.stats["endurance"] *= 1.05
+        self.stats["xp"] *= 1.05
+
+
+class KnightEnemy(CombatEnemy):
+    def __init__(self, name, lvl, hp, stats, position, player, *groups):
+        super().__init__(name, lvl, hp, stats, position, player, *groups)
+        self.stats["attack"] *= lvl
+        for i in range(lvl - 1):
+            self.level_up()
+
+    def load_assets(self):
+        graphics_path = '../graphics/ui/combat/sprites/Knight_1/'
+        self.sprites = {
+            'idle': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Idle.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 4, (0, 0, 0)))),
+            'attack': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Attack 3.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 4, (0, 0, 0)))),
+            'hurt': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Hurt.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 2, (0, 0, 0)))),
+            'die': list(
+                map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
+                    SpriteSheet(os.path.join(graphics_path, 'Dead.png')).load_strip(
+                        pygame.Rect(0, 0, 128, 128), 6, (0, 0, 0))))
+        }
+        self.image = self.sprites[self.sprite_state][self.animation_frame]
+        self.rect = self.image.get_rect()
+        self.rect.center = self.position
+
+    def level_up(self):
+        self.stats["endurance"] *= 1.05
+        self.stats["xp"] *= 1.05
+
 
 enemies = {
     'skeleton': lambda position, player: SkeletonEnemy('skeleton', randint(1, 5), 30, {
@@ -228,9 +264,10 @@ enemies = {
         'endurance': 10,
         'weaknesses': ['light'],
         'type': ['dark'],
+        'xp': 5,
         'actions': {
             'attack': .7,
-            'magic': .3
+            'magic': .3,
         },
     }, position, player),
     'necromancer': lambda position, player: NecromancerEnemy('necromancer', randint(20, 30), 100, {
@@ -238,9 +275,21 @@ enemies = {
         'endurance': 50,
         'weaknesses': [],
         'type': ['god'],
+        'xp': 50,
         'actions': {
             'attack': .95,
-            'magic': .05
+            'magic': .05,
+        },
+    }, position, player),
+    'knight': lambda position, player: KnightEnemy('knight', randint(5, 20), 30, {
+        'attack': 2,
+        'endurance': 10,
+        'weaknesses': [],
+        'type': ['god'],
+        'xp': 7,
+        'actions': {
+            'attack': .7,
+            'magic': .3,
         },
     }, position, player)
 }
