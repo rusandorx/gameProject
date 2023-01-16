@@ -93,7 +93,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def attack(self):
         self.animate_once('attack')
-        self.player.take_damage(self.stats['attack'] * (self.lvl / 10), 'physical')
+        self.player.take_damage(self.stats['attack'], 'physical')
 
     def magic(self):
         # TODO: Magic
@@ -149,6 +149,9 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 class SkeletonEnemy(CombatEnemy):
     def __init__(self, name, lvl, hp, stats, position, player, *groups):
         super().__init__(name, lvl, hp, stats, position, player, *groups)
+        self.stats["attack"] *= lvl
+        for i in range(lvl - 1):
+            self.level_up()
 
     def load_assets(self):
         graphics_path = '../graphics/ui/combat/sprites/skeleton/'
@@ -174,11 +177,19 @@ class SkeletonEnemy(CombatEnemy):
         self.rect = self.image.get_rect()
         self.rect.center = self.position
 
+    def level_up(self):
+        self.stats["endurance"] *= 1.05
+
 
 class NecromancerEnemy(CombatEnemy):
     def __init__(self, name, lvl, hp, stats, position, player, *groups):
         super().__init__(name, lvl, hp, stats, position, player, *groups)
         self.animation_speed = 0.3
+        self.stats["attack"] *= lvl
+        for i in range(lvl - 1):
+            self.level_up()
+
+
 
     def load_assets(self):
         graphics_path = '../graphics/ui/combat/sprites/necromancer/'
@@ -208,10 +219,12 @@ class NecromancerEnemy(CombatEnemy):
         self.rect = self.image.get_rect()
         self.rect.center = self.position
 
+    def level_up(self):
+        self.stats["endurance"] *= 1.05
 
 enemies = {
     'skeleton': lambda position, player: SkeletonEnemy('skeleton', randint(1, 5), 30, {
-        'attack': 8,
+        'attack': 0.8,
         'endurance': 10,
         'weaknesses': ['light'],
         'type': ['dark'],
@@ -221,7 +234,7 @@ enemies = {
         },
     }, position, player),
     'necromancer': lambda position, player: NecromancerEnemy('necromancer', randint(20, 30), 100, {
-        'attack': 20,
+        'attack': 2,
         'endurance': 50,
         'weaknesses': [],
         'type': ['god'],

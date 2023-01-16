@@ -70,7 +70,7 @@ class CombatPlayer(pygame.sprite.Sprite):
         self.animate()
 
     def take_damage(self, damage, damage_type):
-        self.player.hp -= damage
+        self.player.hp -= damage * 0.95 ** self.player.stats['endurance']
         self.set_sprite_state_once('hurt')
         if self.player.hp <= 0:
             self.set_sprite_state_once('die')
