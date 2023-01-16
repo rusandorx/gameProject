@@ -24,6 +24,7 @@ class Magic(pygame.sprite.Sprite):
         self.animation_speed = .2
         self.animation_frame = 0
         self.pos = (0, 0)
+        self.on_animation_end = []
 
     def load_assets(self):
         path = f'../graphics/ui/combat/magic/{self.name}/'
@@ -46,6 +47,8 @@ class Magic(pygame.sprite.Sprite):
         if self.animation_frame >= len(sprites):
             self.animation_frame = 0
             self.animating = False
+            for cb in self.on_animation_end:
+                cb()
             return
 
         self.image = sprites[int(self.animation_frame)]
@@ -57,7 +60,8 @@ class Magic(pygame.sprite.Sprite):
 
     def use(self, player: CombatPlayer, target: CombatEnemy):
         player.set_sprite_state_once('magic')
-        target.take_damage((player.player.lvl * .05) * self.damage, self.damage_type)
+        target.take_damage((player.player.lvl * .05) * self.damage, self.damage_type, False)
+        self.on_animation_end.append(lambda: target.set_animation('idle'))
         player.player.mp -= self.cost
 
 

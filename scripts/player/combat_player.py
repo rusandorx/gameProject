@@ -12,7 +12,7 @@ class CombatPlayer(pygame.sprite.Sprite):
         self.position = position
         self.load_sprites()
         self.player = player
-        self.on_animation_ended = []
+        self.on_animation_end = []
 
     def load_sprites(self):
         graphics_path = '../graphics/ui/combat/sprites/player/'
@@ -76,7 +76,7 @@ class CombatPlayer(pygame.sprite.Sprite):
             self.set_sprite_state_once('die')
 
     def animation_ended(self):
-        for cb in self.on_animation_ended:
+        for cb in self.on_animation_end:
             cb()
-        self.on_animation_ended.clear()
+        self.on_animation_end.clear()
 

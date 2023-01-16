@@ -26,6 +26,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def __init__(self, name, lvl, hp, stats, position, player, *groups):
         super().__init__(*groups)
+        self.active = True
         self.player = player
         self.name = name
         self.max_hp = hp * (lvl * .05)
@@ -45,15 +46,17 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.animation_speed = .1
         self.return_to_idle = False
         self.stop_at_last_frame = False
-        self.active = True
+        self.dead = False
         self.outstroked = False
-        self.on_animate_end = []
+        self.on_animation_end = []
         self.load_assets()
 
     def animation_length(self, animation):
         return len(self.sprites[animation])
 
     def animate_once(self, sprite_state):
+        if self.dead:
+            return
         self.sprite_state = sprite_state
         self.animation_frame = 0
         self.return_to_idle = True
@@ -70,6 +73,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def animate(self):
         sprites = self.sprites[self.sprite_state]
+        print(len(sprites))
 
         if self.stop_at_last_frame and int(self.animation_frame) >= len(sprites) - 1:
             self.animate_ended()
@@ -84,6 +88,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
                 self.animate_ended()
                 return
 
+
         self.image = sprites[int(self.animation_frame)]
         self.rect = self.image.get_rect(center=self.rect.center)
 
@@ -95,7 +100,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         # TODO: Magic
         self.attack()
 
-    def take_damage(self, damage, damage_type):
+    def take_damage(self, damage, damage_type, once=True):
         if damage_type == 'physical':
             take_damage = damage * 0.95 ** self.stats['endurance']
             crete = {
@@ -109,13 +114,25 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         else:
             self.hp -= damage * (1.5 if any(stat == damage_type for stat in self.stats['type']) else 1)
         if self.hp <= 0:
-            return self.die()
+            self.dead = True
+        if once:
+            return self.animate_once('hurt')
+        self.set_animation('hurt')
 
-        self.animate_once('hurt')
+    def set_animation(self, animation):
+        if self.dead:
+            return
+        self.sprite_state = animation
+        self.animation_frame = 0
+        self.return_to_idle = False
+        self.stop_at_last_frame = False
 
     def die(self):
         self.animate_to_last_frame('die')
-        self.active = False
+        self.on_animation_end.append(self.set_active)
+
+    def set_active(self, value=False):
+        self.active = value
 
     def update(self):
         self.animate()
@@ -125,9 +142,9 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
             choices([*self.actions.keys()], weights=[action for action in self.actions.values()])[0]]()
 
     def animate_ended(self):
-        for cb in self.on_animate_end:
+        for cb in self.on_animation_end:
             cb()
-        self.on_animate_end.clear()
+        self.on_animation_end.clear()
 
 
 class SkeletonEnemy(CombatEnemy):
