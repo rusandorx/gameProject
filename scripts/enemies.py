@@ -34,6 +34,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.lvl = lvl
         self.stats = stats
         self.position = position
+        self.boss = False
 
         self.sprites = []
         self.actions_to_methods = {
@@ -186,6 +187,7 @@ class NecromancerEnemy(CombatEnemy):
         super().__init__(name, lvl, hp, stats, position, player, *groups)
         self.animation_speed = 0.3
         self.stats["attack"] *= lvl
+        self.boss = True
         for i in range(lvl - 1):
             self.level_up()
 

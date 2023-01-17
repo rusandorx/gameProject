@@ -1,4 +1,5 @@
 import os
+import random
 
 import pygame
 
@@ -8,18 +9,17 @@ from spritesheet import SpriteSheet
 
 
 class Magic(pygame.sprite.Sprite):
-    def __init__(self, name, description, damage, damage_type, cost, sprites_count, sprite_size=(256, 256),
-                 need_target=True,
-                 *groups):
+    def __init__(self, options: dict, *groups):
         super().__init__(*groups)
-        self.name = name
-        self.description = description
-        self.damage = damage
-        self.damage_type = damage_type
-        self.cost = cost
-        self.sprites_count = sprites_count
-        self.need_target = need_target
-        self.sprites_size = sprite_size
+        self.name = options.get('name', 'magic')
+        self.description = options.get('description', 'Описание')
+        self.damage = options.get('damage', 5)
+        self.damage_type = options.get('damage_type', 'physical')
+        self.cost = options.get('cost', 5)
+        self.sprites_count = options.get('sprites_count', 0)
+        self.need_target = options.get('need_target', True)
+        self.sprites_size = options.get('sprites_size', (256, 256))
+        self.options = options
         self.load_assets()
         self.animating = False
         self.animation_speed = .2
@@ -70,9 +70,9 @@ class Magic(pygame.sprite.Sprite):
 
 
 class HealMagic(Magic):
-    def __init__(self, name, description, heal_hp, damage_type, cost, sprites_count, *groups):
-        super().__init__(name, description, heal_hp, damage_type, cost, sprites_count, (0, 0), False, *groups)
-        self.heal_hp = heal_hp
+    def __init__(self, options, *groups):
+        super().__init__(options, *groups)
+        self.heal_hp = options.get('heal_hp', 10)
 
     def load_assets(self):
         path = f'../graphics/ui/combat/magic/{self.name}/'
@@ -92,10 +92,81 @@ class HealMagic(Magic):
         pass
 
 
+class DarkMagic(Magic):
+    def use(self, player: CombatPlayer, target: CombatEnemy):
+        super().use(player, target)
+        player.player.hp -= self.options.get('self_damage')
+
+
+class LightMagic(Magic):
+    def use(self, player: CombatPlayer, target: CombatEnemy):
+        player.set_sprite_state_once(f'{self.damage_type}-magic')
+        if target.boss:
+            is_instakill = False
+        else:
+            is_instakill = random.choices([True, False], weights=[self.options['instakill'], 1 - self.options['instakill']])[0]
+        target.take_damage((player.player.lvl * .05) * self.damage if not is_instakill else target.hp, self.damage_type,
+                           False)
+        self.on_animation_end.append(lambda: target.set_animation('idle'))
+        player.player.mp -= self.cost
+
+
 magic = {
-    'agi': lambda: Magic('agi', 'Маленький огненный урон', 20, 'fire', 5, 6, (128, 128)),
-    'explosion': lambda: Magic('explosion', 'Средний урон огнём', 50, 'fire', 20, 14, (64, 64)),
-    'dark-bolt': lambda: Magic('dark-bolt', 'Темная молния', 30, 'dark', 10, 10, (77, 88)),
-    'lightning': lambda: Magic('lightning', 'Священная молния', 25, 'light', 50, 11, (64, 128)),
-    'heal': lambda: HealMagic('heal', 'Маленькое лечение', 20, 'buff', 25, 0)
+    'agi': lambda: Magic(
+        {
+            'name': 'agi',
+            'description': 'Маленький огненный урон',
+            'damage': 20,
+            'damage_type': 'fire',
+            'cost': 5,
+            'sprites_count': 6,
+            'sprites_size': (128, 128)
+        }
+    ),
+    'explosion': lambda: Magic(
+        {
+            'name': 'explosion',
+            'description': 'Средний урон огнём',
+            'damage': 50,
+            'damage_type': 'fire',
+            'cost': 20,
+            'sprites_count': 14,
+            'sprites_size': (64, 64)
+        }
+    ),
+    'dark-bolt': lambda: DarkMagic(
+        {
+            'name': 'dark-bolt',
+            'description': 'Темная молния (-10 HP)',
+            'damage': 30,
+            'damage_type': 'dark',
+            'cost': 10,
+            'sprites_count': 10,
+            'sprites_size': (77, 88),
+            'self_damage': 10
+        }
+    ),
+    # 'heal', 'Маленькое лечение', 20, 'buff', 25, 0
+    'lightning': lambda: LightMagic(
+        {
+            'name': 'lightning',
+            'description': 'Священная молния (шанс мгновенно убить обычного врага: 5%)',
+            'damage': 25,
+            'damage_type': 'light',
+            'cost': 50,
+            'sprites_count': 11,
+            'sprites_size': (64, 128),
+            'instakill': .05
+        }
+    ),
+    'heal': lambda: HealMagic(
+        {
+            'name': 'heal',
+            'description': 'Маленькое лечение',
+            'damage_type': 'buff',
+            'cost': 25,
+            'sprites_count': 0,
+            'heal_hp': 25
+        }
+    )
 }

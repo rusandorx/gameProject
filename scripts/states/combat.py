@@ -28,6 +28,7 @@ class Combat(State):
         self.confirm_buttons_rect = self.confirm_buttons.get_rect()
 
         self.combat_player = CombatPlayer((200, 400), self.game.player)
+        self.combat_player.player.mp = 1450
         self.main_group.add(self.combat_player)
         self.magic = None
         self.current_animation = None
