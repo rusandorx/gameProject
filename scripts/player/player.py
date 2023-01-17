@@ -1,3 +1,4 @@
+from item import items
 from magic import magic
 
 
@@ -6,7 +7,7 @@ class Player:
         self.max_hp, self.hp = 100, 100
         self.max_mp, self.mp = 50, 50
         self.lvl_point_up, self.lvl_point = 10, 0
-        self.items = {}
+        self.items = {items[name]: items[name].count for name in ('small_potion', 'medium_potion')}
         self.magic = list(map(lambda x: magic[x](), ['agi', 'explosion', 'dark-bolt', 'lightning', 'heal']))
         self.exp = 0
         self.stats = {
@@ -25,3 +26,17 @@ class Player:
         self.mp = self.max_mp
         self.stats["endurance"] += 1
         self.stats["attack"] *= 1.05
+
+    def use_item(self, item):
+        self.items[item] -= 1
+        if self.items[item] <= 0:
+            del self.items[item]
+            item.count = 0
+            return
+        item.count = self.items[item]
+
+    def add_item(self, item):
+        if item not in self.items:
+            self.items[item] = 0
+        self.items[item] += 1
+        item.count = self.items[item]

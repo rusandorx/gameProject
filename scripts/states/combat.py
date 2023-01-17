@@ -8,6 +8,7 @@ from enemies import enemies, CombatEnemy
 from player.combat_player import CombatPlayer
 from sounds import Sound
 from spritesheet import SpriteSheet
+from states.item_menu import ItemMenu
 from states.magic_menu import MagicMenu
 from states.result_screen import ResultScreen
 from states.state import State
@@ -30,6 +31,7 @@ class Combat(State):
         self.combat_player = CombatPlayer((200, 400), self.game.player)
         self.main_group.add(self.combat_player)
         self.magic = None
+        self.item = None
         self.current_animation = None
 
         self.enemies_count = randint(*count_enemy)
@@ -150,12 +152,15 @@ class Combat(State):
                 self.action = 'attack'
                 self.state = CombateState.CHOOSE_ENEMY
             elif key_state['l']:
-                self.action = 'magic'
+                # self.action = 'magic'
                 if any(magic.cost <= self.combat_player.player.mp for magic in self.combat_player.player.magic):
                     self.state = CombateState.CHOOSE_MAGIC
                     magic_menu = MagicMenu(self.game, self.get_magic_index)
                     magic_menu.enter_state()
-
+            elif key_state['cancel']:
+                # self.action = 'item'
+                item_menu = ItemMenu(self.game, self.get_item_index)
+                item_menu.enter_state()
         elif self.state == CombateState.CHOOSE_ENEMY:
             if self.enemies_count == 1:
                 self.actions[self.action]()
@@ -183,7 +188,7 @@ class Combat(State):
                                     self.enemies[self.enemy_index].position[1]))
 
     def player_item(self):
-        pass
+        self.item.use(self.combat_player, self.enemies[self.enemy_index])
 
     def player_animation_ended(self):
         self.enemies_turn = 0
@@ -217,6 +222,18 @@ class Combat(State):
             self.state = CombateState.CHOOSE_ENEMY
         else:
             self.player_magic()
+
+    def get_item_index(self, item):
+        if item == -1:
+            self.state = CombateState.IDLE
+            self.action = CombateState.IDLE
+            return
+        self.action = 'item'
+        self.item = item
+        if item.need_target:
+            self.state = CombateState.CHOOSE_ENEMY
+        else:
+            self.player_item()
 
     def on_all_enemies_dead(self):
         results_screen = ResultScreen(self.game)
