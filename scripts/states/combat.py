@@ -252,8 +252,10 @@ class CombateMenu(pygame.sprite.Sprite):
     def set_show_magic(self, show_magic):
         if not show_magic:
             self.state = 'no_magic'
+            self.animation_speed = .05
             return
         self.state = 'normal'
+        self.animation_speed = .1
 
 
 
