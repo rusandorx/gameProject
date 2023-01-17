@@ -1,7 +1,7 @@
 import pygame
-from states.magic_menu import MagicMenu
-from player.combat_player import CombatPlayer
 
+from player.combat_player import CombatPlayer
+from states.magic_menu import MagicMenu
 from states.state import State
 
 
@@ -42,8 +42,8 @@ class PauseMenu(State):
 
     def confirm_option(self):
         option = self.options[self.index]
-
-        if option == "Magic":
+        if option == "Magic" and any(magic.can_be_used(self.game.player) and magic.damage_type == 'buff' for magic in
+                                     self.game.player.magic):
             magic_menu = MagicMenu(self.game, self.get_magic_index)
             magic_menu.enter_state()
         # TODO: Implement all options.
@@ -52,7 +52,8 @@ class PauseMenu(State):
                 self.game.state_stack.pop()
 
     def get_magic_index(self, index):
-        self.action = 'magic'
+        if index == -1:
+            return
         self.magic = list(filter(lambda magic: magic.damage_type == "buff", self.game.player.magic))[index]
         self.combat_player = CombatPlayer((200, 400), self.game.player)
         self.magic.use(self.combat_player, None)
