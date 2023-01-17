@@ -44,7 +44,6 @@ class PauseMenu(State):
         option = self.options[self.index]
 
         if option == "Magic":
-            print(MagicMenu)
             magic_menu = MagicMenu(self.game, self.get_magic_index)
             magic_menu.enter_state()
         # TODO: Implement all options.
@@ -54,6 +53,6 @@ class PauseMenu(State):
 
     def get_magic_index(self, index):
         self.action = 'magic'
-        self.magic = self.game.player.magic[index]
+        self.magic = list(filter(lambda magic: magic.damage_type == "buff", self.game.player.magic))[index]
         self.combat_player = CombatPlayer((200, 400), self.game.player)
         self.magic.use(self.combat_player, None)

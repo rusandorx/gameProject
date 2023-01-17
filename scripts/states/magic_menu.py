@@ -56,48 +56,45 @@ class MagicMenu(State):
 
         return result
 
+    def update(self, key_state):
+        self.handle_keys(key_state)
+        self.prev_state.update(key_state)
 
-def update(self, key_state):
-    self.handle_keys(key_state)
-    self.prev_state.update(key_state)
+    def render(self, display):
+        self.prev_state.render(display)
+        for i, image in enumerate(self.option_images):
+            if i == self.index:
+                image.set_alpha(255)
+            else:
+                image.set_alpha(128)
+            display.blit(image, (0, i * self.OPTION_SIZE[1]))
+        display.blit(self.rectangle, (0, 0))
+        if len(self.game.state_stack) == 4:
+            if hasattr(self.prev_state, "confirm_buttons"):
+                display.blit(self.prev_state.confirm_buttons, (
+                    self.game.width - self.prev_state.confirm_buttons_rect[2],
+                    self.game.height - self.prev_state.confirm_buttons_rect[3]))
 
+        text_surface = self.game.font.render(f'{self.game.player.mp}\\{self.game.player.max_mp}', True, (32, 128, 255))
+        text_rect = text_surface.get_rect()
+        text_rect.topright = (self.OPTION_SIZE[0], 0)
+        display.blit(text_surface, text_rect)
 
-def render(self, display):
-    self.prev_state.render(display)
-    for i, image in enumerate(self.option_images):
-        if i == self.index:
-            image.set_alpha(255)
-        else:
-            image.set_alpha(128)
-        display.blit(image, (0, i * self.OPTION_SIZE[1]))
-    display.blit(self.rectangle, (0, 0))
-    if len(self.game.state_stack) == 4:
-        if hasattr(self.prev_state, "confirm_buttons"):
-            display.blit(self.prev_state.confirm_buttons, (
-                self.game.width - self.prev_state.confirm_buttons_rect[2],
-                self.game.height - self.prev_state.confirm_buttons_rect[3]))
-
-    text_surface = self.game.font.render(f'{self.game.player.mp}\\{self.game.player.max_mp}', True, (32, 128, 255))
-    text_rect = text_surface.get_rect()
-    text_rect.topright = (self.OPTION_SIZE[0], 0)
-    display.blit(text_surface, text_rect)
-
-
-def handle_keys(self, key_state):
-    if key_state['down']:
-        self.index = (self.index + 1) % len(self.options)
-        while self.options[self.index].cost > self.game.player.mp or \
-                (self.game.state_stack[-2].name == "pause" and not self.options[self.index].damage_type == "buff"):
+    def handle_keys(self, key_state):
+        if key_state['down']:
             self.index = (self.index + 1) % len(self.options)
-    elif key_state['up']:
-        self.index = (self.index - 1) % len(self.options)
-        while self.options[self.index].cost > self.game.player.mp or \
-                (self.game.state_stack[-2].name == "pause" and not self.options[self.index].damage_type == "buff"):
+            while self.options[self.index].cost > self.game.player.mp or \
+                    (self.game.state_stack[-2].name == "pause" and not self.options[self.index].damage_type == "buff"):
+                self.index = (self.index + 1) % len(self.options)
+        elif key_state['up']:
             self.index = (self.index - 1) % len(self.options)
-    elif key_state['confirm']:
-        self.cb(self.index)
-        self.exit_state()
-    elif key_state['cancel']:
-        self.cb(-1)
-        self.exit_state()
-    self.game.reset_keys()
+            while self.options[self.index].cost > self.game.player.mp or \
+                    (self.game.state_stack[-2].name == "pause" and not self.options[self.index].damage_type == "buff"):
+                self.index = (self.index - 1) % len(self.options)
+        elif key_state['confirm']:
+            self.cb(self.index)
+            self.exit_state()
+        elif key_state['cancel']:
+            self.cb(-1)
+            self.exit_state()
+        self.game.reset_keys()
