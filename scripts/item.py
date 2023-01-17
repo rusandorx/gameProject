@@ -28,7 +28,7 @@ class Item(ABC):
         pass
 
 
-class PotionItem(Item):
+class HealthPotionItem(Item):
     def __init__(self, options: dict):
         super().__init__(options)
         self.heal_hp = options['heal_hp']
@@ -41,15 +41,33 @@ class PotionItem(Item):
         return player.hp < player.max_hp
 
 
+class ManaPotionItem(Item):
+    def __init__(self, options: dict):
+        super().__init__(options)
+        self.heal_mp = options['heal_mp']
+
+    def use(self, player: CombatPlayer, target: CombatEnemy):
+        super().use(player, target)
+        player.player.mp = min(player.player.mp + self.heal_mp, player.player.max_mp)
+
+    def can_be_used(self, player):
+        return player.mp < player.max_mp
+
+
 items = {
-    'small_potion': PotionItem({
+    'small_potion': HealthPotionItem({
         'name': 'Small potion',
         'description': 'Зелье... В пузырьке осталось немного.',
         'heal_hp': 15
     }),
-    'medium_potion': PotionItem({
+    'medium_potion': HealthPotionItem({
         'name': 'Medium potion',
         'description': 'Этого зелья хватит чтобы ненадолго перекрыть боль.',
         'heal_hp': 30
+    }),
+    'small_mana_potion': ManaPotionItem({
+        'name': 'Small mana potion',
+        'description': 'Скудно восстанавливает ману.',
+        'heal_mp': 15
     })
 }
