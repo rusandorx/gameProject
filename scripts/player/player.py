@@ -14,7 +14,9 @@ class Player:
             'attack': 2,
             'endurance': 5,
         }
-        self.lvl = 1
+        self.lvl = 20
+        for i in range(self.lvl - 1):
+            self.level_up()
 
     def level_up(self):
         self.lvl_point -= self.lvl_point_up
