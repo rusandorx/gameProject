@@ -166,7 +166,8 @@ magic = {
             'damage_type': 'buff',
             'cost': 25,
             'sprites_count': 0,
-            'heal_hp': 25
+            'heal_hp': 25,
+            'need_target': False
         }
     )
 }

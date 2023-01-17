@@ -276,7 +276,7 @@ enemies = {
         'attack': 2,
         'endurance': 50,
         'weaknesses': [],
-        'type': ['god'],
+        'type': ['light'],
         'xp': 50,
         'actions': {
             'attack': .95,
@@ -287,7 +287,7 @@ enemies = {
         'attack': 2,
         'endurance': 10,
         'weaknesses': [],
-        'type': ['god'],
+        'type': ['light'],
         'xp': 7,
         'actions': {
             'attack': .7,

@@ -54,6 +54,10 @@ class Combat(State):
     def update(self, key_state):
         if self.magic and self.magic.animating:
             self.magic.update()
+        if all(magic.cost > self.combat_player.player.mp for magic in self.combat_player.player.magic):
+            self.combat_menu.set_show_magic(False)
+        else:
+            self.combat_menu.set_show_magic(True)
         self.update_enemies()
         if self.combat_player.player.hp <= 0:
             self.combat_player.on_animation_end.append(self.game.load_states)
@@ -68,6 +72,7 @@ class Combat(State):
             else:
                 if self.state != CombateState.CHOOSE_MAGIC:
                     self.handle_keys(key_state)
+
         self.game.reset_keys()
         self.main_group.update()
         self.combat_menu.update()
@@ -137,7 +142,7 @@ class Combat(State):
 
         if self.state == CombateState.CHOOSE_ENEMY and self.enemies_count > 1:
             surface.blit(self.confirm_buttons, (
-            self.game.width - self.confirm_buttons_rect[2], self.game.height - self.confirm_buttons_rect[3]))
+                self.game.width - self.confirm_buttons_rect[2], self.game.height - self.confirm_buttons_rect[3]))
 
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
@@ -225,20 +230,31 @@ class CombateMenu(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.position = position
         if CombateMenu.sprites is None:
-            path = '../graphics/ui/combat/combat_menu-Sheet.png'
-            sheet = SpriteSheet(path)
-            CombateMenu.sprites = [pygame.transform.scale(img, (380, 335)) for img in
-                                   sheet.load_strip((0, 0, 420, 380), 4, (0, 0, 0))]
+            path = '../graphics/ui/combat/'
+            sheet = SpriteSheet(path + 'combat_menu-Sheet.png')
+            sheet_without_magic = SpriteSheet(path + 'combat_menu_magic_disabled-Sheet.png')
+            CombateMenu.sprites = {'normal': [pygame.transform.scale(img, (380, 335)) for img in
+                                   sheet.load_strip((0, 0, 420, 380), 4, (0, 0, 0))],
+                                   'no_magic': [pygame.transform.scale(img, (380, 335)) for img in
+                                   sheet_without_magic.load_strip((0, 0, 420, 380), 4, (0, 0, 0))]}
         self.sprites = CombateMenu.sprites
         self.animation_frame = 0
         self.animation_speed = .1
-        self.image = self.sprites[0]
+        self.state = 'normal'
+        self.image = self.sprites[self.state][0]
 
     def update(self):
         self.animation_frame += self.animation_speed
-        if self.animation_frame >= len(self.sprites):
+        if self.animation_frame >= len(self.sprites[self.state]):
             self.animation_frame = 0
-        self.image = self.sprites[int(self.animation_frame)]
+        self.image = self.sprites[self.state][int(self.animation_frame)]
+
+    def set_show_magic(self, show_magic):
+        if not show_magic:
+            self.state = 'no_magic'
+            return
+        self.state = 'normal'
+
 
 
 class CombateState(Enum):
