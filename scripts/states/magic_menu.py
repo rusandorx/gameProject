@@ -83,12 +83,12 @@ class MagicMenu(State):
     def handle_keys(self, key_state):
         if key_state['down']:
             self.index = (self.index + 1) % len(self.options)
-            while self.options[self.index].cost > self.game.player.mp or \
+            while not self.options[self.index].can_be_used(self.game.player) or \
                     (self.game.state_stack[-2].name == "pause" and not self.options[self.index].damage_type == "buff"):
                 self.index = (self.index + 1) % len(self.options)
         elif key_state['up']:
             self.index = (self.index - 1) % len(self.options)
-            while self.options[self.index].cost > self.game.player.mp or \
+            while not self.options[self.index].can_be_used(self.game.player) or \
                     (self.game.state_stack[-2].name == "pause" and not self.options[self.index].damage_type == "buff"):
                 self.index = (self.index - 1) % len(self.options)
         elif key_state['confirm']:

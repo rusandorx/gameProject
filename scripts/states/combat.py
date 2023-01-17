@@ -153,7 +153,7 @@ class Combat(State):
                 self.state = CombateState.CHOOSE_ENEMY
             elif key_state['l']:
                 # self.action = 'magic'
-                if any(magic.cost <= self.combat_player.player.mp for magic in self.combat_player.player.magic):
+                if any(magic.can_be_used(self.game.player) for magic in self.combat_player.player.magic):
                     self.state = CombateState.CHOOSE_MAGIC
                     magic_menu = MagicMenu(self.game, self.get_magic_index)
                     magic_menu.enter_state()

@@ -69,6 +69,9 @@ class Magic(pygame.sprite.Sprite):
         for cb in self.on_animation_end:
             cb()
 
+    def can_be_used(self, player):
+        return player.mp >= self.cost
+
 
 class HealMagic(Magic):
     def __init__(self, options, *groups):
@@ -91,6 +94,11 @@ class HealMagic(Magic):
 
     def animate(self):
         pass
+
+    def can_be_used(self, player):
+        if not super().can_be_used(player):
+            return False
+        return player.hp < player.max_hp
 
 
 class DarkMagic(Magic):
