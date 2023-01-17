@@ -232,7 +232,12 @@ class KnightEnemy(CombatEnemy):
             self.level_up()
 
     def load_assets(self):
-        graphics_path = '../graphics/ui/combat/sprites/Knight_1/'
+        if self.lvl <= 10:
+            graphics_path = '../graphics/ui/combat/sprites/Knight_1/'
+        elif self.lvl <= 15:
+            graphics_path = '../graphics/ui/combat/sprites/Knight_2/'
+        else:
+            graphics_path = '../graphics/ui/combat/sprites/Knight_3/'
         self.sprites = {
             'idle': list(
                 map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
