@@ -159,8 +159,10 @@ class Combat(State):
                     magic_menu.enter_state()
             elif key_state['cancel']:
                 # self.action = 'item'
-                item_menu = ItemMenu(self.game, self.get_item_index)
-                item_menu.enter_state()
+                if len(self.combat_player.player.items.keys()) \
+                        and any(item.can_be_used(self.combat_player.player) for item in self.combat_player.player.items):
+                    item_menu = ItemMenu(self.game, self.get_item_index)
+                    item_menu.enter_state()
         elif self.state == CombateState.CHOOSE_ENEMY:
             if self.enemies_count == 1:
                 self.actions[self.action]()

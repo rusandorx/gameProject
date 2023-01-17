@@ -66,8 +66,12 @@ class ItemMenu(State):
     def handle_keys(self, key_state):
         if key_state['down']:
             self.index = (self.index + 1) % len(self.options)
+            while not self.options[self.index][0].can_be_used(self.game.player):
+                self.index = (self.index + 1) % len(self.options)
         elif key_state['up']:
             self.index = (self.index - 1) % len(self.options)
+            while not self.options[self.index][0].can_be_used(self.game.player):
+                self.index = (self.index - 1) % len(self.options)
         elif key_state['confirm']:
             self.cb(self.options[self.index][0])
             self.exit_state()

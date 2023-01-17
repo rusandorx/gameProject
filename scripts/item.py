@@ -23,6 +23,10 @@ class Item(ABC):
     def use(self, player: CombatPlayer, target: CombatEnemy):
         player.player.use_item(self)
 
+    @abstractmethod
+    def can_be_used(self, player: CombatPlayer):
+        pass
+
 
 class PotionItem(Item):
     def __init__(self, options: dict):
@@ -32,6 +36,10 @@ class PotionItem(Item):
     def use(self, player: CombatPlayer, target: CombatEnemy):
         super().use(player, target)
         player.player.hp = min(player.player.hp + self.heal_hp, player.player.max_hp)
+
+    def can_be_used(self, player):
+        return player.hp < player.max_hp
+
 
 items = {
     'small_potion': PotionItem({
