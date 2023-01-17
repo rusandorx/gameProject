@@ -1,4 +1,6 @@
 import pygame
+from states.magic_menu import MagicMenu
+from player.combat_player import CombatPlayer
 
 from states.state import State
 
@@ -6,6 +8,7 @@ from states.state import State
 class PauseMenu(State):
     def __init__(self, game):
         super().__init__(game)
+        self.name = "pause"
         self.menu = pygame.image.load('../graphics/ui/menu.png')
         self.menu_rect = self.menu.get_rect()
         self.menu_rect.center = (self.game.width * .85, self.game.height * .4)
@@ -40,7 +43,16 @@ class PauseMenu(State):
     def confirm_option(self):
         option = self.options[self.index]
 
+        if option == "Magic":
+            magic_menu = MagicMenu(self.game, self.get_magic_index)
+            magic_menu.enter_state()
         # TODO: Implement all options.
         if option == 'Exit':
             while len(self.game.state_stack) > 1:
                 self.game.state_stack.pop()
+
+    def get_magic_index(self, index):
+        self.action = 'magic'
+        self.magic = list(filter(lambda magic: magic.damage_type == "buff", self.game.player.magic))[index]
+        self.combat_player = CombatPlayer((200, 400), self.game.player)
+        self.magic.use(self.combat_player, None)

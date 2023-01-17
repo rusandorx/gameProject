@@ -60,7 +60,8 @@ class Magic(pygame.sprite.Sprite):
 
     def use(self, player: CombatPlayer, target: CombatEnemy):
         player.set_sprite_state_once(f'{self.damage_type}-magic')
-        target.take_damage((player.player.lvl * .05) * self.damage, self.damage_type, False)
+        if target is not None:
+            target.take_damage((player.player.lvl * .05) * self.damage, self.damage_type, False)
         self.on_animation_end.append(lambda: target.set_animation('idle'))
         player.player.mp -= self.cost
 
