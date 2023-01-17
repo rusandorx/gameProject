@@ -18,7 +18,7 @@ class Combat(State):
     def __init__(self, game, enemy_name, level_name, count_enemy):
         super().__init__(game)
         Sound.stop_all()
-
+        self.name = "combat"
         self.level_name = level_name
         self.main_group = pygame.sprite.Group()
         self.background = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
