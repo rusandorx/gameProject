@@ -4,6 +4,7 @@ from random import randint
 
 import pygame
 
+from Particle import Particle
 from enemies import enemies, CombatEnemy
 from player.combat_player import CombatPlayer
 from sounds import Sound
@@ -53,6 +54,7 @@ class Combat(State):
             'item': self.player_item
         }
         self.outline = False
+        self.particle = Particle(self.combat_player)
 
     def update(self, key_state):
         if self.magic and self.magic.animating:
@@ -146,6 +148,7 @@ class Combat(State):
         if self.state == CombateState.CHOOSE_ENEMY and self.enemies_count > 1:
             surface.blit(self.confirm_buttons, (
                 self.game.width - self.confirm_buttons_rect[2], self.game.height - self.confirm_buttons_rect[3]))
+        self.particle.draw(surface)
 
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
