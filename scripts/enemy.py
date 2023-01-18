@@ -17,7 +17,7 @@ class Enemy(pygame.sprite.Sprite):
                           "bamboo": 1,
                           "knight": 1,
                           "squid": 1,
-                          "necromancer": 4,
+                          "necromancer": 1,
                           "raccoon": 4}
         range_attack = {"skeleton": 150,
                         "bamboo": 150,
@@ -26,7 +26,8 @@ class Enemy(pygame.sprite.Sprite):
                         "necromancer": 300,
                         "raccoon": 150}
         move_sprites = {"skeleton": 5,
-                        "knight": 5}
+                        "knight": 5,
+                        "necromancer": 5}
         if name in move_sprites:
             move = move_sprites[name]
         else:
