@@ -3,6 +3,7 @@ import os
 import pygame.sprite
 import zope
 
+from EffectsParticle import EffectsParticle
 from combat_effects import Effect, IEffectAppliable
 from spritesheet import SpriteSheet
 
@@ -59,6 +60,7 @@ class CombatPlayer(pygame.sprite.Sprite):
         self.image = self.sprites['idle'][0]
         self.rect = self.image.get_rect()
         self.rect.center = (self.position[0], self.position[1])
+        self.particle = EffectsParticle(self)
 
     def attack(self, target):
         self.animate_once('attack')
@@ -100,15 +102,18 @@ class CombatPlayer(pygame.sprite.Sprite):
     def return_object_to_apply(self):
         return self.player
 
-    def handle_effect_per_turn(self):
+    def handle_effects_per_turn(self):
+        to_delete = []
         for effect, count in self.effects.items():
             self.effects[effect] = count - 1
             if self.effects[effect] <= 0:
                 effect.on_exit(self)
-                del self.effects[effect]
+                to_delete.append(effect)
                 continue
 
             effect.each_turn(self)
+        for item in to_delete:
+            del self.effects[item]
 
     def add_effect(self, effect: Effect):
         effect.on_apply(self)
@@ -117,5 +122,12 @@ class CombatPlayer(pygame.sprite.Sprite):
             for eff in same_effects:
                 del self.effects[eff]
         self.effects[effect] = effect.turn_count
+
+    def draw_particle_effects(self, surface, after_bg=True):
+        for effect in self.effects:
+            if after_bg:
+                self.particle.draw_after(surface, effect.particle_color)
+            else:
+                self.particle.draw_before(surface, effect.particle_color)
 
 

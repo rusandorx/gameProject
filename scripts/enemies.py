@@ -5,6 +5,7 @@ from random import choices, randint
 import pygame
 import zope.interface
 
+from EffectsParticle import EffectsParticle
 from combat_effects import IEffectAppliable, Effect
 from spritesheet import SpriteSheet
 
@@ -54,6 +55,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.on_animation_end = []
         self.on_turn_end = []
         self.load_assets()
+        self.particle = EffectsParticle(self)
 
     def animation_length(self, animation):
         return len(self.sprites[animation])
@@ -152,14 +154,17 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         return self
 
     def handle_effects_per_turn(self):
+        to_delete = []
         for effect, count in self.effects.items():
             self.effects[effect] = count - 1
             if self.effects[effect] <= 0:
                 effect.on_exit(self)
-                del self.effects[effect]
+                to_delete.append(effect)
                 continue
 
             effect.each_turn(self)
+        for item in to_delete:
+            del self.effects[item]
 
     def add_effect(self, effect: Effect):
         effect.on_apply(self)
@@ -168,6 +173,13 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
             for eff in same_effects:
                 del self.effects[eff]
         self.effects[effect] = effect.turn_count
+
+    def draw_particle_effects(self, surface, after_bg=True):
+        for effect in self.effects:
+            if after_bg:
+                self.particle.draw_after(surface, effect.particle_color)
+            else:
+                self.particle.draw_before(surface, effect.particle_color)
 
 
 class SkeletonEnemy(CombatEnemy):
