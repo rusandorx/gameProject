@@ -15,6 +15,10 @@ class ItemMenu(State):
         self.OPTION_SIZE = (self.game.width, self.game.height / 8)
         self.option_images = self.get_item_images(self.options)
         self.index = 0
+        for i, option in enumerate(self.options):
+            if option[0].can_be_used(self.game.player):
+                self.index = i
+                break
 
     def get_item_images(self, items):
         result = []
