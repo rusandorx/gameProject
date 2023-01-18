@@ -25,6 +25,11 @@ class Enemy(pygame.sprite.Sprite):
                         "squid": 150,
                         "necromancer": 300,
                         "raccoon": 150}
+        move_sprites = {"skeleton": 5}
+        if name in move_sprites:
+            move = move_sprites[name]
+        else:
+            move = 4
         self.alive = True
         self.died_sprite = pygame.image.load("../graphics/bones/bones.png")
         self.range_attack = range_attack[name]
@@ -39,7 +44,7 @@ class Enemy(pygame.sprite.Sprite):
         self.sprites = {"MOVE": [
             pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/move/{i}.png').convert_alpha(),
                                    (self.size, self.size))
-            for i in range(4)],
+            for i in range(move)],
             "IDLE": [
                 pygame.transform.scale(
                     pygame.image.load(f"../graphics/monsters/{name}/idle/0.png").convert_alpha(),
