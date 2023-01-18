@@ -61,7 +61,7 @@ class MolotovItem(Item):
 
     def use(self, player: CombatPlayer, target: CombatEnemy):
         super().use(player, target)
-        target.add_effect(BurnEffect({'name': 'burn', 'turn_count': 3, 'color': (192, 64, 0), 'damage': 10}))
+        target.add_effect(BurnEffect({'name': 'burn', 'turn_count': 3, 'color': (192, 64, 0), 'damage': 2}))
 
     def can_be_used(self, player: CombatPlayer):
         return True

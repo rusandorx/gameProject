@@ -157,12 +157,11 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         to_delete = []
         for effect, count in self.effects.items():
             self.effects[effect] = count - 1
+            effect.each_turn(self)
             if self.effects[effect] <= 0:
                 effect.on_exit(self)
                 to_delete.append(effect)
-                continue
 
-            effect.each_turn(self)
         for item in to_delete:
             del self.effects[item]
 
