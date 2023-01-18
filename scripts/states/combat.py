@@ -148,7 +148,7 @@ class Combat(State):
         if self.state == CombateState.CHOOSE_ENEMY and self.enemies_count > 1:
             surface.blit(self.confirm_buttons, (
                 self.game.width - self.confirm_buttons_rect[2], self.game.height - self.confirm_buttons_rect[3]))
-        self.particle.draw(surface)
+        self.particle.draw(surface, (0, 255, 0))
 
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
