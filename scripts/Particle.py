@@ -7,9 +7,10 @@ class Particle:
     def __init__(self, combat_player):
         self.combat_player = combat_player
         self.particles = []
-        for i in range(20):
+        for i in range(250):
             self.particles.append([random.randint(self.combat_player.rect.x + 120, self.combat_player.rect.x + 248),
-                                   self.combat_player.rect.y + 500, random.randint(0, 5), 0.15])
+                                   random.randint(self.combat_player.rect.y + 300,
+                                      self.combat_player.rect.y + 800), random.randint(0, 5), 0.5])
 
     def draw(self, surface):
         for j in range(len(self.particles)):
@@ -17,10 +18,11 @@ class Particle:
             pygame.draw.ellipse(surface, (255, 0, 0), (i[0], i[1], i[2], i[2]))
             i[2] += i[3]
             i[1] -= 1
-            if i[2] >= 20:
+            if i[2] >= 10:
                 i[3] *= -1
             if i[2] <= 0:
                 self.particles[j] = [random.randint(self.combat_player.rect.x + 120, self.combat_player.rect.x + 248),
-                                   self.combat_player.rect.y + 500, random.randint(0, 5), 0.15]
+                                     random.randint(self.combat_player.rect.y + 300,
+                                                    self.combat_player.rect.y + 800), random.randint(0, 5), 0.15]
 
 
