@@ -1,17 +1,24 @@
 import os
 
 import pygame.sprite
+import zope
 
-from enemies import CombatEnemy
+from combat_effects import Effect, IEffectAppliable
 from spritesheet import SpriteSheet
 
 
+@zope.interface.implementer(IEffectAppliable)
 class CombatPlayer(pygame.sprite.Sprite):
     def __init__(self, position, player, *groups):
         super().__init__(*groups)
         self.position = position
         self.player = player
+        self.stats = self.player.stats
+
         self.on_animation_end = []
+        self.effects = {}
+        self.on_turn_end = []
+
         self.load_sprites()
 
     def load_sprites(self):
@@ -54,12 +61,12 @@ class CombatPlayer(pygame.sprite.Sprite):
         self.rect.center = (self.position[0], self.position[1])
 
     def attack(self, target):
-        self.set_sprite_state_once('attack')
+        self.animate_once('attack')
         target.take_damage(self.player.stats['attack'], 'physical')
 
-    def set_sprite_state_once(self, sprite_state):
+    def animate_once(self, animation):
         self.animation_frame = 0
-        self.sprite_state = sprite_state
+        self.sprite_state = animation
         self.return_to_idle = True
 
     def animate(self):
@@ -81,11 +88,34 @@ class CombatPlayer(pygame.sprite.Sprite):
 
     def take_damage(self, damage, damage_type):
         self.player.hp -= damage * 0.95 ** self.player.stats['endurance']
-        self.set_sprite_state_once('hurt')
+        self.animate_once('hurt')
         if self.player.hp <= 0:
-            self.set_sprite_state_once('die')
+            self.animate_once('die')
 
     def animation_ended(self):
         for cb in self.on_animation_end:
             cb()
         self.on_animation_end.clear()
+
+    def return_object_to_apply(self):
+        return self.player
+
+    def handle_effect_per_turn(self):
+        for effect, count in self.effects.items():
+            self.effects[effect] = count - 1
+            if self.effects[effect] <= 0:
+                effect.on_exit(self)
+                del self.effects[effect]
+                continue
+
+            effect.each_turn(self)
+
+    def add_effect(self, effect: Effect):
+        effect.on_apply(self)
+        same_effects = tuple(filter(lambda eff: eff.name == effect.name, self.effects.keys()))
+        if len(same_effects) > 0:
+            for eff in same_effects:
+                del self.effects[eff]
+        self.effects[effect] = effect.turn_count
+
+

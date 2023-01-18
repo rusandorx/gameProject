@@ -184,15 +184,18 @@ class Combat(State):
     def player_attack(self):
         self.combat_player.attack(self.enemies[self.enemy_index])
         self.set_current_animation(self.combat_player, [self.player_animation_ended])
+        self.combat_player.handle_effect_per_turn()
 
     def player_magic(self):
         self.magic.use(self.combat_player, self.enemies[self.enemy_index])
         self.set_current_animation(self.magic, [self.player_animation_ended])
         self.magic.start_animating((self.enemies[self.enemy_index].position[0] - self.enemy_size[0] / 4,
                                     self.enemies[self.enemy_index].position[1]))
+        self.combat_player.handle_effect_per_turn()
 
     def player_item(self):
         self.item.use(self.combat_player, self.enemies[self.enemy_index])
+        self.state = CombateState.IDLE
 
     def player_animation_ended(self):
         self.enemies_turn = 0
@@ -200,6 +203,7 @@ class Combat(State):
             self.state = CombateState.ENEMIES
 
     def enemy_animation_ended(self):
+        self.enemies[self.enemies_turn].handle_effects_per_turn()
         self.enemies_turn += 1
         if self.enemies_turn > self.enemies_count:
             self.state = CombateState.IDLE

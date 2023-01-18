@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 import pygame
 
+from combat_effects import BurnEffect
 from enemies import CombatEnemy
 from player.combat_player import CombatPlayer
 
@@ -54,6 +55,18 @@ class ManaPotionItem(Item):
         return player.mp < player.max_mp
 
 
+class MolotovItem(Item):
+    def __init__(self, options: dict):
+        super().__init__(options)
+
+    def use(self, player: CombatPlayer, target: CombatEnemy):
+        super().use(player, target)
+        target.add_effect(BurnEffect({'name': 'burn', 'turn_count': 3, 'color': (192, 64, 0), 'damage': 10}))
+
+    def can_be_used(self, player: CombatPlayer):
+        return True
+
+
 items = {
     'small_potion': HealthPotionItem({
         'name': 'Small potion',
@@ -69,5 +82,11 @@ items = {
         'name': 'Small mana potion',
         'description': 'Скудно восстанавливает ману.',
         'heal_mp': 15
+    }),
+    'molotov': MolotovItem({
+        'name': 'Molotov',
+        'description': 'Поджигает врага на 3 хода.',
+        'damage_per_turn': 10,
+        'need_target': True
     })
 }

@@ -59,7 +59,7 @@ class Magic(pygame.sprite.Sprite):
         self.animating = True
 
     def use(self, player: CombatPlayer, target: CombatEnemy):
-        player.set_sprite_state_once(f'{self.damage_type}-magic')
+        player.animate_once(f'{self.damage_type}-magic')
         if target is not None:
             target.take_damage((player.player.lvl * .05) * self.damage, self.damage_type, False)
         self.on_animation_end.append(lambda: target.set_animation('idle'))
@@ -86,7 +86,7 @@ class HealMagic(Magic):
         self.rect = pygame.Rect(0, 0, 0, 0)
 
     def use(self, player: CombatPlayer, target: CombatEnemy):
-        player.set_sprite_state_once(f'{self.damage_type}-magic')
+        player.animate_once(f'{self.damage_type}-magic')
         player.on_animation_end.append(self.animation_ended)
         player.player.hp += self.heal_hp
         player.player.hp = player.player.max_hp if player.player.hp > player.player.max_hp else player.player.hp
@@ -109,7 +109,7 @@ class DarkMagic(Magic):
 
 class LightMagic(Magic):
     def use(self, player: CombatPlayer, target: CombatEnemy):
-        player.set_sprite_state_once(f'{self.damage_type}-magic')
+        player.animate_once(f'{self.damage_type}-magic')
         if target.boss:
             is_instakill = False
         else:

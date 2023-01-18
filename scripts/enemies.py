@@ -1,14 +1,15 @@
 import os
-import random
 from abc import abstractmethod, ABCMeta
 from random import choices, randint
 
 import pygame
+import zope.interface
 
+from combat_effects import IEffectAppliable, Effect
 from spritesheet import SpriteSheet
-from utils import get_outline
 
 
+@zope.interface.implementer(IEffectAppliable)
 class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
     '''
     stats: {
@@ -26,6 +27,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
 
     def __init__(self, name, lvl, hp, stats, position, player, *groups):
         super().__init__(*groups)
+        self.effects = {}
         self.active = True
         self.player = player
         self.name = name
@@ -50,6 +52,7 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.dead = False
         self.outstroked = False
         self.on_animation_end = []
+        self.on_turn_end = []
         self.load_assets()
 
     def animation_length(self, animation):
@@ -144,6 +147,27 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         for cb in self.on_animation_end:
             cb()
         self.on_animation_end.clear()
+
+    def return_object_to_apply(self):
+        return self
+
+    def handle_effects_per_turn(self):
+        for effect, count in self.effects.items():
+            self.effects[effect] = count - 1
+            if self.effects[effect] <= 0:
+                effect.on_exit(self)
+                del self.effects[effect]
+                continue
+
+            effect.each_turn(self)
+
+    def add_effect(self, effect: Effect):
+        effect.on_apply(self)
+        same_effects = tuple(filter(lambda eff: eff.name == effect.name, self.effects.keys()))
+        if len(same_effects) > 0:
+            for eff in same_effects:
+                del self.effects[eff]
+        self.effects[effect] = effect.turn_count
 
 
 class SkeletonEnemy(CombatEnemy):
