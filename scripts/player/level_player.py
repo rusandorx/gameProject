@@ -55,7 +55,7 @@ class LevelPlayer(pygame.sprite.Sprite):
         self.position = position
         self.obstacle_sprites: pygame.sprite.Group = obstacle_sprites
         self.rect = self.image.get_rect(topleft=position)
-        self.hitbox = self.rect.inflate(0, -10)
+        self.hitbox = self.rect.inflate(-10, -10)
         self.steps = Sound("../sounds/step.mp3", -1)
         self.step_bool = 0
 
