@@ -2,6 +2,7 @@ import pygame
 
 from player.player import Player
 from scripts.settings import WIDTH, HEIGTH, FPS
+from sounds import Sound
 from states.title import Title
 
 
@@ -90,6 +91,7 @@ class Game:
 
     def load_assets(self):
         self.font = pygame.font.Font('../graphics/font/joystix.ttf', 20)
+        self.big_font = pygame.font.Font('../graphics/font/p5hatty.ttf', 40)
 
     def reset_keys(self):
         for key in self.key_state:
@@ -98,3 +100,7 @@ class Game:
     def load_states(self):
         self.title = Title(self)
         self.state_stack.append(self.title)
+
+    def restart(self):
+        self.__init__()
+        Sound.stop_all()
