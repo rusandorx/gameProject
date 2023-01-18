@@ -25,7 +25,8 @@ class Enemy(pygame.sprite.Sprite):
                         "squid": 150,
                         "necromancer": 300,
                         "raccoon": 150}
-        move_sprites = {"skeleton": 5}
+        move_sprites = {"skeleton": 5,
+                        "knight": 5}
         if name in move_sprites:
             move = move_sprites[name]
         else:
@@ -41,10 +42,14 @@ class Enemy(pygame.sprite.Sprite):
         self.hitbox = self.rect.inflate(0, -5)
         self.player = player
         self.velocity = 2
-        self.sprites = {"MOVE": [
-            pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/move/{i}.png').convert_alpha(),
-                                   (self.size, self.size))
+        self.sprites = {"-MOVE": [
+            pygame.transform.flip(pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/move/{i}.png').convert_alpha(),
+                                   (self.size, self.size)), True, False)
             for i in range(move)],
+            "+MOVE": [
+                pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/move/{i}.png').convert_alpha(),
+                                       (self.size, self.size))
+                for i in range(move)],
             "IDLE": [
                 pygame.transform.scale(
                     pygame.image.load(f"../graphics/monsters/{name}/idle/0.png").convert_alpha(),
@@ -96,7 +101,10 @@ class Enemy(pygame.sprite.Sprite):
         self.hitbox.x += vector.x * self.velocity
         self.hitbox.y += vector.y * self.velocity
         self.rect.center = self.hitbox.center
-        self.sprite_state = "MOVE"
+        if vector.x * self.velocity <= 0:
+            self.sprite_state = "-MOVE"
+        else:
+            self.sprite_state = "+MOVE"
 
     def animation(self):
         if self.alive:
