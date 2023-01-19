@@ -12,13 +12,13 @@ class PauseMenu(State):
         self.menu = pygame.image.load('../graphics/ui/menu.png')
         self.menu_rect = self.menu.get_rect()
         self.menu_rect.center = (self.game.width * .85, self.game.height * .4)
-        self.options = {0: 'Party', 1: 'Items', 2: 'Magic', 3: 'Exit'}
+        self.options = {0: 'Stats', 1: 'Items', 2: 'Magic', 3: 'Exit'}
         self.index = 0
 
         self.cursor_image = pygame.image.load('../graphics/ui/cursor.png')
         self.cursor_rect = self.cursor_image.get_rect()
-        self.cursor_offset_y = self.menu_rect.y + 38
-        self.cursor_rect.center = (self.menu_rect.x + 10, self.cursor_offset_y)
+        self.cursor_offset_y = self.menu_rect.y + 45
+        self.cursor_rect.center = (self.menu_rect.x + 15, self.cursor_offset_y)
 
     def update(self, key_state):
         self.update_cursor(key_state)
@@ -38,7 +38,7 @@ class PauseMenu(State):
             self.index = (self.index + 1) % len(self.options)
         elif key_state['up']:
             self.index = (self.index - 1) % len(self.options)
-        self.cursor_rect.y = self.cursor_offset_y + (self.index * 32)
+        self.cursor_rect.y = self.cursor_offset_y + (self.index * 23)
 
     def confirm_option(self):
         option = self.options[self.index]
