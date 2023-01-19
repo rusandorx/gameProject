@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import pygame
 
 from combat_effects import BurnEffect
-from enemies import CombatEnemy
+from enemies.combat_enemy import CombatEnemy
 from player.combat_player import CombatPlayer
 
 

@@ -6,7 +6,8 @@ import pygame
 
 from EffectsParticle import EffectsParticle
 from combat_effects import BurnEffect
-from enemies import enemies, CombatEnemy
+from ens import enemies
+from enemies.combat_enemy import CombatEnemy
 from player.combat_player import CombatPlayer
 from sounds import Sound
 from spritesheet import SpriteSheet
@@ -32,10 +33,6 @@ class Combat(State):
         self.confirm_buttons_rect = self.confirm_buttons.get_rect()
 
         self.combat_player = CombatPlayer((200, 400), self.game.player)
-        # TODO: DELETE
-        # TODO: Correct coords from sprite size
-        # TODO: Try to make it look better
-        self.combat_player.add_effect(BurnEffect({'name': 'burn', 'turn_count': 3, 'color': (192, 64, 0), 'damage': 10}))
         self.main_group.add(self.combat_player)
         self.magic = None
         self.item = None
@@ -151,8 +148,9 @@ class Combat(State):
                          (self.combat_player.position[0], self.combat_player.position[1] - 50))
 
         if self.outline and self.state == CombateState.CHOOSE_ENEMY and len(self.enemies) > 1:
-            surface.blit(self.outline, (self.enemies[self.enemy_index].position[0] - self.enemy_size[0] * .5,
-                                        self.enemies[self.enemy_index].position[1] - self.enemy_size[1] * .5))
+            enemy = self.enemies[self.enemy_index]
+            surface.blit(self.outline, (enemy.position[0] - self.enemy_size[0] * .5,
+                                        enemy.position[1] - self.enemy_size[1] * .5))
 
         if self.state == CombateState.CHOOSE_ENEMY and self.enemies_count > 1:
             surface.blit(self.confirm_buttons, (

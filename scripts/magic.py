@@ -4,7 +4,7 @@ import random
 import pygame
 
 from combat_effects import BurnEffect, DefenceBuff, IEffectAppliable, ColorEffect
-from enemies import CombatEnemy
+from enemies.combat_enemy import CombatEnemy
 from player.combat_player import CombatPlayer
 from spritesheet import SpriteSheet
 

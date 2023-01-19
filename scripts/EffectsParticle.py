@@ -9,7 +9,7 @@ class EffectsParticle:
         self.particles = []
         self.colors = []
         for i in range(150):
-            self.particles.append([random.randint(self.entity.rect.x + 130, self.entity.rect.x + 258),
+            self.particles.append([random.randint(self.entity.rect.center[0], self.entity.rect.center[0] + 100),
                                    random.randint(self.entity.rect.y + 300,
                                                   self.entity.rect.y + 500), random.randint(0, 5), 0.5,
                                    random.choices((True, False), weights=(.25, .75))[0], (0, 0, 0)])
@@ -30,7 +30,7 @@ class EffectsParticle:
             if i[2] >= 10:
                 i[3] *= -1
             if i[2] <= 0:
-                self.particles[j] = [random.randint(self.entity.rect.x + 130, self.entity.rect.x + 258),
+                self.particles[j] = [random.randint(self.entity.rect.center[0] - 100, self.entity.rect.center[0] + 100),
                                      random.randint(self.entity.rect.y + 300,
                                                     self.entity.rect.y + 500), random.randint(0, 5), 0.15, i[4], i[5]]
 
@@ -43,6 +43,6 @@ class EffectsParticle:
             if i[2] >= 10:
                 i[3] *= -1
             if i[2] <= 0:
-                self.particles[j] = [random.randint(self.entity.rect.x + 130, self.entity.rect.x + 258),
+                self.particles[j] = [random.randint(self.entity.rect.center[0], self.entity.rect.center[0] + 100),
                                      random.randint(self.entity.rect.y + 300,
                                                     self.entity.rect.y + 500), random.randint(0, 5), 0.15, i[4], i[5]]
