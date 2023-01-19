@@ -61,7 +61,7 @@ class CombatPlayer(Entity):
         self.image = self.sprites['idle'][0]
         self.rect = self.image.get_rect()
         self.rect.center = self.position
-        self.particle = EffectsParticle(self)
+        self.particle = EffectsParticle(self, (-100, 100), 100, 120)
 
     def attack(self, target):
         self.animate_once('attack')

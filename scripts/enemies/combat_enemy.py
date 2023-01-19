@@ -140,3 +140,5 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         for cb in self.on_animation_end:
             cb()
         self.on_animation_end.clear()
+
+

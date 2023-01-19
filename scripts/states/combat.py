@@ -6,8 +6,8 @@ import pygame
 
 from EffectsParticle import EffectsParticle
 from combat_effects import BurnEffect
-from ens import enemies
 from enemies.combat_enemy import CombatEnemy
+from enemies.enemies_list import ENEMIES
 from player.combat_player import CombatPlayer
 from sounds import Sound
 from spritesheet import SpriteSheet
@@ -40,7 +40,7 @@ class Combat(State):
 
         self.enemies_count = randint(*count_enemy)
         self.enemies: [CombatEnemy] = [
-            enemies[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)), self.combat_player)
+            ENEMIES[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)), self.combat_player)
             for _ in
             range(self.enemies_count)]
         self.enemy_size = self.enemies[0].image.get_rect()[2:]
@@ -156,6 +156,7 @@ class Combat(State):
             surface.blit(self.confirm_buttons, (
                 self.game.width - self.confirm_buttons_rect[2], self.game.height - self.confirm_buttons_rect[3]))
         self.combat_player.draw_particle_effects(surface)
+
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
             if key_state['confirm']:
