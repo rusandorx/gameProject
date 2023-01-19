@@ -3,6 +3,7 @@ import random
 
 import pygame
 
+from combat_effects import BurnEffect, DefenceBuff, IEffectAppliable
 from enemies import CombatEnemy
 from player.combat_player import CombatPlayer
 from spritesheet import SpriteSheet
@@ -119,9 +120,34 @@ class LightMagic(Magic):
         self.on_animation_end.append(lambda: target.set_animation('idle'))
         player.player.mp -= self.cost
 
+class FireMagic(Magic):
+    def __init__(self, options: dict, *groups):
+        super().__init__(options, *groups)
+        self.burn_chance = options.get('burn_chance', 0)
+
+    def use(self, player: CombatPlayer, target: CombatEnemy):
+        burnt = random.choices((True, False), weights=(self.burn_chance, 1 - self.burn_chance))[0]
+        if burnt:
+            target.add_effect(BurnEffect({'name': 'burn', 'turn_count': 3, 'color': (192, 64, 0), 'damage': 1}))
+        super().use(player, target)
+
+class BuffMagic(Magic):
+    def __init__(self, options: dict, *groups):
+        super().__init__(options, *groups)
+        self.effect = options.get('effect')
+
+    def use(self, player: CombatPlayer, target: CombatEnemy):
+        player.add_effect(self.effect)
+
+    def load_assets(self):
+        path = f'../graphics/ui/combat/magic/{self.name}/'
+        self.icon = pygame.transform.scale(pygame.image.load(os.path.join(path, 'Icon.png')), (64, 64))
+        self.sprites = [pygame.image.load(os.path.join(path, 'sprites.png'))]
+        self.image = self.sprites[0]
+        self.rect = pygame.Rect(0, 0, 0, 0)
 
 magic = {
-    'agi': lambda: Magic(
+    'agi': lambda: FireMagic(
         {
             'name': 'agi',
             'description': 'Маленький огненный урон',
@@ -129,10 +155,11 @@ magic = {
             'damage_type': 'fire',
             'cost': 5,
             'sprites_count': 6,
-            'sprites_size': (128, 128)
+            'sprites_size': (128, 128),
+            'burn_chance': .2
         }
     ),
-    'explosion': lambda: Magic(
+    'explosion': lambda: FireMagic(
         {
             'name': 'explosion',
             'description': 'Средний урон огнём',
@@ -140,7 +167,8 @@ magic = {
             'damage_type': 'fire',
             'cost': 20,
             'sprites_count': 14,
-            'sprites_size': (64, 64)
+            'sprites_size': (64, 64),
+            'burn_chance': .25
         }
     ),
     'dark-bolt': lambda: DarkMagic(
@@ -155,7 +183,6 @@ magic = {
             'self_damage': 10
         }
     ),
-    # 'heal', 'Маленькое лечение', 20, 'buff', 25, 0
     'lightning': lambda: LightMagic(
         {
             'name': 'lightning',
@@ -172,11 +199,22 @@ magic = {
         {
             'name': 'heal',
             'description': 'Маленькое лечение',
-            'damage_type': 'buff',
+            'damage_type': 'heal',
             'cost': 25,
             'sprites_count': 0,
             'heal_hp': 25,
             'need_target': False
+        }
+    ),
+    'shield': lambda: BuffMagic(
+        {
+            'name': 'shield',
+            'description': 'Понижает получаемый урон на 3 хода',
+            'damage_type': 'buff',
+            'cost': 15,
+            'sprites_count': 0,
+            'need_target': False,
+            'effect': DefenceBuff({'name': 'def_up', 'turn_count': 3, 'color': (0, 64, 192), 'def_up_value': 1.3})
         }
     )
 }

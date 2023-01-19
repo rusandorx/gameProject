@@ -86,7 +86,7 @@ items = {
     'molotov': MolotovItem({
         'name': 'Molotov',
         'description': 'Поджигает врага на 3 хода.',
-        'damage_per_turn': 10,
+        'damage_per_turn': 5,
         'need_target': True
     })
 }

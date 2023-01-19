@@ -42,7 +42,7 @@ class CombatPlayer(pygame.sprite.Sprite):
             if magic.damage_type == 'physical':
                 self.sprites[f'{magic.damage_type}-magic'] = self.sprites['attack']
                 continue
-            if magic.damage_type == 'buff':
+            if magic.damage_type == 'heal' or magic.damage_type == 'buff':
                 self.sprites[f'{magic.damage_type}-magic'] = list(
                     map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
                         SpriteSheet(os.path.join(graphics_path, f'{magic.damage_type}-magic.png')).load_strip(
@@ -123,10 +123,10 @@ class CombatPlayer(pygame.sprite.Sprite):
         self.effects[effect] = effect.turn_count
 
     def draw_particle_effects(self, surface, after_bg=True):
-        for effect in self.effects:
-            if after_bg:
-                self.particle.draw_after(surface, effect.particle_color)
-            else:
-                self.particle.draw_before(surface, effect.particle_color)
+        self.particle.set_colors(list(map(lambda eff: eff.particle_color, self.effects)))
+        if after_bg:
+            self.particle.draw_after(surface)
+        else:
+            self.particle.draw_before(surface)
 
 

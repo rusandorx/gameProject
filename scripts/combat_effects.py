@@ -38,3 +38,17 @@ class BurnEffect(Effect):
         entity_obj = entity.return_object_to_apply()
         entity_obj.hp = max(entity_obj.hp - self.damage, 0)
 
+
+class DefenceBuff(Effect):
+    def __init__(self, options):
+        super().__init__(options)
+        self.def_up_value = options['def_up_value']
+
+    def on_apply(self, entity: IEffectAppliable):
+        entity_obj = entity.return_object_to_apply()
+        entity_obj.stats['endurance'] *= self.def_up_value
+
+    def on_exit(self, entity: IEffectAppliable):
+        entity_obj = entity.return_object_to_apply()
+        entity_obj.stats['endurance'] = round(entity_obj.stats['endurance'] / self.def_up_value)
+

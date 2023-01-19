@@ -11,7 +11,7 @@ class MagicMenu(State):
         self.rectangle.set_alpha(128)
         self.rectangle.fill((0, 0, 0))
         if self.game.state_stack[-1].name == "pause":
-            self.options = list(filter(lambda magic: magic.damage_type == "buff", self.game.player.magic))
+            self.options = list(filter(lambda magic: magic.damage_type == "heal" and magic.can_be_used(self.game.player), self.game.player.magic))
         else:
             self.options = self.game.player.magic
         self.OPTION_SIZE = (self.game.width, self.game.height / 8)
