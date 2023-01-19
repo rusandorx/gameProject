@@ -174,11 +174,14 @@ class CombatEnemy(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.effects[effect] = effect.turn_count
 
     def draw_particle_effects(self, surface, after_bg=True):
-        for effect in self.effects:
-            if after_bg:
-                self.particle.draw_after(surface, effect.particle_color)
-            else:
-                self.particle.draw_before(surface, effect.particle_color)
+        if not len(self.effects.keys()):
+            return
+
+        self.particle.set_colors(list(map(lambda eff: eff.particle_color, self.effects)))
+        if after_bg:
+            self.particle.draw_after(surface)
+        else:
+            self.particle.draw_before(surface)
 
 
 class SkeletonEnemy(CombatEnemy):

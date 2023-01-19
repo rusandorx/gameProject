@@ -15,7 +15,7 @@ class EffectsParticle:
                                    random.choices((True, False), weights=(.25, .75))[0], (0, 0, 0)])
 
     def set_colors(self, colors):
-        if all(color in self.colors for color in colors):
+        if all(color in colors for color in self.colors) and all(color in self.colors for color in colors):
             return
         self.colors = colors
         for i in range(len(self.particles)):

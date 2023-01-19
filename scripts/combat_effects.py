@@ -52,3 +52,8 @@ class DefenceBuff(Effect):
         entity_obj = entity.return_object_to_apply()
         entity_obj.stats['endurance'] = round(entity_obj.stats['endurance'] / self.def_up_value)
 
+
+class ColorEffect(Effect):
+    def __init__(self, options: dict):
+        super().__init__(options)
+        self.turn_count = 2

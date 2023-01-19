@@ -3,7 +3,7 @@ import random
 
 import pygame
 
-from combat_effects import BurnEffect, DefenceBuff, IEffectAppliable
+from combat_effects import BurnEffect, DefenceBuff, IEffectAppliable, ColorEffect
 from enemies import CombatEnemy
 from player.combat_player import CombatPlayer
 from spritesheet import SpriteSheet
@@ -87,6 +87,7 @@ class HealMagic(Magic):
         self.rect = pygame.Rect(0, 0, 0, 0)
 
     def use(self, player: CombatPlayer, target: CombatEnemy):
+        player.add_effect(ColorEffect({'name': 'color', 'turn_count': 1, 'color': (32, 250, 30)}))
         player.animate_once(f'{self.damage_type}-magic')
         player.on_animation_end.append(self.animation_ended)
         player.player.hp += self.heal_hp
