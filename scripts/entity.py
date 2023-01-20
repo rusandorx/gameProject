@@ -1,17 +1,30 @@
 from abc import ABCMeta, abstractmethod
 
 import pygame
+import zope
 
-from combat_effects import Effect
+from combat_effects import Effect, IEffectAppliable
 
 
+@zope.interface.implementer(IEffectAppliable)
 class Entity(pygame.sprite.Sprite, metaclass=ABCMeta):
     def __init__(self, *groups):
         super().__init__(*groups)
+        self.stop_at_last_frame = False
+        self.return_to_idle = False
+        self.sprite_state = 'idle'
+        self.animation_frame = 0
+        self.particle = None
+        self.effects, self.stats = {}, {}
 
     @abstractmethod
     def load_assets(self):
         pass
+
+    def animation_ended(self):
+        for cb in self.on_animation_end:
+            cb()
+        self.on_animation_end.clear()
 
     def return_object_to_apply(self):
         return self
@@ -45,3 +58,37 @@ class Entity(pygame.sprite.Sprite, metaclass=ABCMeta):
             self.particle.draw_after(surface)
         else:
             self.particle.draw_before(surface)
+
+    def attack(self, target):
+        self.animate_once('attack')
+        target.take_damage(self.stats['attack'], 'physical')
+
+    def animate_once(self, animation):
+        self.animation_frame = 0
+        self.sprite_state = animation
+        self.return_to_idle = True
+
+    def animate_to_last_frame(self, animate_state):
+        self.sprite_state = animate_state
+        self.animation_frame = 0
+        self.return_to_idle = False
+        self.stop_at_last_frame = True
+
+    def animate(self):
+        sprites = self.sprites[self.sprite_state]
+
+        if self.stop_at_last_frame and int(self.animation_frame) >= len(sprites) - 1:
+            self.animation_ended()
+            return
+
+        self.animation_frame += self.animation_speed
+        if self.animation_frame >= len(sprites):
+            self.animation_frame = 0
+            if self.return_to_idle:
+                self.return_to_idle = False
+                self.sprite_state = 'idle'
+                self.animation_ended()
+                return
+
+        self.image = sprites[int(self.animation_frame)]
+        self.rect = self.image.get_rect(center=self.rect.center)

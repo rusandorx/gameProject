@@ -4,8 +4,6 @@ from random import randint
 
 import pygame
 
-from EffectsParticle import EffectsParticle
-from combat_effects import BurnEffect
 from enemies.combat_enemy import CombatEnemy
 from enemies.enemies_list import ENEMIES
 from player.combat_player import CombatPlayer
@@ -60,10 +58,12 @@ class Combat(State):
     def update(self, key_state):
         if self.magic and self.magic.animating:
             self.magic.update()
+
         if all(magic.cost > self.combat_player.player.mp for magic in self.combat_player.player.magic):
             self.combat_menu.set_show_magic(False)
         else:
             self.combat_menu.set_show_magic(True)
+
         self.update_enemies()
         if self.combat_player.player.hp <= 0:
             self.combat_player.on_animation_end.append(self.player_died)
@@ -175,6 +175,7 @@ class Combat(State):
                     item.can_be_used(self.combat_player.player) for item in self.combat_player.player.items):
                     item_menu = ItemMenu(self.game, self.get_item_index)
                     item_menu.enter_state()
+
         elif self.state == CombateState.CHOOSE_ENEMY:
             if self.enemies_count == 1:
                 self.actions[self.action]()

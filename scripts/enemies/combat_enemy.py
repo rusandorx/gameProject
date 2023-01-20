@@ -1,14 +1,10 @@
 from abc import ABCMeta
 from random import choices
 
-import zope
-
 from EffectsParticle import EffectsParticle
-from combat_effects import IEffectAppliable
 from entity import Entity
 
 
-@zope.interface.implementer(IEffectAppliable)
 class CombatEnemy(Entity, metaclass=ABCMeta):
     '''
     stats: {
@@ -58,38 +54,12 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
     def animate_once(self, sprite_state):
         if self.dead:
             return
-        self.sprite_state = sprite_state
-        self.animation_frame = 0
-        self.return_to_idle = True
+        super().animate_once(sprite_state)
 
-    def animate_to_last_frame(self, animate_state):
-        self.sprite_state = animate_state
-        self.animation_frame = 0
-        self.return_to_idle = False
-        self.stop_at_last_frame = True
-
-    def animate(self):
-        sprites = self.sprites[self.sprite_state]
-
-        if self.stop_at_last_frame and int(self.animation_frame) >= len(sprites) - 1:
-            self.animate_ended()
-            return
-
-        self.animation_frame += self.animation_speed * 0.5
-        if self.animation_frame >= len(sprites):
-            self.animation_frame = 0
-            if self.return_to_idle:
-                self.return_to_idle = False
-                self.sprite_state = 'idle'
-                self.animate_ended()
-                return
-
-        self.image = sprites[int(self.animation_frame)]
-        self.rect = self.image.get_rect(center=self.rect.center)
-
-    def attack(self):
-        self.animate_once('attack')
-        self.player.take_damage(self.stats['attack'], 'physical')
+    def attack(self, target=None):
+        if target is None:
+            target = self.player
+        super().attack(target)
 
     def magic(self):
         # TODO: Magic
@@ -136,9 +106,5 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         self.actions_to_methods[
             choices([*self.actions.keys()], weights=[action for action in self.actions.values()])[0]]()
 
-    def animate_ended(self):
-        for cb in self.on_animation_end:
-            cb()
-        self.on_animation_end.clear()
 
 

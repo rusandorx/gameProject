@@ -3,7 +3,7 @@ from pytmx.util_pygame import load_pygame
 
 from enemy import Enemy
 from obstacle import Obstacle
-from player.level_player import Player, LevelPlayer
+from player.level_player import LevelPlayer
 from scripts.settings import TILESIZE
 from states.combat import Combat
 from states.pause_menu import PauseMenu

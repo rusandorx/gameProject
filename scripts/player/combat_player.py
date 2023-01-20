@@ -1,15 +1,12 @@
 import os
 
 import pygame.sprite
-import zope
 
 from EffectsParticle import EffectsParticle
-from combat_effects import Effect, IEffectAppliable
 from entity import Entity
 from spritesheet import SpriteSheet
 
 
-@zope.interface.implementer(IEffectAppliable)
 class CombatPlayer(Entity):
     def __init__(self, position, player, *groups):
         super().__init__(*groups)
@@ -63,29 +60,6 @@ class CombatPlayer(Entity):
         self.rect.center = self.position
         self.particle = EffectsParticle(self, (-100, 100), 100, 120)
 
-    def attack(self, target):
-        self.animate_once('attack')
-        target.take_damage(self.player.stats['attack'], 'physical')
-
-    def animate_once(self, animation):
-        self.animation_frame = 0
-        self.sprite_state = animation
-        self.return_to_idle = True
-
-    def animate(self):
-        sprites = self.sprites[self.sprite_state]
-
-        self.animation_frame += self.animation_speed
-        if self.animation_frame >= len(sprites):
-            self.animation_frame = 0
-            if self.return_to_idle:
-                self.animation_ended()
-                self.return_to_idle = False
-                self.sprite_state = 'idle'
-                return
-        self.image = sprites[int(self.animation_frame)]
-        self.rect = self.image.get_rect(center=self.rect.center)
-
     def update(self):
         self.animate()
 
@@ -94,11 +68,6 @@ class CombatPlayer(Entity):
         self.animate_once('hurt')
         if self.player.hp <= 0:
             self.animate_once('die')
-
-    def animation_ended(self):
-        for cb in self.on_animation_end:
-            cb()
-        self.on_animation_end.clear()
 
     def return_object_to_apply(self):
         return self.player
