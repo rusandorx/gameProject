@@ -11,7 +11,7 @@ class ZombieEnemy(CombatEnemy):
     def __init__(self, name, lvl, hp, stats, position, player, *groups):
         super().__init__(name, lvl, hp, stats, position, player, *groups)
         self.stats["attack"] *= lvl
-        self.particle.offset = (-15, 110)
+        self.particle.offset = (-35, 110)
         for i in range(lvl - 1):
             self.level_up()
         self.load_assets()
