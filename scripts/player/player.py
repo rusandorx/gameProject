@@ -16,7 +16,7 @@ class Player:
             'endurance': 5,
             'weaknesses': []
         }
-        self.lvl = 10
+        self.lvl = 1
 
     def level_up(self):
         self.lvl_point -= self.lvl_point_up
