@@ -2,7 +2,7 @@ from random import randint
 
 from enemies.knight import KnightEnemy
 from enemies.necromancer import NecromancerEnemy
-from enemies.skeleton import SkeletonEnemy
+from enemies.skeleton import SkeletonEnemy, SkeletonSpearman
 
 ENEMIES = {
     'skeleton': lambda position, player: SkeletonEnemy('skeleton', randint(1, 5), 30, {
@@ -38,6 +38,19 @@ ENEMIES = {
             'attack': .8,
             'buff': .1,
             'debuff_attack': .1
+        },
+    }, position, player),
+    'SkeletonSpearman': lambda position, player: SkeletonSpearman('Spearman', randint(5, 15), 50, {
+        'attack': 1.2,
+        'endurance': 20,
+        'miss': 0.2,
+        'weaknesses': ['light'],
+        'type': ['dark', 'physical'],
+        'xp': 7,
+        'actions': {
+            'attack': .5,
+            'strong_attack': .3,
+            'bleeding_attack': .2
         },
     }, position, player)
 }

@@ -86,35 +86,47 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
 
     def take_damage(self, damage, damage_type, once=True):
         damage = damage * .95 ** self.stats['endurance']
-
-        # critical
-        if damage_type == 'physical':
-            crit = {
-                'crit': 1,
-                'no': 0
-            }
-            s = crit[choices(["crit", "no"], weights=[0.1, 0.9])[0]]
-            damage *= max(2.5 * s, 1)
-            self.text_animation_state = 'crit' if s else 'damage'
-        # weak
-        elif any(damage_type == weakness for weakness in self.stats['weaknesses']):
-            damage *= 1.5
-            self.text_animation_state = 'weak'
-        # resist
-        elif any(damage_type == resist for resist in self.stats['type']):
-            damage *= .6
-            self.text_animation_state = 'resist'
+        miss = {
+            "miss": 1,
+            'no': 0
+        }
+        if 'miss' in self.stats:
+            s = miss[choices(["miss", "no"], weights=[self.stats["miss"], 1 - self.stats["miss"]])[0]]
         else:
-            self.text_animation_state = 'damage'
+            s = miss[choices(["miss", "no"], weights=[0, 1])[0]]
+        if s == 0:
+            # critical
+            if damage_type == 'physical':
+                crit = {
+                    'crit': 1,
+                    'no': 0
+                }
+                s = crit[choices(["crit", "no"], weights=[0.1, 0.9])[0]]
+                damage *= max(2.5 * s, 1)
+                self.text_animation_state = 'crit' if s else 'damage'
+            # weak
+            elif any(damage_type == weakness for weakness in self.stats['weaknesses']):
+                damage *= 1.5
+                self.text_animation_state = 'weak'
+            # resist
+            elif any(damage_type == resist for resist in self.stats['type']):
+                damage *= .6
+                self.text_animation_state = 'resist'
+            else:
+                self.text_animation_state = 'damage'
 
-        self.hp -= damage
-        self.received_damage = damage
+            self.hp -= damage
+            self.received_damage = damage
 
-        if self.hp <= 0:
-            self.dead = True
-        if once:
-            return self.animate_once('hurt')
-        self.set_animation('hurt')
+            if self.hp <= 0:
+                self.dead = True
+            if once:
+                return self.animate_once('hurt')
+            self.set_animation('hurt')
+        else:
+            self.received_damage = 'MISS'
+            self.text_animation_state = "damage"
+            return self.animate_once('idle')
 
     def set_animation(self, animation):
         if self.dead:
@@ -160,7 +172,10 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
     def draw_received_damage(self, surface, font):
         if self.text_animation_state == 'idle':
             return
-        text_surface = font.render(f'{round(self.received_damage, 2)}', True, (255, 128, 0))
+        if self.received_damage != "MISS":
+            text_surface = font.render(f'{round(self.received_damage, 2)}', True, (255, 128, 0))
+        else:
+            text_surface = font.render(f'{self.received_damage}', True, (255, 128, 0))
         text_rect = text_surface.get_rect()
         text_rect.center = self.position[0] + text_rect[2] // 2, self.position[1]
         surface.blit(text_surface, text_rect)
