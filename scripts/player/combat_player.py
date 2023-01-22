@@ -67,7 +67,7 @@ class CombatPlayer(Entity):
         self.player.hp -= damage * 0.95 ** self.player.stats['endurance']
         self.animate_once('hurt')
         if self.player.hp <= 0:
-            self.animate_once('die')
+            self.animate_to_last_frame('die')
 
     def return_object_to_apply(self):
         return self.player

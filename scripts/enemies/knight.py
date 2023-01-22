@@ -16,6 +16,7 @@ class KnightEnemy(CombatEnemy):
         self.load_assets()
 
     def load_assets(self):
+        super().load_assets()
         if self.lvl <= 10:
             graphics_path = '../graphics/ui/combat/sprites/Knight_1/'
         elif self.lvl <= 15:

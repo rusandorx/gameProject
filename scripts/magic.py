@@ -3,7 +3,7 @@ import random
 
 import pygame
 
-from combat_effects import BurnEffect, DefenceBuff, IEffectAppliable, ColorEffect
+from combat_effects import BurnEffect, DefenceBuff, ColorEffect
 from enemies.combat_enemy import CombatEnemy
 from player.combat_player import CombatPlayer
 from spritesheet import SpriteSheet
@@ -104,9 +104,18 @@ class HealMagic(Magic):
 
 
 class DarkMagic(Magic):
+    def __init__(self, options: dict, *groups):
+        super().__init__(options, *groups)
+        self.self_damage = self.options.get('self_damage', 0)
+
     def use(self, player: CombatPlayer, target: CombatEnemy):
         super().use(player, target)
-        player.player.hp -= self.options.get('self_damage')
+        player.player.hp -= self.self_damage
+
+    def can_be_used(self, player):
+        if not super().can_be_used(player):
+            return False
+        return player.hp - self.self_damage > 0
 
 
 class LightMagic(Magic):
@@ -115,11 +124,15 @@ class LightMagic(Magic):
         if target.boss:
             is_instakill = False
         else:
-            is_instakill = random.choices([True, False], weights=[self.options['instakill'], 1 - self.options['instakill']])[0]
-        target.take_damage((player.player.lvl * .05) * self.damage if not is_instakill else target.hp, self.damage_type,
+            is_instakill = \
+                random.choices([True, False], weights=[self.options['instakill'], 1 - self.options['instakill']])[0]
+        print(is_instakill)
+        target.take_damage((player.player.lvl * .05) * self.damage if not is_instakill else target.hp * 20,
+                           self.damage_type,
                            False)
         self.on_animation_end.append(lambda: target.set_animation('idle'))
         player.player.mp -= self.cost
+
 
 class FireMagic(Magic):
     def __init__(self, options: dict, *groups):
@@ -131,6 +144,7 @@ class FireMagic(Magic):
         if burnt:
             target.add_effect(BurnEffect({'name': 'burn', 'turn_count': 3, 'color': (192, 64, 0), 'damage': 1}))
         super().use(player, target)
+
 
 class BuffMagic(Magic):
     def __init__(self, options: dict, *groups):
@@ -146,6 +160,7 @@ class BuffMagic(Magic):
         self.sprites = [pygame.image.load(os.path.join(path, 'sprites.png'))]
         self.image = self.sprites[0]
         self.rect = pygame.Rect(0, 0, 0, 0)
+
 
 magic = {
     'agi': lambda: FireMagic(
@@ -190,7 +205,7 @@ magic = {
             'description': 'Священная молния (шанс мгновенно убить обычного врага: 5%)',
             'damage': 25,
             'damage_type': 'light',
-            'cost': 50,
+            'cost': 10,
             'sprites_count': 11,
             'sprites_size': (64, 128),
             'instakill': .05

@@ -18,6 +18,7 @@ class NecromancerEnemy(CombatEnemy):
 
 
     def load_assets(self):
+        super().load_assets()
         graphics_path = '../graphics/ui/combat/sprites/necromancer/'
         self.sprites = {
             'idle': list(

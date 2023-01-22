@@ -1,5 +1,8 @@
+import os
 from abc import ABCMeta
 from random import choices
+
+import pygame
 
 from EffectsParticle import EffectsParticle
 from entity import Entity
@@ -19,6 +22,9 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         }
     }
     '''
+    crit_image = None
+    weak_image = None
+    resist_image = None
 
     def __init__(self, name, lvl, hp, stats, position, player, *groups):
         super().__init__(*groups)
@@ -39,6 +45,7 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
             'magic': self.magic
         }
         self.actions = self.stats['actions']
+
         self.sprite_state = 'idle'
         self.animation_frame = 0
         self.animation_speed = .1
@@ -48,8 +55,21 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         self.outstroked = False
         self.on_animation_end = []
         self.on_turn_end = []
+        self.text_animation_time = 10
+        self.cur_text_animation_time = 0
+
+        self.text_animation_state = 'none'
         self.load_assets()
         self.particle = EffectsParticle(self)
+
+    def load_assets(self):
+        path = '../graphics/ui/combat/'
+        if CombatEnemy.weak_image is None:
+            CombatEnemy.weak_image = pygame.image.load(os.path.join(path, 'weak.png'))
+        if CombatEnemy.crit_image is None:
+            CombatEnemy.crit_image = pygame.image.load(os.path.join(path, 'crit.png'))
+        if CombatEnemy.resist_image is None:
+            CombatEnemy.resist_image = pygame.image.load(os.path.join(path, 'resist.png'))
 
     def animate_once(self, sprite_state):
         if self.dead:
@@ -62,22 +82,28 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         super().attack(target)
 
     def magic(self):
-        # TODO: Magic
         self.attack()
 
     def take_damage(self, damage, damage_type, once=True):
+        damage = damage * .95 ** self.stats['endurance']
+
+        # critical
         if damage_type == 'physical':
-            take_damage = damage * 0.95 ** self.stats['endurance']
-            crete = {
-                'crete': 1,
+            crit = {
+                'crit': 1,
                 'no': 0
             }
-            s = crete[choices(["crete", "no"], weights=[0.2, 0.8])[0]]
-            take_damage *= max(
-                4.5 * s, 1)
-            self.hp -= take_damage
-        else:
-            self.hp -= damage * (1.5 if any(stat == damage_type for stat in self.stats['type']) else 1)
+            s = crit[choices(["crit", "no"], weights=[0.1, 0.9])[0]]
+            damage *= max(2.5 * s, 1)
+        # weak
+        elif any(damage_type == weakness for weakness in self.stats['weaknesses']):
+            damage *= 1.5
+        # resist
+        elif any(damage_type == resist for resist in self.stats['type']):
+            damage *= .6
+
+        self.hp -= damage
+
         if self.hp <= 0:
             self.dead = True
         if once:
@@ -106,5 +132,20 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         self.actions_to_methods[
             choices([*self.actions.keys()], weights=[action for action in self.actions.values()])[0]]()
 
+    @staticmethod
+    def draw_special_effects(surface, effect):
+        if effect == 'weak':
+            surface.blit(CombatEnemy.weak_image)
+        elif effect == 'crit':
+            surface.blit(CombatEnemy.crit_image)
+        elif effect == 'resist':
+            surface.blit(CombatEnemy.resist_image)
 
+    @staticmethod
+    def draw_text_effects(surface, text):
+        pass
 
+    def animate_text(self):
+        if self.text_animation_state == 'none':
+            return
+        self.cur_text_animation_time += .1

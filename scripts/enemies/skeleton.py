@@ -15,8 +15,9 @@ class SkeletonEnemy(CombatEnemy):
             self.level_up()
         self.load_assets()
 
-
     def load_assets(self):
+        super().load_assets()
+
         graphics_path = '../graphics/ui/combat/sprites/skeleton/'
         self.sprites = {
             'idle': list(

@@ -23,7 +23,8 @@ class Combat(State):
         Sound.stop_all()
         self.name = "combat"
         self.level_name = level_name
-        self.main_group = pygame.sprite.Group()
+        self.enemies_group = pygame.sprite.Group()
+        self.player_group = pygame.sprite.Group()
         self.background = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
         self.background_rect = self.background.get_rect()
         self.combat_menu = CombateMenu((0, 0))
@@ -31,7 +32,8 @@ class Combat(State):
         self.confirm_buttons_rect = self.confirm_buttons.get_rect()
 
         self.combat_player = CombatPlayer((200, 400), self.game.player)
-        self.main_group.add(self.combat_player)
+        self.player_group.add(self.combat_player)
+        self.enemies_group.add(self.combat_player)
         self.magic = None
         self.item = None
         self.current_animation = None
@@ -42,7 +44,7 @@ class Combat(State):
             for _ in
             range(self.enemies_count)]
         self.enemy_size = self.enemies[0].image.get_rect()[2:]
-        self.main_group.add(self.enemies)
+        self.enemies_group.add(self.enemies)
         self.enemy_index = self.enemies_count - 1
         self.enemies_turn = 0
 
@@ -65,8 +67,6 @@ class Combat(State):
             self.combat_menu.set_show_magic(True)
 
         self.update_enemies()
-        if self.combat_player.player.hp <= 0:
-            self.combat_player.on_animation_end.append(self.player_died)
         if self.state != CombateState.ANIMATION:
             if self.state == CombateState.ENEMIES:
                 if self.enemies_turn >= self.enemies_count:
@@ -80,7 +80,7 @@ class Combat(State):
                     self.handle_keys(key_state)
 
         self.game.reset_keys()
-        self.main_group.update()
+        self.enemies_group.update()
         self.combat_menu.update()
 
     def update_enemies(self):
@@ -105,57 +105,12 @@ class Combat(State):
 
     def render(self, surface):
         surface.blit(self.background, self.background_rect)
-        for enemy in self.enemies:
-            if not enemy.dead:
-                enemy.draw_particle_effects(surface, False)
-                self.game.draw_text(surface, f"{enemy.name} LVL {enemy.lvl}",
-                                    ((min((max(1, enemy.lvl - self.game.player.lvl) * 64), 255)),
-                                     (min((max(1, self.game.player.lvl - enemy.lvl) * 64), 255)),
-                                     0),
-                                    enemy.position[0] + 30, enemy.position[1] - 70)
-                self.game.draw_text(surface,
-                                    f"{round(enemy.hp, 1) if round(enemy.hp, 1) != 0.0 else '0.1'} / {round(enemy.max_hp, 1)}",
-                                    (255,
-                                     255,
-                                     255),
-                                    enemy.position[0] + 30, enemy.position[1] - 40)
-                pygame.draw.rect(surface, "gray",
-                                 (enemy.position[0] - 20, enemy.position[1] - 20,
-                                  128,
-                                  10))
-                pygame.draw.rect(surface, (int(255 * (1 - enemy.hp / enemy.max_hp)),
-                                           int(255 * (enemy.hp / enemy.max_hp)), 0),
-                                 (enemy.position[0] - 20, enemy.position[1] - 20,
-                                  (enemy.hp / enemy.max_hp) * 128,
-                                  10))
-        if self.game.player.hp > 0:
-            pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
-                                      int(255 * self.game.player.hp / self.game.player.max_hp), 0),
-                            (self.combat_player.rect.centerx - 160, self.combat_player.rect.centery + 200, 225, 100),
-                            pi,
-                            (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
-        self.combat_player.draw_particle_effects(surface, False)
-        self.main_group.draw(surface)
-
-        for enemy in self.enemies:
-            enemy.draw_particle_effects(surface)
-
-        if self.magic and self.magic.animating:
-            surface.blit(self.magic.image, self.magic.pos)
-
-        if self.state == CombateState.IDLE:
-            surface.blit(self.combat_menu.image,
-                         (self.combat_player.position[0], self.combat_player.position[1] - 50))
-
-        if self.outline and self.state == CombateState.CHOOSE_ENEMY and len(self.enemies) > 1:
-            enemy = self.enemies[self.enemy_index]
-            surface.blit(self.outline, (enemy.position[0] - self.enemy_size[0] * .5,
-                                        enemy.position[1] - self.enemy_size[1] * .5))
+        self.draw_enemies(surface)
+        self.draw_player(surface)
 
         if self.state == CombateState.CHOOSE_ENEMY and self.enemies_count > 1:
             surface.blit(self.confirm_buttons, (
                 self.game.width - self.confirm_buttons_rect[2], self.game.height - self.confirm_buttons_rect[3]))
-        self.combat_player.draw_particle_effects(surface)
 
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
@@ -216,6 +171,10 @@ class Combat(State):
     def enemy_animation_ended(self):
         self.enemies[self.enemies_turn].handle_effects_per_turn()
         self.enemies_turn += 1
+        if self.combat_player.player.hp <= 0:
+            self.combat_player.on_animation_end.append(self.player_died)
+            return
+
         if self.enemies_turn > self.enemies_count:
             self.state = CombateState.IDLE
         else:
@@ -261,6 +220,57 @@ class Combat(State):
     def player_died(self):
         game_over = GameOver(self.game)
         game_over.enter_state()
+
+    def draw_player(self, surface):
+        if self.game.player.hp > 0:
+            pygame.draw.arc(surface, (int(255 * (1 - self.game.player.hp / self.game.player.max_hp)),
+                                      int(255 * self.game.player.hp / self.game.player.max_hp), 0),
+                            (self.combat_player.rect.centerx - 160, self.combat_player.rect.centery + 200, 225, 100),
+                            pi,
+                            (self.game.player.hp / self.game.player.max_hp) * 2 * pi + pi, 10)
+        self.combat_player.draw_particle_effects(surface, False)
+        self.player_group.draw(surface)
+
+        if self.state == CombateState.IDLE:
+            surface.blit(self.combat_menu.image,
+                         (self.combat_player.position[0], self.combat_player.position[1] - 50))
+
+        if self.magic and self.magic.animating:
+            surface.blit(self.magic.image, self.magic.pos)
+        self.combat_player.draw_particle_effects(surface)
+
+    def draw_enemies(self, surface):
+        for enemy in self.enemies:
+            if not enemy.dead:
+                enemy.draw_particle_effects(surface, False)
+                self.game.draw_text(surface, f"{enemy.name} LVL {enemy.lvl}",
+                                    ((min((max(1, enemy.lvl - self.game.player.lvl) * 64), 255)),
+                                     (min((max(1, self.game.player.lvl - enemy.lvl) * 64), 255)),
+                                     0),
+                                    enemy.position[0] + 30, enemy.position[1] - 70)
+                self.game.draw_text(surface,
+                                    f"{round(enemy.hp, 1) if round(enemy.hp, 1) != 0.0 else '0.1'} / {round(enemy.max_hp, 1)}",
+                                    (255,
+                                     255,
+                                     255),
+                                    enemy.position[0] + 30, enemy.position[1] - 40)
+                pygame.draw.rect(surface, "gray",
+                                 (enemy.position[0] - 20, enemy.position[1] - 20,
+                                  128,
+                                  10))
+                pygame.draw.rect(surface, (int(255 * (1 - enemy.hp / enemy.max_hp)),
+                                           int(255 * (enemy.hp / enemy.max_hp)), 0),
+                                 (enemy.position[0] - 20, enemy.position[1] - 20,
+                                  (enemy.hp / enemy.max_hp) * 128,
+                                  10))
+        self.enemies_group.draw(surface)
+        for enemy in self.enemies:
+            enemy.draw_particle_effects(surface)
+
+        if self.outline and self.state == CombateState.CHOOSE_ENEMY and len(self.enemies) > 1:
+            enemy = self.enemies[self.enemy_index]
+            surface.blit(self.outline, (enemy.position[0] - self.enemy_size[0] * .5,
+                                        enemy.position[1] - self.enemy_size[1] * .5))
 
 
 class CombateMenu(pygame.sprite.Sprite):

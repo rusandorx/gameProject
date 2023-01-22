@@ -13,11 +13,13 @@ class ResultScreen(State):
 
         self.prev_player_stats = {
             'lvl': self.game.player.lvl,
-            'exp': self.game.player.exp,
             'hp': self.game.player.max_hp,
             'mp': self.game.player.max_mp,
         }
+        prev_magic = self.game.player.magic
         for stat in self.game.player.stats:
+            if stat in ('weaknesses', ):
+                continue
             self.prev_player_stats[stat] = self.game.player.stats[stat]
 
         while self.game.player.lvl_point >= self.game.player.lvl_point_up:
@@ -25,12 +27,15 @@ class ResultScreen(State):
 
         self.cur_player_stats = {
             'lvl': self.game.player.lvl,
-            'exp': self.game.player.exp,
             'hp': self.game.player.max_hp,
             'mp': self.game.player.max_mp,
         }
+        cur_magic = self.game.player.magic
         for stat in self.game.player.stats:
+            if stat in ('weaknesses',):
+                continue
             self.cur_player_stats[stat] = self.game.player.stats[stat]
+        self.new_magic = tuple(filter(lambda cur: cur not in prev_magic, cur_magic))
 
     def update(self, key_state):
         if key_state['confirm']:
@@ -58,5 +63,9 @@ class ResultScreen(State):
             cur_text_rect = cur_text_surface.get_rect()
             cur_text_rect.topleft = text_rect.topright
             display.blit(cur_text_surface, cur_text_rect)
-
+        if self.new_magic:
+            text_surface = self.game.big_font.render(f'NEW SKILLS!: {self.new_magic}', True)
+            text_rect = text_surface.get_rect()
+            text_rect.center = (self.game.width / 2, len(self.prev_player_stats) * 80)
+            display.blit(text_surface, text_rect)
 
