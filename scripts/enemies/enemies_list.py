@@ -20,7 +20,7 @@ ENEMIES = {
     }, position, player),
     'necromancer': lambda position, player: NecromancerEnemy('necromancer', randint(20, 30), 100, {
         'attack': 2,
-        'endurance': 50,
+        'endurance': 20,
         'weaknesses': [],
         'type': ['light'],
         'xp': 50,
@@ -54,7 +54,7 @@ ENEMIES = {
     }, position, player),
     'SkeletonSpearman': lambda position, player: SkeletonSpearman('Spearman', randint(5, 15), 50, {
         'attack': 1.2,
-        'endurance': 20,
+        'endurance': 10,
         'miss': 0.2,
         'weaknesses': ['light'],
         'type': ['dark', 'physical'],
@@ -68,7 +68,7 @@ ENEMIES = {
     'SkeletonWarrior': lambda position, player: SkeletonWarrior('Warrior', randint(10, 20), 50, {
         'attack': 1.5,
         'manaburn': 2,
-        'endurance': 30,
+        'endurance': 10,
         'miss': 0.25,
         'weaknesses': ['light'],
         'type': ['dark', 'physical'],

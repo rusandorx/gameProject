@@ -181,5 +181,5 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         surface.blit(text_surface, text_rect)
 
     def level_up(self):
-        self.stats["endurance"] *= 1.05
+        self.stats["endurance"] += 1
         self.stats["xp"] *= 1.05
