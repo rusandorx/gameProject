@@ -13,28 +13,28 @@ class ResultScreen(State):
 
         self.prev_player_stats = {
             'lvl': self.game.player.lvl,
-            'hp': self.game.player.max_hp,
-            'mp': self.game.player.max_mp,
+            'hp': round(self.game.player.max_hp),
+            'mp': round(self.game.player.max_mp),
         }
-        prev_magic = self.game.player.magic
+        prev_magic = [m.name for m in self.game.player.magic]
         for stat in self.game.player.stats:
             if stat in ('weaknesses', ):
                 continue
-            self.prev_player_stats[stat] = self.game.player.stats[stat]
+            self.prev_player_stats[stat] = round(self.game.player.stats[stat], 2)
 
         while self.game.player.lvl_point >= self.game.player.lvl_point_up:
             self.game.player.level_up()
 
         self.cur_player_stats = {
             'lvl': self.game.player.lvl,
-            'hp': self.game.player.max_hp,
-            'mp': self.game.player.max_mp,
+            'hp': round(self.game.player.max_hp),
+            'mp': round(self.game.player.max_mp),
         }
-        cur_magic = self.game.player.magic
+        cur_magic = [m.name for m in self.game.player.magic]
         for stat in self.game.player.stats:
             if stat in ('weaknesses',):
                 continue
-            self.cur_player_stats[stat] = self.game.player.stats[stat]
+            self.cur_player_stats[stat] = round(self.game.player.stats[stat], 2)
         self.new_magic = tuple(filter(lambda cur: cur not in prev_magic, cur_magic))
 
     def update(self, key_state):
@@ -64,8 +64,9 @@ class ResultScreen(State):
             cur_text_rect.topleft = text_rect.topright
             display.blit(cur_text_surface, cur_text_rect)
         if self.new_magic:
-            text_surface = self.game.big_font.render(f'NEW SKILLS!: {self.new_magic}', True)
+            text_surface = self.game.big_font.render(f'NEW SKILLS!! : {", ".join(self.new_magic)}', True, (64, 255, 128))
             text_rect = text_surface.get_rect()
-            text_rect.center = (self.game.width / 2, len(self.prev_player_stats) * 80)
+            text_rect.center = (self.game.width / 2, len(self.prev_player_stats) * 80 + 80)
             display.blit(text_surface, text_rect)
+
 
