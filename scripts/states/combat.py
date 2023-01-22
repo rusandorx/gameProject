@@ -244,16 +244,17 @@ class Combat(State):
             if not enemy.dead:
                 enemy.draw_particle_effects(surface, False)
                 self.game.draw_text(surface, f"{enemy.name} LVL {enemy.lvl}",
-                                    ((min((max(1, enemy.lvl - self.game.player.lvl) * 64), 255)),
+                                              ((min((max(1, enemy.lvl - self.game.player.lvl) * 64), 255)),
                                      (min((max(1, self.game.player.lvl - enemy.lvl) * 64), 255)),
                                      0),
-                                    enemy.position[0] + 30, enemy.position[1] - 70)
+                                              enemy.position[0] + 30, enemy.position[1] - 70)
                 self.game.draw_text(surface,
                                     f"{round(enemy.hp, 1) if round(enemy.hp, 1) != 0.0 else '0.1'} / {round(enemy.max_hp, 1)}",
-                                    (255,
+                                              (255,
                                      255,
                                      255),
-                                    enemy.position[0] + 30, enemy.position[1] - 40)
+                                              enemy.position[0] + 30, enemy.position[1] - 40)
+
                 pygame.draw.rect(surface, "gray",
                                  (enemy.position[0] - 20, enemy.position[1] - 20,
                                   128,
@@ -265,6 +266,7 @@ class Combat(State):
                                   10))
         self.enemies_group.draw(surface)
         for enemy in self.enemies:
+            enemy.draw_special_effect(surface, self.game.big_font)
             enemy.draw_particle_effects(surface)
 
         if self.outline and self.state == CombateState.CHOOSE_ENEMY and len(self.enemies) > 1:

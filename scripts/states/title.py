@@ -14,4 +14,4 @@ class Title(State):
 
     def render(self, display):
         display.fill((128, 128, 128))
-        self.game.draw_text(display, 'Noname game', (0,0,0), self.game.width / 2, self.game.height / 2)
+        self.game.draw_text(display, 'Noname game', (0, 0, 0), self.game.width / 2, self.game.height / 2)

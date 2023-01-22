@@ -30,7 +30,7 @@ ENEMIES = {
     'knight': lambda position, player: KnightEnemy('knight', randint(5, 20), 30, {
         'attack': 2,
         'endurance': 10,
-        'weaknesses': [],
+        'weaknesses': ['dark'],
         'type': ['light'],
         'xp': 7,
         'actions': {

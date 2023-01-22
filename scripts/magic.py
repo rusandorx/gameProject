@@ -126,7 +126,6 @@ class LightMagic(Magic):
         else:
             is_instakill = \
                 random.choices([True, False], weights=[self.options['instakill'], 1 - self.options['instakill']])[0]
-        print(is_instakill)
         target.take_damage((player.player.lvl * .05) * self.damage if not is_instakill else target.hp * 20,
                            self.damage_type,
                            False)
@@ -205,7 +204,7 @@ magic = {
             'description': 'Священная молния (шанс мгновенно убить обычного врага: 5%)',
             'damage': 25,
             'damage_type': 'light',
-            'cost': 10,
+            'cost': 30,
             'sprites_count': 11,
             'sprites_size': (64, 128),
             'instakill': .05
