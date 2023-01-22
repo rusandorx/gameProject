@@ -12,8 +12,9 @@ ENEMIES = {
         'type': ['dark'],
         'xp': 5,
         'actions': {
-            'attack': .7,
-            'magic': .3,
+            'attack': .5,
+            'strong_attack': .3,
+            'bleeding_attack': .2
         },
     }, position, player),
     'necromancer': lambda position, player: NecromancerEnemy('necromancer', randint(20, 30), 100, {
@@ -34,8 +35,9 @@ ENEMIES = {
         'type': ['light'],
         'xp': 7,
         'actions': {
-            'attack': .7,
-            'magic': .3,
+            'attack': .8,
+            'buff': .1,
+            'debuff_attack': .1
         },
     }, position, player)
 }

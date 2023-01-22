@@ -1,7 +1,9 @@
+from random import choice
+
 import pygame
 from pytmx.util_pygame import load_pygame
 
-from enemy import Enemy
+from enemy import Enemy, enemies_backgrounds
 from obstacle import Obstacle
 from player.level_player import LevelPlayer
 from scripts.settings import TILESIZE
@@ -52,7 +54,8 @@ class Level(State):
                 Enemy((entity.x, entity.y), (self.main_group, ), self.player, entity.name, self.attack_callback)
 
     def attack_callback(self, enemy_name, class_enemy):
-        combat = Combat(self.game, enemy_name, class_enemy, self.count_enemy[enemy_name])
+        background = enemies_backgrounds.get(enemy_name, choice(('Battleground1', 'Battleground4')))
+        combat = Combat(self.game, enemy_name, class_enemy, self.count_enemy[enemy_name], background)
         combat.enter_state()
 
     def update(self, key_state):

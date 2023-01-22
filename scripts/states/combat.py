@@ -1,6 +1,6 @@
 from enum import Enum
 from math import pi
-from random import randint
+from random import randint, choice
 
 import pygame
 
@@ -18,14 +18,14 @@ from utils import get_outline
 
 
 class Combat(State):
-    def __init__(self, game, enemy_name, level_name, count_enemy):
+    def __init__(self, game, enemy_name, level_name, count_enemy, background):
         super().__init__(game)
         Sound.stop_all()
         self.name = "combat"
         self.level_name = level_name
         self.enemies_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
-        self.background = pygame.image.load('../graphics/Battleground1/Bright/Battleground1.png')
+        self.background = pygame.image.load(f'../graphics/ui/combat/backgrounds/{background}.png')
         self.background_rect = self.background.get_rect()
         self.combat_menu = CombateMenu((0, 0))
         self.confirm_buttons = pygame.image.load('../graphics/ui/combat/confirm_button.png')

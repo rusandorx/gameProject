@@ -44,8 +44,9 @@ class Enemy(pygame.sprite.Sprite):
         self.player = player
         self.velocity = 2
         self.sprites = {"-MOVE": [
-            pygame.transform.flip(pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/move/{i}.png').convert_alpha(),
-                                   (self.size, self.size)), True, False)
+            pygame.transform.flip(
+                pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/move/{i}.png').convert_alpha(),
+                                       (self.size, self.size)), True, False)
             for i in range(move)],
             "+MOVE": [
                 pygame.transform.scale(pygame.image.load(f'../graphics/monsters/{name}/move/{i}.png').convert_alpha(),
@@ -126,3 +127,8 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.check_hitbox()
         self.animation()
+
+
+enemies_backgrounds = {
+    'necromancer': 'Battleground2'
+}

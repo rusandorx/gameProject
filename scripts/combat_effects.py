@@ -53,6 +53,29 @@ class DefenceBuff(Effect):
         entity_obj.stats['endurance'] = round(entity_obj.stats['endurance'] / self.def_up_value)
 
 
+class BleedingEffect(Effect):
+    def __init__(self, options):
+        super().__init__(options)
+        self.bleeding_value = options['bleeding_value']
+
+    def each_turn(self, entity: IEffectAppliable):
+        entity_obj = entity.return_object_to_apply()
+        entity_obj.hp -= entity_obj.max_hp * self.bleeding_value
+
+
+class AttackBuff(Effect):
+    def __init__(self, options):
+        super().__init__(options)
+        self.attack_value = options['attack_value']
+    def on_apply(self, entity: IEffectAppliable):
+        entity_obj = entity.return_object_to_apply()
+        entity_obj.stats['attack'] *= self.attack_value
+
+    def on_exit(self, entity: IEffectAppliable):
+        entity_obj = entity.return_object_to_apply()
+        entity_obj.stats['attack'] = round(entity_obj.stats['attack'] / self.attack_value)
+
+
 class ColorEffect(Effect):
     def __init__(self, options: dict):
         super().__init__(options)
