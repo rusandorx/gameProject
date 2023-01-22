@@ -63,10 +63,6 @@ class KnightEnemy(CombatEnemy):
         self.rect = self.image.get_rect()
         self.rect.center = self.position
 
-    def level_up(self):
-        self.stats["endurance"] *= 1.05
-        self.stats["xp"] *= 1.05
-
     def buff(self):
         self.add_effect(DefenceBuff({'name': 'def_up', 'turn_count': 2, 'color': (0, 64, 192), 'def_up_value': 1.2}))
         self.animate_once('buff')

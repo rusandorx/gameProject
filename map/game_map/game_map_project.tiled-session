@@ -3,9 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map.tmx",
+    "activeFile": "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx",
     "expandedProjectPaths": [
         "tilemaps/Pipoya RPG Tileset 32x32",
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap",
+        "tilemaps",
         "."
     ],
     "fileStates": {
@@ -47,14 +49,17 @@
             "scaleInDock": 1.5
         },
         "[Base]BaseChip_pipo.tsx": {
-            "scaleInDock": 2
+            "scaleInDock": 1.5
         },
         "map.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 0.33,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 2618,
-                "y": 877.3333333333333
+                "x": 1380.3030303030303,
+                "y": 2045.4545454545455
             }
         },
         "map.tmx#[Base]BaseChip_pipo": {
@@ -64,7 +69,7 @@
             "scaleInDock": 1
         },
         "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/[A]Grass_pipo.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 2
         },
         "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/[A]WaterFall_pipo.tsx": {
             "scaleInDock": 1
@@ -77,7 +82,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 1447.5,
-                "y": 1588
+                "y": 1222
             }
         },
         "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx#[Base]BaseChip_pipo": {
@@ -96,8 +101,8 @@
     ],
     "project": "game_map_project.tiled-project",
     "recentFiles": [
-        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx",
         "map.tmx",
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx",
         "RPG Nature Tileset.tsx"
     ],
     "tileset.lastUsedFilter": "Файлы набора тайлов Tiled (*.tsx *.xml)",

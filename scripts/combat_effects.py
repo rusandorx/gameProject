@@ -36,7 +36,8 @@ class BurnEffect(Effect):
 
     def each_turn(self, entity: IEffectAppliable):
         entity_obj = entity.return_object_to_apply()
-        entity_obj.hp = max(entity_obj.hp - self.damage, 0)
+        entity_obj.hp = max(
+            entity_obj.hp - (self.damage * 2 if 'fire' in entity_obj.stats['weaknesses'] else self.damage), 0)
 
 
 class DefenceBuff(Effect):
@@ -67,6 +68,7 @@ class AttackBuff(Effect):
     def __init__(self, options):
         super().__init__(options)
         self.attack_value = options['attack_value']
+
     def on_apply(self, entity: IEffectAppliable):
         entity_obj = entity.return_object_to_apply()
         entity_obj.stats['attack'] *= self.attack_value
