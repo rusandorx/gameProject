@@ -105,7 +105,7 @@ class SkeletonSpearman(CombatEnemy):
             'strong_attack': list(
                 map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
                     SpriteSheet(os.path.join(graphics_path, 'Attack_1.png')).load_strip(
-                        pygame.Rect(0, 0, 128, 128), 5, (0, 0, 0)))),
+                        pygame.Rect(0, 0, 128, 128), 4, (0, 0, 0)))),
             'bleeding_attack': list(
                 map(lambda sprite: pygame.transform.flip(pygame.transform.scale(sprite, (512, 512)), True, False),
                     SpriteSheet(os.path.join(graphics_path, 'Attack_2.png')).load_strip(
