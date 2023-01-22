@@ -63,8 +63,11 @@ class CombatPlayer(Entity):
     def update(self):
         self.animate()
 
-    def take_damage(self, damage, damage_type):
-        self.player.hp -= damage * 0.95 ** self.player.stats['endurance']
+    def take_damage(self, damage, damage_type="physical"):
+        if damage_type != "physical":
+            self.player.hp -= damage * 0.95
+        else:
+            self.player.hp -= damage * 0.95 ** self.player.stats['endurance']
         self.animate_once('hurt')
         if self.player.hp <= 0:
             self.animate_to_last_frame('die')

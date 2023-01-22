@@ -56,7 +56,14 @@ class Level(State):
 
     def attack_callback(self, enemy_name, class_enemy):
         background = enemies_backgrounds.get(enemy_name, choice(('Battleground1', 'Battleground4')))
-        combat = Combat(self.game, enemy_name, class_enemy, self.count_enemy[enemy_name], background)
+        if enemy_name == "skeleton":
+            if 10 > self.game.player.lvl >= 5:
+                enemy_name = "SkeletonSpearman"
+            elif 10 <= self.game.player.lvl:
+                enemy_name = "SkeletonWarrior"
+            combat = Combat(self.game, enemy_name, class_enemy, [1, 3], background)
+        else:
+            combat = Combat(self.game, enemy_name, class_enemy, self.count_enemy[enemy_name], background)
         combat.enter_state()
 
     def update(self, key_state):
