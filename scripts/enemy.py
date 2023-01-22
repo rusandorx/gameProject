@@ -12,22 +12,26 @@ class Enemy(pygame.sprite.Sprite):
                       "knight": 32,
                       "squid": 32,
                       "necromancer": 128,
-                      "raccoon": 64}
+                      "raccoon": 64,
+                      'zombie': 32}
         attack_sprites = {"skeleton": 1,
                           "bamboo": 1,
                           "knight": 1,
                           "squid": 1,
                           "necromancer": 1,
-                          "raccoon": 4}
+                          "raccoon": 4,
+                          'zombie': 3}
         range_attack = {"skeleton": 150,
                         "bamboo": 150,
                         "knight": 150,
                         "squid": 150,
                         "necromancer": 300,
-                        "raccoon": 150}
+                        "raccoon": 150,
+                        'zombie': 100}
         move_sprites = {"skeleton": 5,
                         "knight": 5,
-                        "necromancer": 5}
+                        "necromancer": 5,
+                        'zombie': 3}
         if name in move_sprites:
             move = move_sprites[name]
         else:

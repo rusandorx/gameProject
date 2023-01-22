@@ -164,3 +164,7 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         text_rect = text_surface.get_rect()
         text_rect.center = self.position[0] + text_rect[2] // 2, self.position[1]
         surface.blit(text_surface, text_rect)
+
+    def level_up(self):
+        self.stats["endurance"] *= 1.05
+        self.stats["xp"] *= 1.05

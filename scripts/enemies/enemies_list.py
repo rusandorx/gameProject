@@ -3,6 +3,7 @@ from random import randint
 from enemies.knight import KnightEnemy
 from enemies.necromancer import NecromancerEnemy
 from enemies.skeleton import SkeletonEnemy
+from enemies.zombie import ZombieEnemy
 
 ENEMIES = {
     'skeleton': lambda position, player: SkeletonEnemy('skeleton', randint(1, 5), 30, {
@@ -39,5 +40,16 @@ ENEMIES = {
             'buff': .1,
             'debuff_attack': .1
         },
-    }, position, player)
+    }, position, player),
+    'zombie': lambda position, player: ZombieEnemy('zombie', randint(10, 15), 25, {
+        'attack': 4,
+        'endurance': 2,
+        'weaknesses': ['fire'],
+        'type': ['dark'],
+        'xp': 10,
+        'actions': {
+            'attack': .7,
+            'heal': .3
+        },
+    }, position, player),
 }

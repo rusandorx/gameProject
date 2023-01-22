@@ -53,10 +53,6 @@ class SkeletonEnemy(CombatEnemy):
         self.rect = self.image.get_rect()
         self.rect.center = self.position
 
-    def level_up(self):
-        self.stats["endurance"] *= 1.05
-        self.stats["xp"] *= 1.05
-
     def strong_attack(self, target=None):
         if target is None:
             target = self.player
