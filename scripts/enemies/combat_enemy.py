@@ -144,9 +144,11 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         self.draw_received_damage(surface, font)
         if self.text_animation_state != 'damage':
 
-            state_to_image = {'crit': CombatEnemy.crit_image, 'weak': CombatEnemy.weak_image,
+            state_to_image = {'crit': CombatEnemy.crit_image,
+                              'weak': CombatEnemy.weak_image,
                               'resist': CombatEnemy.resist_image}
             image = state_to_image[self.text_animation_state]
+            image.set_alpha((self.text_animation_time - self.cur_text_animation_time) / self.text_animation_time * 255)
             rect = image.get_rect()
             rect.topleft = self.position[0] - rect[2] // 2, self.position[1] + rect[3]
             surface.blit(image, rect)

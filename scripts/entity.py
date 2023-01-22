@@ -68,8 +68,8 @@ class Entity(pygame.sprite.Sprite, metaclass=ABCMeta):
         self.sprite_state = animation
         self.return_to_idle = True
 
-    def animate_to_last_frame(self, animate_state):
-        self.sprite_state = animate_state
+    def animate_to_last_frame(self, animation):
+        self.sprite_state = animation
         self.animation_frame = 0
         self.return_to_idle = False
         self.stop_at_last_frame = True
