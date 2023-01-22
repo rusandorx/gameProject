@@ -2,7 +2,7 @@ from random import randint
 
 from enemies.knight import KnightEnemy
 from enemies.necromancer import NecromancerEnemy
-from enemies.skeleton import SkeletonEnemy
+from enemies.skeleton import SkeletonEnemy, SkeletonSpearman
 from enemies.zombie import ZombieEnemy
 
 ENEMIES = {
