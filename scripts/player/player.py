@@ -14,14 +14,13 @@ class Player:
         self.magic = list(map(lambda x: magic[x](), ['agi']))
         self.exp = 0
         self.stats = {
-            'attack': 200,
+            'attack': 7,
             'endurance': 5,
             'weaknesses': []
         }
         self.lvl = 1
         for i in range(int(self.data[0].split()[1]) - 1):
             self.level_up()
-
 
     def level_up(self):
         self.lvl_point -= self.lvl_point_up
@@ -36,6 +35,14 @@ class Player:
         new_magic = MAGIC_MAP.get(self.lvl, None)
         if new_magic is not None:
             self.magic.append(magic[new_magic]())
+
+        new_items = ITEMS_MAP.get(self.lvl, None)
+        if new_items is not None:
+            if items[new_items] not in self.items:
+                self.items[items[new_items]] = items[new_items].count
+            else:
+                items[new_items].count += 1
+                self.items[items[new_items]] = items[new_items].count
 
     def use_item(self, item):
         self.items[item] -= 1
@@ -58,4 +65,11 @@ MAGIC_MAP = {
     7: 'lightning',
     8: 'shield',
     10: 'explosion'
+}
+
+ITEMS_MAP = {
+    2: 'small_potion',
+    6: 'molotov',
+    8: 'small_mana_potion',
+    10: 'small_potion'
 }

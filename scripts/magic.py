@@ -166,7 +166,7 @@ magic = {
         {
             'name': 'agi',
             'description': 'Маленький огненный урон',
-            'damage': 20,
+            'damage': 40,
             'damage_type': 'fire',
             'cost': 5,
             'sprites_count': 6,
