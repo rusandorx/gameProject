@@ -63,11 +63,13 @@ class MagicMenu(State):
     def render(self, display):
         self.prev_state.render(display)
         for i, image in enumerate(self.option_images):
+            if i // 8 < self.index // 8 or i // 8 > self.index // 8:
+                continue
             if i == self.index:
                 image.set_alpha(255)
             else:
                 image.set_alpha(128)
-            display.blit(image, (0, i * self.OPTION_SIZE[1]))
+            display.blit(image, (0, (i % 8) * self.OPTION_SIZE[1]))
         display.blit(self.rectangle, (0, 0))
         if len(self.game.state_stack) == 4:
             if hasattr(self.prev_state, "confirm_buttons"):

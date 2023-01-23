@@ -56,6 +56,8 @@ class ItemMenu(State):
     def render(self, display):
         self.prev_state.render(display)
         for i, image in enumerate(self.option_images):
+            if i // 8 < self.index // 8 or i // 8 > self.index // 8:
+                continue
             if i == self.index:
                 image.set_alpha(255)
             else:
