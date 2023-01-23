@@ -83,7 +83,8 @@ class Enemy(pygame.sprite.Sprite):
                 self.sprite_state = "ATTACK"
                 if int(self.animation_frame) == len(self.sprites[self.sprite_state]) - 1:
                     self.on_attack(self.name, self)
-                    Sound("../sounds/fighting.mp3", -1, 500)
+                    music = ENEMIES_MUSIC.get(self.name, 'fighting')
+                    Sound(f"../sounds/{music}.mp3", -1, 500)
             elif cross_vector.magnitude() <= self.range_attack:
                 self.move_by_vector(cross_vector)
             elif (cross_vector := (self.init_position - vector_enemy)).magnitude() > 1:
@@ -133,6 +134,10 @@ class Enemy(pygame.sprite.Sprite):
         self.animation()
 
 
-enemies_backgrounds = {
+ENEMIES_BACKGROUNDS = {
     'necromancer': 'Battleground2'
+}
+
+ENEMIES_MUSIC = {
+    'necromancer': 'suffer'
 }

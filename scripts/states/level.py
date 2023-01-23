@@ -3,7 +3,7 @@ from random import choice
 import pygame
 from pytmx.util_pygame import load_pygame
 
-from enemy import Enemy, enemies_backgrounds
+from enemy import Enemy, ENEMIES_BACKGROUNDS
 from obstacle import Obstacle
 from player.level_player import LevelPlayer
 from scripts.settings import TILESIZE
@@ -55,7 +55,7 @@ class Level(State):
                 Enemy((entity.x, entity.y), (self.main_group, ), self.player, entity.name, self.attack_callback)
 
     def attack_callback(self, enemy_name, class_enemy):
-        background = enemies_backgrounds.get(enemy_name, choice(('Battleground1', 'Battleground4')))
+        background = ENEMIES_BACKGROUNDS.get(enemy_name, choice(('Battleground1', 'Battleground4')))
         if enemy_name == "skeleton":
             if 10 > self.game.player.lvl >= 5:
                 enemy_name = "SkeletonSpearman"

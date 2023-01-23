@@ -90,7 +90,7 @@ class Game:
         surface.blit(text_surface, text_rect)
 
     def load_assets(self):
-        self.font = pygame.font.Font('../graphics/font/joystix.ttf', 20)
+        self.font = pygame.font.Font('../graphics/font/nineteen.ttf', 20)
         self.big_font = pygame.font.Font('../graphics/font/p5hatty.ttf', 40)
 
     def reset_keys(self):

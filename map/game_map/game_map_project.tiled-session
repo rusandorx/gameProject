@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
-        "tilemaps/Pipoya RPG Tileset 32x32",
         "tilemaps/Pipoya RPG Tileset 32x32/SampleMap",
         "tilemaps",
-        "."
+        ".",
+        "tilemaps/Pipoya RPG Tileset 32x32"
     ],
     "fileStates": {
         "": {
@@ -55,11 +55,11 @@
             "expandedObjectLayers": [
                 5
             ],
-            "scale": 0.33,
-            "selectedLayer": 5,
+            "scale": 0.5,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 1380.3030303030303,
-                "y": 2045.4545454545455
+                "x": 1439,
+                "y": 1556
             }
         },
         "map.tmx#[Base]BaseChip_pipo": {
@@ -101,8 +101,8 @@
     ],
     "project": "game_map_project.tiled-project",
     "recentFiles": [
-        "map.tmx",
         "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx",
+        "map.tmx",
         "RPG Nature Tileset.tsx"
     ],
     "tileset.lastUsedFilter": "Файлы набора тайлов Tiled (*.tsx *.xml)",

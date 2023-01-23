@@ -42,7 +42,7 @@ class LevelPlayer(pygame.sprite.Sprite):
                 for i in range(4)],
             AnimationState.IDLE: [
                 pygame.transform.scale(
-                    pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha(),
+                    pygame.image.load('../graphics/player/down/down_0.png').convert_alpha(),
                     (32, 32))]
         }
         self.animation_frame = 0
