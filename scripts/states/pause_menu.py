@@ -48,6 +48,8 @@ class PauseMenu(State):
             magic_menu.enter_state()
         # TODO: Implement all options.
         if option == 'Exit':
+            with open("../data/player.txt", "w") as data:
+                data.write(f"lvl {self.game.player.lvl}")
             while len(self.game.state_stack) > 1:
                 self.game.state_stack.pop()
 

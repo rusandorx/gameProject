@@ -71,6 +71,8 @@ class CombatPlayer(Entity):
         self.animate_once('hurt')
         if self.player.hp <= 0:
             self.animate_to_last_frame('die')
+            with open("../data/player.txt", "w") as data:
+                data.write(f"lvl {1}")
 
     def return_object_to_apply(self):
         return self.player
