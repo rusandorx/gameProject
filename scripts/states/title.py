@@ -13,5 +13,5 @@ class Title(State):
         self.game.reset_keys()
 
     def render(self, display):
-        display.fill((128, 128, 128))
-        self.game.draw_text(display, 'Noname game', (0, 0, 0), self.game.width / 2, self.game.height / 2)
+        display.fill((128, 128, 68))
+        self.game.draw_text(display, 'Skeleton Rain', (0, 0, 0), self.game.width / 2, self.game.height / 2)

@@ -21,7 +21,7 @@ class Game:
         self.player = Player()
         self.load_assets()
         self.load_states()
-        pygame.display.set_caption('Noname')
+        pygame.display.set_caption('Skeleton Rain')
 
     def run(self):
         while self.running:
