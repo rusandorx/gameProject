@@ -206,7 +206,7 @@ class SkeletonWarrior(CombatEnemy):
         if target is None:
             target = self.player
         if self.player.player.mp <= self.stats["manaburn"]:
-            self.player.take_damage(self.player.mp, "net")
+            self.player.take_damage(self.player.player.mp, "net")
             self.player.player.mp = 0
         else:
             self.player.player.mp -= self.stats["manaburn"]
