@@ -14,7 +14,7 @@ class Player:
         self.magic = list(map(lambda x: magic[x](), ['agi']))
         self.exp = 0
         self.stats = {
-            'attack': 7,
+            'attack': 2,
             'endurance': 5,
             'weaknesses': []
         }

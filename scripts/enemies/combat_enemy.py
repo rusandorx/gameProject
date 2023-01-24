@@ -147,8 +147,9 @@ class CombatEnemy(Entity, metaclass=ABCMeta):
         self.animate()
 
     def random_action(self):
-        self.actions_to_methods[
-            choices([*self.actions.keys()], weights=[action for action in self.actions.values()])[0]]()
+        action_name = choices([*self.actions.keys()], weights=[action for action in self.actions.values()])[0]
+        self.actions_to_methods[action_name]()
+        return action_name
 
     def draw_special_effect(self, surface, font):
         if self.text_animation_state == 'idle':

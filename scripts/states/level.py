@@ -3,6 +3,7 @@ from random import choice
 import pygame
 from pytmx.util_pygame import load_pygame
 
+from enemies.enemies_list import get_enemy_pattern
 from enemy import Enemy, ENEMIES_BACKGROUNDS
 from obstacle import Obstacle
 from player.level_player import LevelPlayer
@@ -24,10 +25,6 @@ class Level(State):
         # со спрайтами препятствий происходят коллизии
         self.obstacle_sprites = pygame.sprite.Group()
         self.up_group = pygame.sprite.Group()
-        self.count_enemy = {"skeleton": [1, 3],
-                            "necromancer": [1, 1],
-                            "knight": [3, 4],
-                            'zombie': [1, 2]}
 
         self.create_map()
 
@@ -54,16 +51,9 @@ class Level(State):
             if entity.name != "player":
                 Enemy((entity.x, entity.y), (self.main_group, ), self.player, entity.name, self.attack_callback)
 
-    def attack_callback(self, enemy_name, class_enemy):
+    def attack_callback(self, enemy_name, level_name):
         background = ENEMIES_BACKGROUNDS.get(enemy_name, choice(('Battleground1', 'Battleground4')))
-        if enemy_name == "skeleton":
-            if 10 > self.game.player.lvl >= 5:
-                enemy_name = "SkeletonSpearman"
-            elif 10 <= self.game.player.lvl:
-                enemy_name = "SkeletonWarrior"
-            combat = Combat(self.game, enemy_name, class_enemy, [1, 3], background)
-        else:
-            combat = Combat(self.game, enemy_name, class_enemy, self.count_enemy[enemy_name], background)
+        combat = Combat(self.game, get_enemy_pattern(enemy_name, self.game.player.lvl), level_name, background)
         combat.enter_state()
 
     def update(self, key_state):

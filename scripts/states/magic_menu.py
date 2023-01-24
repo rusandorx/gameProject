@@ -77,7 +77,7 @@ class MagicMenu(State):
                     self.game.width - self.prev_state.confirm_buttons_rect[2],
                     self.game.height - self.prev_state.confirm_buttons_rect[3]))
 
-        text_surface = self.game.font.render(f'{self.game.player.mp}\\{self.game.player.max_mp}', True, (32, 128, 255))
+        text_surface = self.game.font.render(f'{round(self.game.player.mp)}\\{round(self.game.player.max_mp)}', True, (32, 128, 255))
         text_rect = text_surface.get_rect()
         text_rect.topright = (self.OPTION_SIZE[0], 0)
         display.blit(text_surface, text_rect)

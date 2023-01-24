@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, choice
 
 from enemies.knight import KnightEnemy
 from enemies.necromancer import NecromancerEnemy
@@ -80,3 +80,26 @@ ENEMIES = {
         },
     }, position, player)
 }
+
+
+def get_enemy_pattern(level_enemy_name, player_lvl):
+    if level_enemy_name == 'skeleton':
+        if player_lvl < 2:
+            return ['skeleton']
+        if player_lvl < 4:
+            return choice((['skeleton'], ['skeleton'] * 2))
+        if player_lvl < 6:
+            return choice((['skeleton'] * 2, ['skeleton'] * 3, ['SkeletonSpearman']))
+        if player_lvl < 9:
+            return choice((['skeleton'] * 3, ['SkeletonSpearman'], ['skeleton', 'SkeletonSpearman']))
+        if player_lvl < 11:
+            return choice((['SkeletonSpearman', 'skeleton'], ['SkeletonWarrior']))
+        if player_lvl < 13:
+            return choice((['SkeletonSpearman', 'skeleton', 'skeleton'], ['SkeletonWarrior', 'skeleton']))
+        return choice(
+            (['SkeletonSpearman', 'SkeletonSpearman', 'SkeletonWarrior'], ['SkeletonWarrior', 'skeleton', 'SkeletonSpearman']))
+    if level_enemy_name == 'zombie':
+        return choice((['zombie'], ['zombie'] * 2))
+    if level_enemy_name == 'knight':
+        return choice((['knight'] * 2, ['knight'] * 3, ['knight'] * 4))
+    return [level_enemy_name]

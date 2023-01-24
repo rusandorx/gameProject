@@ -18,18 +18,21 @@ from utils import get_outline
 
 
 class Combat(State):
-    def __init__(self, game, enemy_name, level_name, count_enemy, background):
+    def __init__(self, game, enemies, level_name, background):
         super().__init__(game)
         Sound.stop_all()
         self.name = "combat"
         self.level_name = level_name
         self.enemies_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.Group()
+
+        # UI
         self.background = pygame.image.load(f'../graphics/ui/combat/backgrounds/{background}.png')
         self.background_rect = self.background.get_rect()
         self.combat_menu = CombateMenu((0, 0))
         self.confirm_buttons = pygame.image.load('../graphics/ui/combat/confirm_button.png')
         self.confirm_buttons_rect = self.confirm_buttons.get_rect()
+        self.action_name = None
 
         self.combat_player = CombatPlayer((200, 400), self.game.player)
         self.player_group.add(self.combat_player)
@@ -38,11 +41,11 @@ class Combat(State):
         self.item = None
         self.current_animation = None
 
-        self.enemies_count = randint(*count_enemy)
+        self.enemies_count = len(enemies)
         self.enemies: [CombatEnemy] = [
-            ENEMIES[enemy_name]((self.game.width * 5 / 6 - _ * 256, 400 + 25 * randint(-2, 2)), self.combat_player)
-            for _ in
-            range(self.enemies_count)]
+            ENEMIES[enemy]((self.game.width * 5 / 6 - i * 256, 400 + 25 * randint(-2, 2)), self.combat_player)
+            for i, enemy in
+            enumerate(enemies)]
         self.enemy_size = self.enemies[0].image.get_rect()[2:]
         self.enemies_group.add(self.enemies)
         self.enemy_index = self.enemies_count - 1
@@ -71,9 +74,8 @@ class Combat(State):
             if self.state == CombateState.ENEMIES:
                 if self.enemies_turn >= self.enemies_count:
                     self.state = CombateState.IDLE
-                else:
-                    self.enemies[self.enemies_turn].random_action()
-
+                elif self.enemies[self.enemies_turn].sprite_state != 'die':
+                    self.action_name = self.enemies[self.enemies_turn].random_action().replace('_', ' ')
                     self.set_current_animation(self.enemies[self.enemies_turn], [self.enemy_animation_ended])
             else:
                 if self.state != CombateState.CHOOSE_MAGIC:
@@ -111,6 +113,18 @@ class Combat(State):
         if self.state == CombateState.CHOOSE_ENEMY and self.enemies_count > 1:
             surface.blit(self.confirm_buttons, (
                 self.game.width - self.confirm_buttons_rect[2], self.game.height - self.confirm_buttons_rect[3]))
+        if self.state == CombateState.ANIMATION and self.action_name is not None and self.enemies:
+            text_surface = self.game.big_font.render(f'{self.action_name}',
+                                                     True, (255, 255, 255))
+            text_rect = text_surface.get_rect()
+            text_rect.topright = (surface.get_rect().topright[0] - 10, surface.get_rect().topright[1] + 15)
+            rectangle = pygame.Surface((text_rect[2] + 15, text_rect[3] + 20))
+            rectangle_rect = rectangle.get_rect()
+            rectangle_rect.center = text_rect.center
+            rectangle.fill((0, 0, 0))
+            rectangle.set_alpha(94)
+            surface.blit(rectangle, rectangle_rect)
+            surface.blit(text_surface, text_rect)
 
     def handle_keys(self, key_state):
         if self.state == CombateState.IDLE:
@@ -171,6 +185,7 @@ class Combat(State):
     def enemy_animation_ended(self):
         self.enemies[self.enemies_turn].handle_effects_per_turn()
         self.enemies_turn += 1
+        self.action_name = None
         if self.combat_player.player.hp <= 0:
             self.combat_player.on_animation_end.append(self.player_died)
             return
@@ -244,16 +259,16 @@ class Combat(State):
             if not enemy.dead:
                 enemy.draw_particle_effects(surface, False)
                 self.game.draw_text(surface, f"{enemy.name} LVL {enemy.lvl}",
-                                              ((min((max(1, enemy.lvl - self.game.player.lvl) * 64), 255)),
+                                    ((min((max(1, enemy.lvl - self.game.player.lvl) * 64), 255)),
                                      (min((max(1, self.game.player.lvl - enemy.lvl) * 64), 255)),
                                      0),
-                                              enemy.position[0] + 30, enemy.position[1] - 70)
+                                    enemy.position[0] + 30, enemy.position[1] - 70)
                 self.game.draw_text(surface,
                                     f"{round(enemy.hp, 1) if round(enemy.hp, 1) != 0.0 else '0.1'} / {round(enemy.max_hp, 1)}",
-                                              (255,
+                                    (255,
                                      255,
                                      255),
-                                              enemy.position[0] + 30, enemy.position[1] - 40)
+                                    enemy.position[0] + 30, enemy.position[1] - 40)
 
                 pygame.draw.rect(surface, "gray",
                                  (enemy.position[0] - 20, enemy.position[1] - 20,

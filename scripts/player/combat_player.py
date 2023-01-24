@@ -49,7 +49,7 @@ class CombatPlayer(Entity):
             self.sprites[f'{magic.damage_type}-magic'] = list(
                 map(lambda sprite: pygame.transform.scale(sprite, (512, 512)),
                     SpriteSheet(os.path.join(graphics_path, f'{magic.damage_type}-magic.png')).load_strip(
-                        pygame.Rect(0, 0, 128, 128), 15, (0, 0, 0))))
+                        pygame.Rect(0, 0, 128, 128), 14, (0, 0, 0))))
         self.sprite_state = 'idle'
         self.return_to_idle = False
         self.animation_frame = 0
