@@ -1,0 +1,114 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map.tmx",
+    "expandedProjectPaths": [
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap",
+        "tilemaps",
+        ".",
+        "tilemaps/Pipoya RPG Tileset 32x32"
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "RPG Nature Tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "TX Plant.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Player.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Props.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Shadow Plant.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Shadow.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Struct.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Tileset Grass.tsx": {
+            "scaleInDock": 2
+        },
+        "TX Tileset Stone Ground.tsx": {
+            "scaleInDock": 1
+        },
+        "TX Tileset Wall.tsx": {
+            "scaleInDock": 1
+        },
+        "TilesetFloor.tsx": {
+            "scaleInDock": 1.5
+        },
+        "[Base]BaseChip_pipo.tsx": {
+            "scaleInDock": 1.5
+        },
+        "map.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 0.5,
+            "selectedLayer": 7,
+            "viewCenter": {
+                "x": 1439,
+                "y": 1556
+            }
+        },
+        "map.tmx#[Base]BaseChip_pipo": {
+            "scaleInDock": 1.5
+        },
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/[A]Flower_pipo.tsx": {
+            "scaleInDock": 1
+        },
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/[A]Grass_pipo.tsx": {
+            "scaleInDock": 2
+        },
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/[A]WaterFall_pipo.tsx": {
+            "scaleInDock": 1
+        },
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/[A]Water_pipo.tsx": {
+            "scaleInDock": 1
+        },
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1447.5,
+                "y": 1222
+            }
+        },
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx#[Base]BaseChip_pipo": {
+            "scaleInDock": 1
+        }
+    },
+    "last.externalTilesetPath": "E:/projects/gameProject/map/game_map",
+    "map.height": 64,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "map.width": 64,
+    "openFiles": [
+        "map.tmx",
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx"
+    ],
+    "project": "game_map_project.tiled-project",
+    "recentFiles": [
+        "tilemaps/Pipoya RPG Tileset 32x32/SampleMap/samplemap.tmx",
+        "map.tmx",
+        "RPG Nature Tileset.tsx"
+    ],
+    "tileset.lastUsedFilter": "Файлы набора тайлов Tiled (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 32,
+        "width": 32
+    }
+}
